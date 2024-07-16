@@ -43,7 +43,7 @@ class AuthController extends Controller
             ]);
 
             // Enviar código de verificação por email
-            Mail::to($request->email)->send(new SendMail($code));
+            Mail::to($request->email)->send(new SendMail($code, $validatedData['name']));
 
             // Retornar resposta para que o usuário verifique o código
             return response()->json(['message' => 'Verification code sent. Please check your email.'], Response::HTTP_OK);
