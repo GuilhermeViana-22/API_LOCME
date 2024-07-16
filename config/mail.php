@@ -34,6 +34,12 @@ return [
     */
 
     'mailers' => [
+        'mailtrap' => [
+            'transport' => 'mailtrap'
+        ],
+        'hostinger' => [
+            'transport' => 'hostinger'
+        ],
         'smtp' => [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
@@ -43,6 +49,7 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'auth_mode' => null,
+            'verify_peer'       => false,
         ],
 
         'ses' => [
