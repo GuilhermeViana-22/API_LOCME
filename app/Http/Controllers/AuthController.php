@@ -92,6 +92,7 @@ class AuthController extends Controller
 
         try {
             if (Auth::attempt($credentials)) {
+
                 $user = Auth::user();
 
                 $token = $user->createToken('LaravelAuthApp')->accessToken;
@@ -101,18 +102,11 @@ class AuthController extends Controller
                 DB::commit();
                 return response()->json(['token' => $token], 200);
             } else {
-
-                $this->PersonalAcessToken(null,  null);
-                $this->Log(null, null, null , null,  null);
-
-                DB::commit();
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return response()->json(['error' => 'Não autorizado'], 401);
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->PersonalAcessToken(null,  null);
-            $this->Log(null, null, null , null,  null);
-            return response()->json(['error' => 'Internal Server Error'], 500);
+            return response()->json(['error' => 'Erro interno no servidor'], 500);
         }
     }
 
