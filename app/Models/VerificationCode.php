@@ -9,6 +9,7 @@ class VerificationCode extends Model
 {
     protected $table = 'verification_codes';
     protected $fillable = [
+        'user_id',
         'email',
         'code',
     ];

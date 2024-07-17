@@ -27,32 +27,99 @@ class AuthController extends Controller
         $validatedData = $request->validated();
         DB::beginTransaction();
 
-        try {
-            // Criar o usuário
-            $user = User::create([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-            ]);
+        // Criar o usuário
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
 
+        try {
+            $user->save();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        try {
             // Gerar e armazenar código de verificação
             $code = Str::random(6);
             VerificationCode::create([
+                'user_id' => $user->id,
                 'email' => $request->email,
                 'code' => $code,
             ]);
 
             // Enviar código de verificação por email
-            Mail::to($request->email)->send(new SendMail($code, $validatedData['name']));
+            $this->sendVerificationEmail($user->email, $code, $user->name);
+
+            DB::commit();
 
             // Retornar resposta para que o usuário verifique o código
-            return response()->json(['message' => 'Verification code sent. Please check your email.'], Response::HTTP_OK);
+            return response()->json(['message' => 'Verificação do código enviada. Por gentileza cheque seu e-mail.'], Response::HTTP_OK);
 
-        } catch (\Exception $e) {
+        }catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Método para enviar email de verificação
+    protected function sendVerificationEmail($email, $code, $name)
+    {
+        Mail::to($email)->send(new SendMail($code, $name));
+    }
+
+    /***
+     * @param Request $request
+     * @return mixed
+     */
+    public function verifyCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        // Buscar o código de verificação no banco de dados
+        $verificationCode = VerificationCode::where('code', $request->code)
+            ->first();
+
+        if ($verificationCode) {
+            // Código válido, prosseguir para gerar o token de acesso
+            DB::beginTransaction();
+
+            try {
+                // Encontrar o usuário pelo ID
+                $user = User::findOrFail( $verificationCode->user_id );
+
+                // Atualizar as colunas 'active' e 'situacao_id' para 1
+                $user->update([
+                    'active' => 1,
+                    'situacao_id' => 1,
+                ]);
+
+                // Gerar o token de acesso
+                $token = $user->createToken('LaravelAuthApp')->accessToken;
+
+                // Excluir o código de verificação após usar
+                $verificationCode->delete();
+
+                DB::commit();
+                return response()->json(['token' => $token], Response::HTTP_OK);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error' => 'Erro ao gerar o token de acesso. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+        } else {
+            // Código de verificação inválido
+            return response()->json(['error' => 'Invalid verification code.'], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+
+
 
     /***
      * @param Request $request
@@ -94,44 +161,4 @@ class AuthController extends Controller
     }
 
 
-// Método para verificar o código de verificação
-    public function verifyCode(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'code' => 'required|string',
-        ]);
-
-        // Buscar o código de verificação no banco de dados
-        $verificationCode = VerificationCode::where('email', $request->email)
-            ->where('code', $request->code)
-            ->first();
-
-        if ($verificationCode) {
-            // Código válido, prosseguir para gerar o token de acesso
-            DB::beginTransaction();
-
-            try {
-                // Encontrar o usuário pelo email
-                $user = User::where('email', $request->email)->first();
-
-                // Gerar o token de acesso
-                $token = $user->createToken('LaravelAuthApp')->accessToken;
-
-                // Excluir o código de verificação após usar
-                $verificationCode->delete();
-
-                DB::commit();
-                return response()->json(['token' => $token], Response::HTTP_OK);
-
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return response()->json(['error' => 'Erro ao gerar o token de acesso. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-        } else {
-            // Código de verificação inválido
-            return response()->json(['error' => 'Invalid verification code.'], Response::HTTP_BAD_REQUEST);
-        }
-    }
 }
