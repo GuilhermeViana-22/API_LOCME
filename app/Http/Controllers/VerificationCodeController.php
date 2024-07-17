@@ -2,85 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreVerificationCodeRequest;
-use App\Http\Requests\UpdateVerificationCodeRequest;
+use App\Models\User;
 use App\Models\VerificationCode;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 class VerificationCodeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function verifyCode(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'code' => 'required|string',
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+        // Buscar o código de verificação no banco de dados
+        $verificationCode = VerificationCode::where('code', $request->code)
+            ->first();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreVerificationCodeRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreVerificationCodeRequest $request)
-    {
-        //
-    }
+        if ($verificationCode) {
+            // Código válido, prosseguir para gerar o token de acesso
+            DB::beginTransaction();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\VerificationCode  $verificationCode
-     * @return \Illuminate\Http\Response
-     */
-    public function show(VerificationCode $verificationCode)
-    {
-        //
-    }
+            try {
+                // Encontrar o usuário pelo ID
+                $user = User::findOrFail( $verificationCode->user_id );
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\VerificationCode  $verificationCode
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(VerificationCode $verificationCode)
-    {
-        //
-    }
+                // Atualizar as colunas 'active' e 'situacao_id' para 1
+                $user->update([
+                    'active' => 1,
+                    'situacao_id' => 1,
+                ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateVerificationCodeRequest  $request
-     * @param  \App\Models\VerificationCode  $verificationCode
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateVerificationCodeRequest $request, VerificationCode $verificationCode)
-    {
-        //
-    }
+                // Gerar o token de acesso
+                $token = $user->createToken('LaravelAuthApp')->accessToken;
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\VerificationCode  $verificationCode
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(VerificationCode $verificationCode)
-    {
-        //
+                // Excluir o código de verificação após usar
+                $verificationCode->delete();
+
+                DB::commit();
+                return response()->json(['token' => $token], Response::HTTP_OK);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error' => 'Erro ao gerar o token de acesso. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+        } else {
+            // Código de verificação inválido
+            return response()->json(['error' => 'Código de verificação inválido.'], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

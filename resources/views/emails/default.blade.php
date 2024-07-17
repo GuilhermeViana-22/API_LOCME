@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Verification Code</title>
     <style>
         body {
@@ -15,23 +16,21 @@
             max-width: 600px;
             margin: 0 auto;
             background-color: #ffffff;
-            padding: 20px;
             text-align: center;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
         }
         .header {
             background-color: #7159c1;
             color: #ffffff;
-            padding: 10px 0;
+            padding: 20px;
             font-size: 24px;
             font-weight: bold;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
-        .content {
-            padding: 20px;
-        }
+
         .code {
             font-size: 24px;
             font-weight: bold;
