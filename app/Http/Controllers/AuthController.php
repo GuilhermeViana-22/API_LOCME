@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRquest;
 use App\Http\Requests\UserRegisterValidationRequest;
+use App\Models\Log;
+use App\Models\LogAcesso;
+use App\Models\PersonalAcessToken;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -75,18 +80,43 @@ class AuthController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function login(Request $request)
+    public function login(LoginRquest $request)
     {
         $credentials = $request->only('email', 'password');
+        $ip = $request->get('ip');
+        $aplication_name = $request->get('name');
+        $rota = $request->get('rota');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('LaravelAuthApp')->accessToken;
-            return response()->json(['token' => $token], 200);
-        } else {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        //inicia a transação
+        DB::beginTransaction();
+
+        try {
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+
+                $token = $user->createToken('LaravelAuthApp')->accessToken;
+                $this->PersonalAcessToken($token,  'login');
+                $this->Log($user->id, $ip, $aplication_name, true,  $rota);
+
+                DB::commit();
+                return response()->json(['token' => $token], 200);
+            } else {
+
+                $this->PersonalAcessToken(null,  null);
+                $this->Log(null, null, null , null,  null);
+
+                DB::commit();
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->PersonalAcessToken(null,  null);
+            $this->Log(null, null, null , null,  null);
+            return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
+
+
 
 
     /***
@@ -115,8 +145,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out'], Response::HTTP_OK);
     }
 
-
-
     /***
      * método para envio de email
      * @param $email
@@ -128,4 +156,59 @@ class AuthController extends Controller
     {
         Mail::to($email)->send(new SendMail($code, $name));
     }
+
+    /***
+     * método para salvar os dados de log
+     * @param $clientId
+     * @param $chamada
+     * @param $autenticado
+     * @param $mensagem
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function PersonalAcessToken($token, $chamada)
+    {
+        try {
+            PersonalAcessToken::create([
+                'tokenable' => $token,
+                'token' => $token,
+                'name' => $chamada,
+                'abilities' => '',
+                'last_used_at' => Carbon::now()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao registrar o acesso pessoal. Por favor, entre em contato com o time de desenvolvimento de sistemas. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
+    }
+
+    /***
+     * @param $client_id
+     * @param $ip // ip do ususario
+     * @param $name
+     * @param $autenticado // seta para true a autentificação
+     * @param $rota // chamada da rota
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function log($client_id, $ip, $name, $autenticado, $rota)
+    {
+        DB::beginTransaction();
+
+        try {
+            $log = new Log();
+            $log->client_id = $client_id;
+            $log->client_ip = $ip;
+            $log->name = $name;
+            $log->autenticado = $autenticado;
+            $log->rota = $rota;
+
+            $log->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage(), $client_id, $ip, $name, $autenticado, $rota);
+            return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

@@ -29,8 +29,8 @@ class VerificationCodeController extends Controller
 
                 // Atualizar as colunas 'active' e 'situacao_id' para 1
                 $user->update([
-                    'active' => 1,
-                    'situacao_id' => 1,
+                    'active' => User::USUARIO_ATIVO,
+                    'situacao_id' => User::SITUACAO_ATIVA,
                 ]);
 
                 // Gerar o token de acesso
@@ -46,9 +46,7 @@ class VerificationCodeController extends Controller
                 DB::rollBack();
                 return response()->json(['error' => 'Erro ao gerar o token de acesso. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-
         } else {
-            // Código de verificação inválido
             return response()->json(['error' => 'Código de verificação inválido.'], Response::HTTP_BAD_REQUEST);
         }
     }
