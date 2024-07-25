@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MailVerifyRequest;
 use App\Http\Requests\UserRegisterValidationRequest;
 use App\Mail\ResetPassword;
 use Illuminate\Http\JsonResponse;
@@ -128,14 +129,12 @@ class AuthController extends Controller
             return response()->json(['error' => 'Usuário não encontrado.'], Response::HTTP_NOT_FOUND);
         }
     }
-
-
     /***
      * método para realizar reset request
      * @param ResetRequest $request
      * @return JsonResponse
      */
-    public function reset(ResetRequest $request)
+    public function mailVerify(MailVerifyRequest $request)
     {
         $user = User::where('email', 'like', '%'.$request->get('email').'%')->first();
         if(!$user){
@@ -165,8 +164,6 @@ class AuthController extends Controller
             DB::rollBack();
             return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
     /***
@@ -253,5 +250,10 @@ class AuthController extends Controller
             Log::error($e->getMessage(), $client_id, $ip, $name, $autenticado, $rota);
             return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    public function reset(ResetRequest $request){
+
     }
 }

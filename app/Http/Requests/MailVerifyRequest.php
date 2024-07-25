@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-class ResetRequest extends FormRequest
+
+class MailVerifyRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,15 +14,14 @@ class ResetRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required',
-            'token' => 'required'
+            'email' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required' => 'informe um email válido',
+            'email.required' => 'informe um email válido'
         ];
     }
 }
