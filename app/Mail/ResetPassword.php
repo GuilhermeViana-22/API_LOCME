@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendMail extends Mailable
+class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,8 +29,8 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Codigo de verificação')
-            ->view('emails.verification_code')
+        return $this->subject('Solicitação de Mudança de Senha')
+            ->view('emails.reset_password')
             ->with('code', $this->code)
             ->with('name', $this->name);
     }

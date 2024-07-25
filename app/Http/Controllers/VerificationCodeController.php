@@ -16,7 +16,7 @@ class VerificationCodeController extends Controller
         ]);
 
         // Buscar o código de verificação no banco de dados
-        $verificationCode = VerificationCode::where('code', $request->code)
+        $verificationCode = VerificationCode::where('code', 'like', '%'. $request->code . '%')
             ->first();
 
         if ($verificationCode) {

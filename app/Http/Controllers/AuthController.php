@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRquest;
 use App\Http\Requests\UserRegisterValidationRequest;
-use App\Models\Log;
-use App\Models\LogAcesso;
-use App\Models\PersonalAcessToken;
-use Illuminate\Support\Carbon;
+use App\Mail\ResetPassword;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\ResetRequest;
+use App\Http\Requests\LoginRquest;
+use App\Models\PersonalAcessToken;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\MeRequest;
 use App\Models\VerificationCode;
-use Illuminate\Http\Request;
+use App\Http\Requests\MeRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Mail\SendMail;
 use App\Models\User;
+use App\Models\Log;
+use function Psy\debug;
 
 class AuthController extends Controller
 {
     /***
      * método para registrar usuário
      * @param UserRegisterValidationRequest $request
-     * @return mixed
+     * @return JsonResponse
      */
     public function register(UserRegisterValidationRequest $request)
     {
@@ -77,8 +80,8 @@ class AuthController extends Controller
     }
 
     /***
-     * @param Request $request
-     * @return mixed
+     * @param LoginRquest $request
+     * @return JsonResponse
      */
     public function login(LoginRquest $request)
     {
@@ -110,12 +113,9 @@ class AuthController extends Controller
         }
     }
 
-
-
-
     /***
      * @param MeRequest $request
-     * @return mixed
+     * @return JsonResponse
      */
     public function me(MeRequest $request)
     {
@@ -129,9 +129,49 @@ class AuthController extends Controller
         }
     }
 
+
+    /***
+     * método para realizar reset request
+     * @param ResetRequest $request
+     * @return JsonResponse
+     */
+    public function reset(ResetRequest $request)
+    {
+        $user = User::where('email', 'like', '%'.$request->get('email').'%')->first();
+        if(!$user){
+            return response()->json(['Error' => 'Não foi localizado este e-mail nos nossos registros , por gentileza verifique o emial digitado e tente novamebnte.']);
+        }
+
+        try {
+            DB::beginTransaction();
+            // Gerar e armazenar código de verificação
+            $code = Str::random(6);
+
+            VerificationCode::create([
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'code' => $code,
+            ]);
+
+            // Enviar código de verificação por email
+            $this->sendResetPassword($user->email, $code, $user->name);
+
+            DB::commit();
+
+            // Retornar resposta para que o usuário verifique o código
+            return response()->json(['message' => 'Verificação do código enviada. Por gentileza cheque seu e-mail.'], Response::HTTP_OK);
+
+        }catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
     /***
      * @param Request $request
-     * @return mixed
+     * @return JsonResponse
      */
     public function logout(Request $request)
     {
@@ -151,13 +191,23 @@ class AuthController extends Controller
         Mail::to($email)->send(new SendMail($code, $name));
     }
 
+
+    /**
+     * @param $email
+     * @param $code
+     * @param $name
+     * @return void
+     */
+    private function sendResetPassword($email, $code, $name)
+    {
+        Mail::to($email)->send(new ResetPassword($code, $name));
+    }
+
     /***
      * método para salvar os dados de log
-     * @param $clientId
+     * @param $token
      * @param $chamada
-     * @param $autenticado
-     * @param $mensagem
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     private function PersonalAcessToken($token, $chamada)
     {
@@ -181,7 +231,7 @@ class AuthController extends Controller
      * @param $name
      * @param $autenticado // seta para true a autentificação
      * @param $rota // chamada da rota
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function log($client_id, $ip, $name, $autenticado, $rota)
     {
@@ -204,5 +254,4 @@ class AuthController extends Controller
             return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
 }
