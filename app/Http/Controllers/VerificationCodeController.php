@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CodeRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\DB;
 use App\Models\VerificationCode;
 use Illuminate\Http\Response;
@@ -12,8 +13,7 @@ class VerificationCodeController extends Controller
     public function verifyCode(CodeRequest $request)
     {
         // Buscar o código de verificação no banco de dados
-        $verificationCode = VerificationCode::where('code', 'like', '%'. $request->code . '%')
-            ->first();
+        $verificationCode = VerificationCode::where('code', 'like', '%'. $request->code . '%')->first();
 
         if ($verificationCode) {
             // Código válido, prosseguir para gerar o token de acesso
@@ -31,10 +31,13 @@ class VerificationCodeController extends Controller
 
                 // Gerar o token de acesso
                 $token = $user->createToken('LaravelAuthApp')->accessToken;
-                $verificationCode->delete();
 
                 DB::commit();
-                return response()->json(['token' => $token], Response::HTTP_OK);
+                return response()->json([
+
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ], 200);
 
             } catch (\Exception $e) {
                 DB::rollBack();

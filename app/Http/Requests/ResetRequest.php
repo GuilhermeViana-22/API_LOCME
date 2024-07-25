@@ -6,22 +6,27 @@ use Illuminate\Foundation\Http\FormRequest;
 class ResetRequest extends FormRequest
 {
     /**
-     * Get the validation rules that apply to the request.
-     *
+     * Obtém as regras de validação que se aplicam à solicitação.
      * @return array
      */
     public function rules()
     {
         return [
-            'email' => 'required',
-            'token' => 'required'
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
 
+    /**
+     * Obtém as mensagens de erro personalizadas para a validação de regras.
+     * @return array
+     */
     public function messages()
     {
         return [
-            'email.required' => 'informe um email válido',
+            'password.required' => 'A senha é obrigatória.',
+            'password.string' => 'A senha deve ser uma string.',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
+            'password.confirmed' => 'A confirmação da senha não corresponde.',
         ];
     }
 }

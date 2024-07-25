@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MailVerifyRequest;
 use App\Http\Requests\UserRegisterValidationRequest;
-use App\Mail\ResetPassword;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\MailVerifyRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -13,16 +11,17 @@ use App\Http\Requests\ResetRequest;
 use App\Http\Requests\LoginRquest;
 use App\Models\PersonalAcessToken;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 use App\Models\VerificationCode;
 use App\Http\Requests\MeRequest;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Mail\ResetPassword;
 use App\Mail\SendMail;
 use App\Models\User;
 use App\Models\Log;
-use function Psy\debug;
 
 class AuthController extends Controller
 {
@@ -253,7 +252,43 @@ class AuthController extends Controller
     }
 
 
-    public function reset(ResetRequest $request){
+    /***
+     * método para realizar o update de senha
+     * @param ResetRequest $request
+     * @return JsonResponse
+     */
+    public function reset(ResetRequest $request)
+    {
+        // Extrair o USER_ID do cabeçalho de autorização
+        $userIdHeader = $request->header('user_id');
+        if (!$userIdHeader) {
+            return response()->json(['error' => 'header não foi fornecido corretamente.'], 401);
+        }
 
+        // Validar os dados da requisição
+        $dados = $request->validated();
+
+        // Verificar se o usuário existe
+        $user = User::find($userIdHeader);
+        if (!$user) {
+            return response()->json(['error' => 'Usuário não encontrado.'], 404);
+        }
+
+        // Verificar o código de verificação
+        $verification = VerificationCode::where('user_id', $userIdHeader)->first();
+
+        if (!$verification) {
+            return response()->json(['error' => 'Código de verificação inválido ou expirado.'], 400);
+        }
+
+        // Atualizar a senha do usuário
+        $user->password = Hash::make($dados['password']);
+        $user->save();
+
+        // Invalida o código de verificação após o uso
+        $verification->delete();
+
+        return response()->json(['message' => 'Senha alterada com sucesso.'], 200);
     }
+
 }
