@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 
 // Rotas de Autenticação
 
-
+Route::get('/', [AuthController::class, 'teste']);
 
 Route::post('/register', [AuthController::class, 'register'])->name('.register');
 Route::post('/login', [AuthController::class, 'login'])->name('.login');
@@ -21,6 +21,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('.logout');;
     Route::get('me', [AuthController::class, 'me'])->name('.me');;
 
-    Route::get('teste', [AuthController::class, 'teste']);
+
 
 });
