@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\ResetRequest;
-use App\Http\Requests\LoginRquest;
+use App\Http\Requests\LoginRequest;
 use App\Models\PersonalAcessToken;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
@@ -80,27 +80,27 @@ class AuthController extends Controller
     }
 
     /***
-     * @param LoginRquest $request
+     * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login(LoginRquest $request)
+    public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
-        $ip = $request->get('ip');
-        $aplication_name = $request->get('name');
-        $rota = $request->get('rota');
+        $ip = $request->ip(); // Captura o IP do cliente
 
-        //inicia a transação
+        // Inicia a transação
         DB::beginTransaction();
 
         try {
             if (Auth::attempt($credentials)) {
-
                 $user = Auth::user();
 
+                // Cria o token de autenticação
                 $token = $user->createToken('LaravelAuthApp')->accessToken;
-                $this->PersonalAcessToken($token,  'login');
-                $this->Log($user->id, $ip, $aplication_name, true,  $rota);
+                $this->PersonalAcessToken($token, 'login');
+
+                // Registra o log com o IP capturado
+                $this->Log($user->id, $ip,true );
 
                 DB::commit();
                 return response()->json(['token' => $token], 200);
@@ -112,6 +112,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Erro interno no servidor'], 500);
         }
     }
+
 
     /***
      * @param MeRequest $request
@@ -224,12 +225,10 @@ class AuthController extends Controller
     /***
      * @param $client_id
      * @param $ip // ip do ususario
-     * @param $name
      * @param $autenticado // seta para true a autentificação
-     * @param $rota // chamada da rota
      * @return JsonResponse
      */
-    public function log($client_id, $ip, $name, $autenticado, $rota)
+    public function log($client_id, $ip, $autenticado)
     {
         DB::beginTransaction();
 
@@ -237,16 +236,15 @@ class AuthController extends Controller
             $log = new Log();
             $log->client_id = $client_id;
             $log->client_ip = $ip;
-            $log->name = $name;
             $log->autenticado = $autenticado;
-            $log->rota = $rota;
+
 
             $log->save();
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getMessage(), $client_id, $ip, $name, $autenticado, $rota);
+            Log::error($e->getMessage(), $client_id, $ip, $autenticado);
             return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -293,7 +291,7 @@ class AuthController extends Controller
 
     public function teste()
     {
-        return response()->json(['message' => 'API está funcionando corretamente!']);
+        return response()->json(['message' => 'API está funcionando corretamente!!!!']);
     }
 
 
