@@ -96,22 +96,16 @@ class AuthController extends Controller
         try {
             // Verifica as credenciais
             $user = $this->authenticate($credentials);
-
             if ($user) {
-                // Cria o token de autenticação
                 $token = $this->createToken($user);
-
-                // Registra o log com o IP capturado
                 $this->logAccess($user->id, $ip);
-
-                DB::commit();
-                return response()->json(['token' => $token], 200);
-            } else {
-                return response()->json(['error' => 'Não autorizado'], 401);
             }
+            DB::commit();
+            return response()->json(['token' => $token], 200);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Erro interno no servidor'], 500);
+            return response()->json(['error' => 'Erro interno no servidor', $e->getMessage()], 500);
         }
     }
 
