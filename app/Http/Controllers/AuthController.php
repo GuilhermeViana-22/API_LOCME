@@ -96,9 +96,10 @@ class AuthController extends Controller
         try {
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
-                dd($user);
+
                 // Cria o token de autenticação
                 $token = $user->createToken('LaravelAuthApp')->accessToken;
+                dd($token);
                 $this->PersonalAcessToken($token, 'login');
 
                 // Registra o log com o IP capturado
