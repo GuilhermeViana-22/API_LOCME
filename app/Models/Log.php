@@ -28,9 +28,9 @@ class Log extends Model
                 'payload' => json_encode([
                     'client_id' => $client_id,
                     'client_ip' => $ip,
-                    'name' => $name,
+                    'name' => null,
                     'autenticado' => $autenticado,
-                    'rota' => $rota
+                    'rota' => null
                 ]),
                 'exception' => $exception,
                 'failed_at' => now(),

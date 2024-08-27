@@ -34,6 +34,7 @@ class AuthController extends Controller
     {
         // Validar os dados do request
         $validatedData = $request->validated();
+
         DB::beginTransaction();
 
         // Verificar se a senha atende aos critérios
@@ -86,6 +87,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
+
         $ip = $request->ip(); // Captura o IP do cliente
 
         // Inicia a transação
@@ -237,10 +239,7 @@ class AuthController extends Controller
             $log->client_id = $client_id;
             $log->client_ip = $ip;
             $log->autenticado = $autenticado;
-
-
             $log->save();
-
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

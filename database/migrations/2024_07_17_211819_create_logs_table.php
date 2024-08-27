@@ -17,9 +17,9 @@ class CreateLogsTable extends Migration
             $table->id();
             $table->string('client_id');
             $table->string('client_ip');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->boolean('autenticado');
-            $table->string('rota');
+            $table->string('rota')->nullable();
             $table->timestamps();
         });
     }
