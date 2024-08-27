@@ -86,23 +86,23 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        $ip = $request->ip(); // Captura o IP do cliente
+        // Captura as credenciais e o IP do cliente
+        $credentials = $this->getCredentials($request);
+        $ip = $request->ip();
 
         // Inicia a transação
         DB::beginTransaction();
 
         try {
-            if (Auth::attempt($credentials)) {
-                $user = Auth::user();
-                // Cria o token de autenticação
-                $token = $user->createToken('LaravelAuthApp')->accessToken;
+            // Verifica as credenciais
+            $user = $this->authenticate($credentials);
 
-                $this->PersonalAcessToken($token, 'login');
+            if ($user) {
+                // Cria o token de autenticação
+                $token = $this->createToken($user);
 
                 // Registra o log com o IP capturado
-                $this->Log($user->id, $ip,true );
+                $this->logAccess($user->id, $ip);
 
                 DB::commit();
                 return response()->json(['token' => $token], 200);
@@ -293,5 +293,28 @@ class AuthController extends Controller
         return response()->json(['message' => 'API está funcionando corretamente!!!!']);
     }
 
+    private function getCredentials(Request $request)
+    {
+        return $request->only('email', 'password');
+    }
 
+    private function authenticate(array $credentials)
+    {
+        if (Auth::attempt($credentials)) {
+            return Auth::user();
+        }
+        return null;
+    }
+
+    private function createToken($user)
+    {
+        $token = $user->createToken('LaravelAuthApp')->accessToken;
+        $this->PersonalAcessToken($token, 'login');
+        return $token;
+    }
+
+    private function logAccess($userId, $ip)
+    {
+        $this->Log($userId, $ip, true);
+    }
 }
