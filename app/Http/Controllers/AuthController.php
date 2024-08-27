@@ -99,9 +99,7 @@ class AuthController extends Controller
 
                 // Cria o token de autenticação
                 $token = $user->createToken('LaravelAuthApp')->accessToken;
-                dd([
-                    'token' => $token
-                ]);
+                dd($user->createToken('LaravelAuthApp')->accessToken);
                 $this->PersonalAcessToken($token, 'login');
 
                 // Registra o log com o IP capturado
