@@ -29,9 +29,15 @@ class VerificationCodeController extends Controller
                         'situacao_id' => User::SITUACAO_ATIVA,
                     ]);
 
+
+                    // Gerar o token de acesso
+                    $token = $user->createToken('LaravelAuthApp')->accessToken;
+                    dd($token);
+
                     try {
                         // Gerar o token de acesso
                         $token = $user->createToken('LaravelAuthApp')->accessToken;
+                        dd($token);
                     } catch (\Exception $e) {
                         DB::rollBack();
                         return response()->json(['error' => 'Erro ao gerar o token de acesso. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
