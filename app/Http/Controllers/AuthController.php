@@ -96,7 +96,7 @@ class AuthController extends Controller
         try {
             // Verifica as credenciais
             $user = $this->authenticate($credentials);
-            dd($user);
+
             if ($user) {
                 $token = $this->createToken($user);
                 $this->logAccess($user->id, $ip);
