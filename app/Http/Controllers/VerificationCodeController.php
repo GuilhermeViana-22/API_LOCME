@@ -13,7 +13,7 @@ class VerificationCodeController extends Controller
     public function verifyCode(CodeRequest $request)
     {
         // Buscar o código de verificação no banco de dados
-        $verificationCode = VerificationCode::where('code', 'like', '%'. $request->code . '%')->first();
+        $verificationCode = VerificationCode::where('code', 'like', '%' . $request->get('code') . '%')->first();
 
         if ($verificationCode) {
             // Código válido, prosseguir para gerar o token de acesso
@@ -21,30 +21,41 @@ class VerificationCodeController extends Controller
 
             try {
                 // Encontrar o usuário pelo ID
-                $user = User::findOrFail( $verificationCode->user_id );
+                $user = User::findOrFail($verificationCode->user_id);
 
-                // Atualizar as colunas 'active' e 'situacao_id' para 1
-                $user->update([
-                    'active' => User::USUARIO_ATIVO,
-                    'situacao_id' => User::SITUACAO_ATIVA,
-                ]);
+                try {
+                    // Atualizar as colunas 'active' e 'situacao_id' para 1
+                    $user->update([
+                        'active' => User::USUARIO_ATIVO,
+                        'situacao_id' => User::SITUACAO_ATIVA,
+                    ]);
 
-                // Gerar o token de acesso
-                $token = $user->createToken('LaravelAuthApp')->accessToken;
+                    try {
+                        // Gerar o token de acesso
+                        $token = $user->createToken('LaravelAuthApp')->accessToken;
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        return response()->json(['error' => 'Erro ao gerar o token de acesso. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                    }
 
-                DB::commit();
-                return response()->json([
+                    DB::commit();
+                    return response()->json([
+                        'user' => new UserResource($user),
+                        'token' => $token,
+                    ], 200);
 
-                    'user' => new UserResource($user),
-                    'token' => $token,
-                ], 200);
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return response()->json(['error' => 'Erro ao atualizar o usuário. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                return response()->json(['error' => 'Erro ao gerar o token de acesso. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                return response()->json(['error' => 'Erro ao encontrar o usuário. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         } else {
             return response()->json(['error' => 'Código de verificação inválido.'], Response::HTTP_BAD_REQUEST);
         }
     }
+
 }
