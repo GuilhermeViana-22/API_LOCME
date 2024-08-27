@@ -16,8 +16,8 @@ class PassportSeeder extends Seeder
     public function run()
     {
         // Verifique se o cliente pessoal já existe
-        if (!Client::where('personal_access_client', true)->exists()) {
-            Artisan::call('passport:client --personal');
-        }
+//        if (!Client::where('personal_access_client', true)->exists()) {
+//            Artisan::call('passport:client --personal');
+//        }
     }
 }
