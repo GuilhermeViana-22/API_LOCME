@@ -96,7 +96,7 @@ class AuthController extends Controller
         try {
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
-
+                dd($user);
                 // Cria o token de autenticação
                 $token = $user->createToken('LaravelAuthApp')->accessToken;
                 $this->PersonalAcessToken($token, 'login');
