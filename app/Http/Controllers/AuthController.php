@@ -96,16 +96,20 @@ class AuthController extends Controller
         try {
             // Verifica as credenciais
             $user = $this->authenticate($credentials);
+
             if ($user) {
                 $token = $this->createToken($user);
                 $this->logAccess($user->id, $ip);
+                DB::commit();
+                return response()->json(['token' => $token], 200);
+            } else {
+                DB::rollBack();
+                return response()->json(['error' => 'Credenciais inválidas'], 401);
             }
-            DB::commit();
-            return response()->json(['token' => $token], 200);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Erro interno no servidor', $e->getMessage()], 500);
+            return response()->json(['error' => 'Erro interno no servidor', 'message' => $e->getMessage()], 500);
         }
     }
 
