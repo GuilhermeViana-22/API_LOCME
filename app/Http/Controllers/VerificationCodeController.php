@@ -14,7 +14,7 @@ class VerificationCodeController extends Controller
     {
         // Buscar o código de verificação no banco de dados
         $verificationCode = VerificationCode::where('code', 'like', '%' . $request->get('code') . '%')->first();
-
+        dd($verificationCode);
         if ($verificationCode) {
             // Código válido, prosseguir para gerar o token de acesso
             DB::beginTransaction();
