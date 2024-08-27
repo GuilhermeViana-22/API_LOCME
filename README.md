@@ -89,3 +89,26 @@ Corpo da Requisição:
     "password": "suaSenha",
     "password_confirmation": "suaSenha"
 }
+```
+
+# Documentação de Configuração do Laravel Passport
+
+Antes de seu aplicativo poder emitir tokens de acesso pessoal, você precisará criar um cliente de acesso pessoal. 
+
+## Passo 1: Instalar o Passport
+
+Se você ainda não executou o comando `passport:install`, você deve executá-lo primeiro. Este comando criará as chaves de criptografia e os clientes necessários para o Laravel Passport.
+
+```bash
+php artisan passport:install
+```
+
+*Passo 2: Criar um Cliente de Acesso Pessoal*
+
+Depois de executar passport:install, você pode criar um cliente de acesso pessoal. Se você já executou o comando passport:install, não é necessário executar este comando novamente.
+
+Para criar um cliente de acesso pessoal, use o comando:
+```bash
+php artisan passport:client --personal
+```
+
