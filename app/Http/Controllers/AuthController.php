@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteAccountRequest;
 use App\Http\Requests\UserRegisterValidationRequest;
 use App\Http\Requests\MailVerifyRequest;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -176,51 +178,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out'], Response::HTTP_OK);
     }
 
-    /***
-     * método para envio de email
-     * @param $email
-     * @param $code
-     * @param $name
-     * @return void
-     */
-    private function sendVerificationEmail($email, $code, $name)
-    {
-        Mail::to($email)->send(new SendMail($code, $name));
-    }
-
-
-    /**
-     * @param $email
-     * @param $code
-     * @param $name
-     * @return void
-     */
-    private function sendResetPassword($email, $code, $name)
-    {
-        Mail::to($email)->send(new ResetPassword($code, $name));
-    }
-
-    /***
-     * método para salvar os dados de log
-     * @param $token
-     * @param $chamada
-     * @return JsonResponse
-     */
-    private function PersonalAcessToken($token, $chamada)
-    {
-        try {
-            PersonalAcessToken::create([
-                'tokenable' => $token,
-                'token' => $token,
-                'name' => $chamada,
-                'abilities' => '',
-                'last_used_at' => Carbon::now()
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao registrar o acesso pessoal. Por favor, entre em contato com o time de desenvolvimento de sistemas. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-
-        }
-    }
 
     /***
      * @param $client_id
@@ -286,10 +243,89 @@ class AuthController extends Controller
         return response()->json(['message' => 'Senha alterada com sucesso.'], 200);
     }
 
-    public function teste()
+    public function delete(DeleteAccountRequest $request)
     {
-        return response()->json(['message' => 'API está funcionando corretamente!!!!']);
+        $id = $request->get('id');
+
+        // Encontre o usuário pelo ID
+        $user = User::find($id);
+
+        if (!$user) {
+            // Retorna erro 404 se o usuário não for encontrado
+            return response()->json([
+                'message' => 'Usuário não encontrado.',
+            ], 404);
+        }
+
+        // Verifica se o usuário já está inativo
+        if ($user->active == User::USUARIO_INATIVO && $user->situacao == User::SITUACAO_INATIVO) {
+            return response()->json([
+                'message' => 'O usuário já está inativo.',
+            ], 400);
+        }
+
+        // Atualize as colunas para marcar o usuário como inativo
+        $user->active = User::USUARIO_INATIVO;
+        $user->situacao = User::SITUACAO_INATIVO;
+
+        try {
+            $user->save(); // Salva as alterações
+            $user->delete(); // Executa o soft delete
+
+            return response()->json(['message' => 'O usuário foi desativado com sucesso. Caso deseje reativar a conta, entre em contato com o suporte.'], 200);
+
+        } catch (Exception $e) {
+            // Retorna erro 500 para exceções genéricas
+            return response()->json(['message' => 'Não foi possível deletar a conta do usuário.','error' => $e->getMessage(), ], 500);
+        }
     }
+
+
+    /***
+     * método para envio de email
+     * @param $email
+     * @param $code
+     * @param $name
+     * @return void
+     */
+    private function sendVerificationEmail($email, $code, $name)
+    {
+        Mail::to($email)->send(new SendMail($code, $name));
+    }
+
+    /**
+     * @param $email
+     * @param $code
+     * @param $name
+     * @return void
+     */
+    private function sendResetPassword($email, $code, $name)
+    {
+        Mail::to($email)->send(new ResetPassword($code, $name));
+    }
+
+    /***
+     * método para salvar os dados de log
+     * @param $token
+     * @param $chamada
+     * @return JsonResponse
+     */
+    private function PersonalAcessToken($token, $chamada)
+    {
+        try {
+            PersonalAcessToken::create([
+                'tokenable' => $token,
+                'token' => $token,
+                'name' => $chamada,
+                'abilities' => '',
+                'last_used_at' => Carbon::now()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao registrar o acesso pessoal. Por favor, entre em contato com o time de desenvolvimento de sistemas. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
+    }
+
 
     private function getCredentials(Request $request)
     {

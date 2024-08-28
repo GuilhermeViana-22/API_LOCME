@@ -10,8 +10,14 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
+    //situação nas quais o ususario se encontra ativo dentro do sistema
     const USUARIO_ATIVO = 1;
     const SITUACAO_ATIVA = 1;
+
+    // situações nas quais o ususario nao se encodntra mais ativo dentro do sistema
+    const USUARIO_INATIVO = 0;
+    const SITUACAO_INATIVO = 0;
+
     use HasApiTokens, Notifiable;
 
     /**
