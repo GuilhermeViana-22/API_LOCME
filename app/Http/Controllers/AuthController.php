@@ -280,7 +280,6 @@ class AuthController extends Controller
         }
     }
 
-
     /***
      * método para envio de email
      * @param $email
