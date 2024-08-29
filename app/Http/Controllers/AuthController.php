@@ -121,8 +121,11 @@ class AuthController extends Controller
             // Confirma a transação
             DB::commit();
 
-            // Retorna o token
-            return response()->json(['token' => $token], 200);
+            // Retorna o token e o user_id
+            return response()->json([
+                'token' => $token,
+                'user_id' => $user->id
+            ], 200);
 
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -130,8 +133,6 @@ class AuthController extends Controller
             return response()->json(['error' => $errorMessage], 500);
         }
     }
-
-
 
     /***
      * @param MeRequest $request
