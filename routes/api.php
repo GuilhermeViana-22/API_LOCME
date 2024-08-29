@@ -18,11 +18,10 @@ Route::middleware('throttle:alert:10,1')->group(function () {
     Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 });
 
-Route::get('/me', [AuthController::class, 'me'])->name('me');
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
-
+    Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.updateProfile');
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
