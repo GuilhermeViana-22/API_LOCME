@@ -126,7 +126,7 @@ class AuthController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            $errorMessage = 'Erro interno no servidor: ' . $e->getMessage();
+            $errorMessage = 'teste: ' . $e->getMessage();
             return response()->json(['error' => $errorMessage], 500);
         }
     }
