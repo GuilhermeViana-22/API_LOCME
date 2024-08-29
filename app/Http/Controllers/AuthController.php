@@ -106,7 +106,7 @@ class AuthController extends Controller
                 return response()->json(['token' => $token], 200);
             } else {
                 DB::rollBack();
-                return response()->json(['error' => 'Credenciais inválidas',$e->getMessage()], 401);
+                return response()->json(['error' => 'Credenciais inválidas'], 401);
             }
 
         } catch (\Exception $e) {
