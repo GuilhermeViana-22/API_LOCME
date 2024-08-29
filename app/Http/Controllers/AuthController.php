@@ -105,7 +105,6 @@ class AuthController extends Controller
             }
 
             try {
-                // Cria o token
                 $token = $this->createToken($user);
             } catch (\Throwable $e) {
                 DB::rollBack();
@@ -113,7 +112,6 @@ class AuthController extends Controller
             }
 
             try {
-                // Registra o acesso
                 $this->logAccess($user->id, $ip);
             } catch (\Throwable $e) {
                 DB::rollBack();
