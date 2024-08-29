@@ -109,7 +109,7 @@ class AuthController extends Controller
                 $token = $this->createToken($user);
             } catch (\Throwable $e) {
                 DB::rollBack();
-                return response()->json(['error' => 'Erro ao criar o token', 'details' => $e->getMessage()], 500);
+                return response()->json(['error' => 'Erro ao criar o token', $e->getMessage()], 500);
             }
 
             try {
@@ -117,7 +117,7 @@ class AuthController extends Controller
                 $this->logAccess($user->id, $ip);
             } catch (\Throwable $e) {
                 DB::rollBack();
-                return response()->json(['error' => 'Erro ao registrar o acesso', 'details' => $e->getMessage()], 500);
+                return response()->json(['error' => 'Erro ao registrar o acesso', $e->getMessage()], 500);
             }
 
             // Confirma a transação
@@ -129,7 +129,7 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
             // Reverte a transação e retorna o erro
             DB::rollBack();
-            return response()->json(['error' => 'Erro interno no servidor', 'details' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Erro interno no servidor', $e->getMessage()], 500);
         }
     }
 
