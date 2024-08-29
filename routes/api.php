@@ -18,7 +18,7 @@ Route::middleware('throttle:alert:10,1')->group(function () {
     Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 });
 
-Route::get('/me', [AuthController::class, 'me'])->name('api.me');
+Route::get('/me', [AuthController::class, 'me'])->name('me');
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
