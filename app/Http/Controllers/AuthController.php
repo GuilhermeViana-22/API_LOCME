@@ -143,8 +143,6 @@ class AuthController extends Controller
 
         // Obter todos os parâmetros da requisição
         $user = User::find($request->get('id'));
-
-        dd($user);
         if ($user) {
             return response()->json($user, Response::HTTP_OK);
         } else {

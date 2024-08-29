@@ -25,19 +25,19 @@ class VerificationCodeController extends Controller
                 $user = User::findOrFail($verificationCode->user_id);
 
                 // Atualizar as colunas 'active' e 'situacao_id' para 1
-                try {
-                    $user->update([
-                        'active' => User::USUARIO_ATIVO,
-                        'situacao_id' => User::SITUACAO_ATIVA,
-                    ]);
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    return response()->json(['error' => 'Erro ao atualizar o usuário. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-                }
+                $user->update([
+                    'active' => User::USUARIO_ATIVO,
+                    'situacao_id' => User::SITUACAO_ATIVA,
+                ]);
 
-                // Gerar o token de acesso com um hash simples
+                // Gerar o token de acesso usando Laravel Passport
                 try {
-                    $token = Str::random(16);
+                    // Revoke any existing tokens
+                    $user->tokens()->where('revoked', false)->update(['revoked' => true]);
+
+                    // Criar um novo token para o usuário
+                    $tokenResult = $user->createToken('Personal Access Token');
+                    $token = $tokenResult->accessToken;
                 } catch (\Exception $e) {
                     DB::rollBack();
                     return response()->json(['error' => 'Erro ao gerar o token de acesso. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -57,4 +57,5 @@ class VerificationCodeController extends Controller
             return response()->json(['error' => 'Código de verificação inválido.'], Response::HTTP_BAD_REQUEST);
         }
     }
+
 }
