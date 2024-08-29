@@ -98,22 +98,41 @@ class AuthController extends Controller
         try {
             // Verifica as credenciais
             $user = $this->authenticate($credentials);
-            dd($user);
-            if ($user) {
-                $token = $this->createToken($user);
-                $this->logAccess($user->id, $ip);
-                DB::commit();
-                return response()->json(['token' => $token], 200);
-            } else {
+
+            if (!$user) {
                 DB::rollBack();
                 return response()->json(['error' => 'Credenciais inválidas'], 401);
             }
 
-        } catch (\Exception $e) {
+            try {
+                // Cria o token
+                $token = $this->createToken($user);
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return response()->json(['error' => 'Erro ao criar o token', 'details' => $e->getMessage()], 500);
+            }
+
+            try {
+                // Registra o acesso
+                $this->logAccess($user->id, $ip);
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return response()->json(['error' => 'Erro ao registrar o acesso', 'details' => $e->getMessage()], 500);
+            }
+
+            // Confirma a transação
+            DB::commit();
+
+            // Retorna o token
+            return response()->json(['token' => $token], 200);
+
+        } catch (\Throwable $e) {
+            // Reverte a transação e retorna o erro
             DB::rollBack();
-            return response()->json(['error' => 'Erro interno no servidor', $e->getMessage()], 500);
+            return response()->json(['error' => 'Erro interno no servidor', 'details' => $e->getMessage()], 500);
         }
     }
+
 
 
     /***
