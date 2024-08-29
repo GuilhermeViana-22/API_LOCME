@@ -23,7 +23,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.updateProfile');
-    Route::delete('/account', [AuthController::class, 'deleteAccount'])->name('api.deleteAccount');
+    Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
     Route::get('/activity', [ActivityLogController::class, 'index'])->name('api.activityLog');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
 });
