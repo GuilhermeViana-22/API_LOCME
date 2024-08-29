@@ -127,7 +127,6 @@ class AuthController extends Controller
             return response()->json(['token' => $token], 200);
 
         } catch (\Throwable $e) {
-            // Reverte a transação e retorna o erro
             DB::rollBack();
             return response()->json(['error' => 'Erro interno no servidor', $e->getMessage()], 500);
         }
