@@ -118,7 +118,7 @@ class AuthController extends Controller
                     'tokenable_type' => 'App\Models\User',
                     'tokenable_id' => $user->id,
                     'name' => 'API Token',
-                    'token' => hash('sha256', $tokenStr),  // Armazena o hash do token
+                    'token' => $tokenStr,  // Armazena o hash do token
                     'abilities' => json_encode(['*']),
                     'created_at' => now(),
                     'updated_at' => now(),
