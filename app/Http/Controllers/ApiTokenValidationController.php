@@ -17,19 +17,16 @@ class ApiTokenValidationController extends Controller
      */
     public function validateToken(Request $request)
     {
-        dd('cheguei ate aqui');
         $request->validate([
             'user_id' => 'required',
-            'token' => 'required'
+
         ]);
 
         $userId = $request->get('user_id');
-        $token = $request->get('token');
 
         // Buscar o token na tabela personal_access_tokens
         $tokenRecord = DB::table('personal_access_tokens')
             ->where('tokenable_id', $userId)
-            ->where('token', $token)
             ->first();
 
         if ($tokenRecord) {
