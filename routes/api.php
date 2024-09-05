@@ -7,8 +7,6 @@ use App\Http\Controllers\VerificationCodeController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-// Rota de teste para verificar se a API está funcionando
-Route::post('/validar', [ApiTokenValidationController::class, 'validar'])->name('validar');
 
 // Rotas públicas para autenticação e gerenciamento de conta com Rate Limiting
 Route::middleware('throttle:alert:10,1')->group(function () {
@@ -18,6 +16,7 @@ Route::middleware('throttle:alert:10,1')->group(function () {
     Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mailverify');
     Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 });
+Route::get('/validar', [AuthController::class, 'validar'])->name('validar');
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 
 // Grupo de rotas protegidas por autenticação
