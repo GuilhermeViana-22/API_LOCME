@@ -27,7 +27,8 @@ class ApiTokenValidationController extends Controller
         $token = $request->get('token');
 
         // Buscar o token na tabela personal_access_tokens
-        $tokenRecord = DB::table('personal_access_tokens')::where('tokenable_id', $userId)
+        $tokenRecord = DB::table('personal_access_tokens')
+            ->where('tokenable_id', $userId)
             ->where('token', $token)
             ->first();
 
