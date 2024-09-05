@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\ApiTokenValidationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // Rota de teste para verificar se a API está funcionando
-Route::get('/teste', [AuthController::class, 'teste'])->name('api.test');
+Route::post('/validate-token', [ApiTokenValidationController::class, 'validateToken']);
 
 // Rotas públicas para autenticação e gerenciamento de conta com Rate Limiting
 Route::middleware('throttle:alert:10,1')->group(function () {
