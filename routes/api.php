@@ -8,7 +8,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // Rota de teste para verificar se a API está funcionando
-Route::post('/validar', [ApiTokenValidationController::class, 'validateToken'])->name('validar');
+Route::post('/validar', [ApiTokenValidationController::class, 'validar'])->name('validar');
 
 // Rotas públicas para autenticação e gerenciamento de conta com Rate Limiting
 Route::middleware('throttle:alert:10,1')->group(function () {
