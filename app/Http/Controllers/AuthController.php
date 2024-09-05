@@ -388,6 +388,11 @@ class AuthController extends Controller
         return response()->json(['message' => 'Senha alterada com sucesso.'], 200);
     }
 
+    public function teste()
+    {
+        return response()->json(['message' => 'Deu certo.'], 200);
+    }
+
 
     private function getCredentials(Request $request)
     {

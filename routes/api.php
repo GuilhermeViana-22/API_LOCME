@@ -18,6 +18,7 @@ Route::middleware('throttle:alert:10,1')->group(function () {
 });
 Route::get('/validar', [AuthController::class, 'validar'])->name('validar');
 Route::get('/me', [AuthController::class, 'me'])->name('me');
+Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
