@@ -370,7 +370,7 @@ class AuthController extends Controller
      */
     public function validar(Request $request)
     {
-        dd('chegamos ate aqui');
+//        dd('chegamos ate aqui');
 //        $userId = $request->get('user_id');
 //
 //        // Buscar o token na tabela personal_access_tokens
