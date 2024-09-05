@@ -370,27 +370,28 @@ class AuthController extends Controller
      */
     public function validar(Request $request)
     {
-//        dd('chegamos ate aqui');
-//        $userId = $request->get('user_id');
-//
-//        // Buscar o token na tabela personal_access_tokens
-//        $tokenRecord = DB::table('personal_access_tokens')
-//            ->where('tokenable_id', $userId)
-//            ->first();
-//
-//        if ($tokenRecord) {
-//            return response()->json([
-//                'authorized' => true,
-//                'message' => 'Token válido.'
-//            ], 200);
-//        }
 
-        return response()->json(['message' => 'Senha alterada com sucesso.'], 200);
     }
 
-    public function teste()
+    public function teste(Request $request)
     {
-        return response()->json(['message' => 'Deu certo.'], 200);
+        $userId = $request->get('user_id');
+        $token = $request->get('token'); // Certifique-se de que o token está correto
+
+        // Buscar o token na tabela personal_access_tokens
+        $tokenRecord = DB::table('personal_access_tokens')
+            ->where('tokenable_id', $userId)
+            ->where('token', $token) // Comparação exata é segura
+            ->first();
+
+        if ($tokenRecord) {
+            return response()->json([
+                'authorized' => true,
+                'message' => 'Token válido.'
+            ], 200);
+        }
+
+        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], 200);
     }
 
 

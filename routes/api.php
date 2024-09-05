@@ -16,7 +16,7 @@ Route::middleware('throttle:alert:10,1')->group(function () {
     Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mailverify');
     Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 });
-Route::get('/validar', [AuthController::class, 'validar'])->name('validar');
+
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
 
