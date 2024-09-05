@@ -17,11 +17,7 @@ class ApiTokenValidationController extends Controller
      */
     public function validateToken(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required',
-
-        ]);
-
+        dd('chegamos ate aqui');
         $userId = $request->get('user_id');
 
         // Buscar o token na tabela personal_access_tokens
