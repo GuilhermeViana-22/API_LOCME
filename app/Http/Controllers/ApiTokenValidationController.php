@@ -17,7 +17,7 @@ class ApiTokenValidationController extends Controller
      */
     public function validateToken(Request $request)
     {
-
+        dd('cheguei ate aqui');
         $request->validate([
             'user_id' => 'required',
             'token' => 'required'
