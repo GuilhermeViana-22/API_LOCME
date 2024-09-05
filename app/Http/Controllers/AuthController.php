@@ -115,7 +115,7 @@ class AuthController extends Controller
             // Salva o token na tabela `personal_access_tokens`
             try {
                 DB::table('personal_access_tokens')->insert([
-                    'tokenable_type' => get_class($user),
+                    'tokenable_type' => 'App\Models\User',
                     'tokenable_id' => $user->id,
                     'name' => 'API Token',
                     'token' => $tokenStr,
