@@ -104,18 +104,37 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Credenciais inválidas'], 401);
             }
 
+            // Cria o token para o usuário autenticado
             try {
-                $token = $this->createToken($user);
+                $tokenStr = $this->createToken($user);
             } catch (\Throwable $e) {
                 DB::rollBack();
-                return response()->json(['error' => 'Erro ao criar o token'. $e->getMessage()], 500);
+                return response()->json(['error' => 'Erro ao criar o token: ' . $e->getMessage()], 500);
             }
 
+            // Salva o token na tabela `personal_access_tokens`
+            try {
+                DB::table('personal_access_tokens')->insert([
+                    'tokenable_type' => get_class($user),
+                    'tokenable_id' => $user->id,
+                    'name' => 'API Token',
+                    'token' => $tokenStr,
+                    'abilities' => json_encode(['*']),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'last_used_at' => null
+                ]);
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return response()->json(['error' => 'Erro ao salvar o token: ' . $e->getMessage()], 500);
+            }
+
+            // Registra o acesso do usuário
             try {
                 $this->logAccess($user->id, $ip);
             } catch (\Throwable $e) {
                 DB::rollBack();
-                return response()->json(['error' => 'Erro ao registrar o acesso'. $e->getMessage()], 500);
+                return response()->json(['error' => 'Erro ao registrar o acesso: ' . $e->getMessage()], 500);
             }
 
             // Confirma a transação
@@ -123,16 +142,16 @@ class AuthController extends Controller
 
             // Retorna o token e o user_id
             return response()->json([
-                'token' => $token,
+                'token' => $tokenStr,
                 'user_id' => $user->id
             ], 200);
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            $errorMessage = 'teste: ' . $e->getMessage();
-            return response()->json(['error' => $errorMessage], 500);
+            return response()->json(['error' => 'Erro: ' . $e->getMessage()], 500);
         }
     }
+
 
     /***
      * @param MeRequest $request
