@@ -392,7 +392,7 @@ class AuthController extends Controller
      */
     public function teste(Request $request)
     {
-        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], Response::HTTP_OK);
+        return response()->json(['message' => 'Comunicação realizada com sucesso, api no ar e operante.'], Response::HTTP_OK);
     }
 
     private function getCredentials(Request $request)
