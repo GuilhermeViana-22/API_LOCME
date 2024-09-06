@@ -362,18 +362,7 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Valida se o token é válido para o usuário fornecido.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function validar(Request $request)
-    {
-
-    }
-
-    public function teste(Request $request)
+    public function autorizar(Request $request)
     {
         $userId = $request->get('user_id');
         $token = $request->get('token'); // Certifique-se de que o token está correto
@@ -394,6 +383,17 @@ class AuthController extends Controller
         return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], 200);
     }
 
+
+    /**
+     * Valida se o token é válido para o usuário fornecido.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function teste(Request $request)
+    {
+        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], Response::HTTP_OK);
+    }
 
     private function getCredentials(Request $request)
     {

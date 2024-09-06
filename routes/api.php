@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ActivityLogController;
-use App\Http\Controllers\ApiTokenValidationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Http\Controllers\AuthController;
@@ -18,6 +17,7 @@ Route::middleware('throttle:alert:10,1')->group(function () {
 });
 
 Route::get('/me', [AuthController::class, 'me'])->name('me');
+Route::get('/autorizar', [AuthController::class, 'autorizar'])->name('autorizar');
 Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
 
 // Grupo de rotas protegidas por autenticação
