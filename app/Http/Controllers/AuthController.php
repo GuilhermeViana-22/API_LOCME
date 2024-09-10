@@ -366,7 +366,7 @@ class AuthController extends Controller
     {
         $userId = $request->get('user_id');
         $token = $request->get('token'); // Certifique-se de que o token está correto
-
+        dd($token);
         // Buscar o token na tabela personal_access_tokens
         $tokenRecord = DB::table('personal_access_tokens')
             ->where('tokenable_id', $userId)
