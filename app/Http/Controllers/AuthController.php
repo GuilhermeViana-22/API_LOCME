@@ -362,7 +362,7 @@ class AuthController extends Controller
         }
     }
 
-    public function autorizar(Request $request)
+    public function access(Request $request)
     {
         $userId = $request->get('user_id');
         $token = $request->get('token'); // Certifique-se de que o token está correto
