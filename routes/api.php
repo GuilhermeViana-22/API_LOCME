@@ -12,14 +12,8 @@ Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 Route::post('/verifycode', [VerificationCodeController::class, 'verifyCode'])->name('api.verifycode');
 Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mailverify');
 Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
-
-// Rotas públicas para autenticação e gerenciamento de conta com Rate Limiting
-Route::middleware('throttle:alert:10,1')->group(function () {
-
-});
-
 Route::get('/me', [AuthController::class, 'me'])->name('me');
-Route::get('/autorizar', [AuthController::class, 'autorizar'])->name('autorizar');
+Route::get('/access', [AuthController::class, 'access'])->name('access');
 Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
 
 // Grupo de rotas protegidas por autenticação
