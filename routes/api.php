@@ -13,8 +13,8 @@ Route::post('/verifycode', [VerificationCodeController::class, 'verifyCode'])->n
 Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mailverify');
 Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 Route::get('/me', [AuthController::class, 'me'])->name('me');
-Route::get('/access', [AuthController::class, 'access'])->name('access');
 Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
+Route::get('/hi', [AuthController::class, 'hi'])->name('hi');
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {

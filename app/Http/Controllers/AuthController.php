@@ -362,7 +362,7 @@ class AuthController extends Controller
         }
     }
 
-    public function access(Request $request)
+    public function teste(Request $request)
     {
         $userId = $request->get('user_id');
         $token = $request->get('token');
@@ -389,7 +389,7 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function teste(Request $request)
+    public function hi(Request $request)
     {
         return response()->json(['message' => 'Comunicação realizada com sucesso, api no ar e operante.'], Response::HTTP_OK);
     }
