@@ -214,7 +214,7 @@ return [
          */
         'ui' => [
             'display' => [
-                'dark_mode' => env('L5_SWAGGER_UI_DARK_MODE', false),
+                'dark_mode' => false, // Forçar dark mode
                 'doc_expansion' => env('L5_SWAGGER_UI_DOC_EXPANSION', 'none'),
                 'filter' => env('L5_SWAGGER_UI_FILTERS', true),
             ],
@@ -224,6 +224,9 @@ return [
                 'oauth2' => [
                     'use_pkce_with_authorization_code_grant' => false,
                 ],
+            ],
+            'additional_css' => [
+                'vendor/l5-swagger/css/dark-theme.css',
             ],
         ],
 
