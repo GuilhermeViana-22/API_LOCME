@@ -418,7 +418,7 @@ class AuthController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getMessage(), $client_id, $ip, $autenticado);
+            Log::error($e->getMessage(), $client_id, $ip, null,  $autenticado, null);
             return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
