@@ -25,12 +25,61 @@ use App\Mail\SendMail;
 use App\Models\User;
 use App\Models\Log;
 
+
+/**
+ * @OA\Info(
+ *     title="Sistema de Gerenciamento de Usuários",
+ *     version="1.0.0",
+ *     description="API para gerenciamento de autenticação de usuários",
+ *     @OA\Contact(email="suporte@sistema.com")
+ * )
+ *
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ */
 class AuthController extends Controller
 {
-    /***
-     * método para registrar usuário
-     * @param UserRegisterValidationRequest $request
-     * @return JsonResponse
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Registra um novo usuário",
+     *     tags={"Autenticação"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password"},
+     *             @OA\Property(property="name", type="string", example="João Silva"),
+     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="Senha123@",
+     *                 description="Deve conter pelo menos 8 caracteres, 1 letra maiúscula e 1 número")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Registro bem-sucedido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Verificação do código enviada. Por gentileza cheque seu e-mail.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Senha inválida",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="A senha não atende aos critérios mínimos")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Erro ao registrar o usuário")
+     *         )
+     *     )
+     * )
      */
     public function register(UserRegisterValidationRequest $request)
     {
@@ -75,16 +124,47 @@ class AuthController extends Controller
 
             // Retornar resposta para que o usuário verifique o código
             return response()->json(['message' => 'Verificação do código enviada. Por gentileza cheque seu e-mail.'], Response::HTTP_OK);
-
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    /***
-     * @param LoginRequest $request
-     * @return JsonResponse
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login de um usuário",
+     *     tags={"Autenticação"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="Senha123@")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login bem-sucedido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Login realizado com sucesso!")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Credenciais inválidas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Credenciais inválidas.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Erro ao realizar o login.")
+     *         )
+     *     )
+     * )
      */
     public function login(LoginRequest $request)
     {
@@ -145,7 +225,6 @@ class AuthController extends Controller
                 'token' => $tokenStr,
                 'user_id' => $user->id
             ], 200);
-
         } catch (\Throwable $e) {
             DB::rollBack();
             return response()->json(['error' => 'Erro: ' . $e->getMessage()], 500);
@@ -153,9 +232,34 @@ class AuthController extends Controller
     }
 
 
-    /***
-     * @param MeRequest $request
-     * @return JsonResponse
+    /**
+     * @OA\Get(
+     *     path="/api/me",
+     *     summary="Retorna dados do usuário autenticado",
+     *     tags={"Autenticação"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sucesso",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             ref="#/components/schemas/User"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuário não encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Usuário não encontrado.")
+     *         )
+     *     )
+     * )
      */
     public function me(MeRequest $request)
     {
@@ -175,8 +279,8 @@ class AuthController extends Controller
      */
     public function mailVerify(MailVerifyRequest $request)
     {
-        $user = User::where('email', 'like', '%'.$request->get('email').'%')->first();
-        if(!$user){
+        $user = User::where('email', 'like', '%' . $request->get('email') . '%')->first();
+        if (!$user) {
             return response()->json(['Error' => 'Não foi localizado este e-mail nos nossos registros , por gentileza verifique o emial digitado e tente novamebnte.']);
         }
 
@@ -198,8 +302,7 @@ class AuthController extends Controller
 
             // Retornar resposta para que o usuário verifique o código
             return response()->json(['message' => 'Verificação do código enviada. Por gentileza cheque seu e-mail.'], Response::HTTP_OK);
-
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -310,10 +413,9 @@ class AuthController extends Controller
             $user->delete(); // Executa o soft delete
 
             return response()->json(['message' => 'O usuário foi desativado com sucesso. Caso deseje reativar a conta, entre em contato com o suporte.'], 200);
-
         } catch (Exception $e) {
             // Retorna erro 500 para exceções genéricas
-            return response()->json(['message' => 'Não foi possível deletar a conta do usuário.','error' => $e->getMessage(), ], 500);
+            return response()->json(['message' => 'Não foi possível deletar a conta do usuário.', 'error' => $e->getMessage(),], 500);
         }
     }
 
@@ -358,7 +460,6 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erro ao registrar o acesso pessoal. Por favor, entre em contato com o time de desenvolvimento de sistemas. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-
         }
     }
 
@@ -368,10 +469,7 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function validar(Request $request)
-    {
-
-    }
+    public function validar(Request $request) {}
 
     public function teste(Request $request)
     {

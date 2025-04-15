@@ -7,18 +7,82 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use OpenApi\Annotations as OA;
 
-class User extends Authenticatable
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     title="User Model",
+ *     description="Modelo de usuário do sistema com status de ativação",
+ *     required={"name", "email", "password"},
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         format="int64",
+ *         description="ID único do usuário",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="name",
+ *         type="string",
+ *         description="Nome completo do usuário",
+ *         example="João Silva"
+ *     ),
+ *     @OA\Property(
+ *         property="email",
+ *         type="string",
+ *         format="email",
+ *         description="E-mail do usuário",
+ *         example="joao@exemplo.com"
+ *     ),
+ *     @OA\Property(
+ *         property="email_verified_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Data de verificação do e-mail",
+ *         nullable=true,
+ *         example="2023-01-01 12:00:00"
+ *     ),
+ *     @OA\Property(
+ *         property="active",
+ *         type="integer",
+ *         description="Status de ativação do usuário (0=Inativo, 1=Ativo)",
+ *         enum={0, 1},
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="situacao_id",
+ *         type="integer",
+ *         description="ID da situação do usuário",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="created_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Data de criação",
+ *         example="2023-01-01 12:00:00"
+ *     ),
+ *     @OA\Property(
+ *         property="updated_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Data de atualização",
+ *         example="2023-01-01 12:00:00"
+ *     )
+ * )
+ */
+class User extends Authenticatable implements MustVerifyEmail
 {
-    //situação nas quais o ususario se encontra ativo dentro do sistema
+    // Situações nas quais o usuário se encontra ativo dentro do sistema
     const USUARIO_ATIVO = 1;
     const SITUACAO_ATIVA = 1;
 
-    // situações nas quais o ususario nao se encodntra mais ativo dentro do sistema
+    // Situações nas quais o usuário não se encontra mais ativo dentro do sistema
     const USUARIO_INATIVO = 0;
     const SITUACAO_INATIVO = 0;
 
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
