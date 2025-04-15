@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'Minha API',
+                'title' => 'API SGU',
                 'description' => 'Documentação da API',
                 'version' => '1.0.0', // Adicionei a versão, é uma boa prática
             ],
