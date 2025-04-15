@@ -47,7 +47,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/register",
      *     summary="Registra um novo usuário",
-     *     tags={"Autenticação"},
+     *     tags={"Usuário"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -134,7 +134,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/login",
      *     summary="Login de um usuário",
-     *     tags={"Autenticação"},
+     *     tags={"Usuário"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -236,7 +236,7 @@ class AuthController extends Controller
      * @OA\Get(
      *     path="/api/me",
      *     summary="Retorna dados do usuário autenticado",
-     *     tags={"Autenticação"},
+     *     tags={"Usuário"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -272,10 +272,40 @@ class AuthController extends Controller
             return response()->json(['error' => 'Usuário não encontrado.'], Response::HTTP_NOT_FOUND);
         }
     }
-    /***
-     * método para realizar reset request
-     * @param ResetRequest $request
-     * @return JsonResponse
+    /**
+     * @OA\Post(
+     *     path="/api/mail-verify",
+     *     summary="Envia código de verificação por e-mail para redefinição de senha",
+     *     tags={"Usuário"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", format="email", example="usuario@exemplo.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Código enviado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Verificação do código enviada. Por gentileza cheque seu e-mail.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="E-mail não encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="Error", type="string", example="Não foi localizado este e-mail nos nossos registros")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Erro ao enviar e-mail de verificação")
+     *         )
+     *     )
+     * )
      */
     public function mailVerify(MailVerifyRequest $request)
     {
@@ -308,9 +338,27 @@ class AuthController extends Controller
         }
     }
 
-    /***
-     * @param Request $request
-     * @return JsonResponse
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Encerra a sessão do usuário",
+     *     tags={"Usuário"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout bem-sucedido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Successfully logged out")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Não autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
      */
     public function logout(Request $request)
     {
@@ -319,11 +367,43 @@ class AuthController extends Controller
     }
 
 
-    /***
-     * @param $client_id
-     * @param $ip // ip do ususario
-     * @param $autenticado // seta para true a autentificação
-     * @return JsonResponse
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/log-access",
+     *     summary="Registra um log de acesso",
+     *     tags={"Logs"},
+     *     @OA\Parameter(
+     *         name="client_id",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="ip",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="autenticado",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Log registrado com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Não foi possivel registrar logs")
+     *         )
+     *     )
+     * )
      */
     public function log($client_id, $ip, $autenticado)
     {
@@ -344,10 +424,54 @@ class AuthController extends Controller
     }
 
 
-    /***
-     * método para realizar o update de senha
-     * @param ResetRequest $request
-     * @return JsonResponse
+
+    /**
+     * @OA\Post(
+     *     path="/api/reset-password",
+     *     summary="Redefine a senha do usuário",
+     *     tags={"Usuário"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"password"},
+     *             @OA\Property(property="password", type="string", format="password", example="NovaSenha123")
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="header",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Senha redefinida com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Senha alterada com sucesso.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Código inválido ou expirado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Código de verificação inválido ou expirado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Header ausente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="header não foi fornecido corretamente.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuário não encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Usuário não encontrado.")
+     *         )
+     *     )
+     * )
      */
     public function reset(ResetRequest $request)
     {
@@ -383,6 +507,52 @@ class AuthController extends Controller
         return response()->json(['message' => 'Senha alterada com sucesso.'], 200);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/delete-account",
+     *     summary="Desativa a conta do usuário",
+     *     tags={"Usuário"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Conta desativada com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="O usuário foi desativado com sucesso. Caso deseje reativar a conta, entre em contato com o suporte."
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Conta já inativa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="O usuário já está inativo.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuário não encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Usuário não encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Não foi possível deletar a conta do usuário")
+     *         )
+     *     )
+     * )
+     */
     public function delete(DeleteAccountRequest $request)
     {
         $id = $request->get('id');
@@ -417,6 +587,59 @@ class AuthController extends Controller
             // Retorna erro 500 para exceções genéricas
             return response()->json(['message' => 'Não foi possível deletar a conta do usuário.', 'error' => $e->getMessage(),], 500);
         }
+    }
+
+     /**
+     * @OA\Post(
+     *     path="/api/validate-token",
+     *     summary="Valida um token de acesso",
+     *     tags={"Usuário"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"user_id", "token"},
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="token", type="string", example="token_jwt_aqui")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token válido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="authorized", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Token válido.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Token inválido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Token inválido")
+     *         )
+     *     )
+     * )
+     */
+    public function validar(Request $request) {}
+
+    public function teste(Request $request)
+    {
+        $userId = $request->get('user_id');
+        $token = $request->get('token'); // Certifique-se de que o token está correto
+
+        // Buscar o token na tabela personal_access_tokens
+        $tokenRecord = DB::table('personal_access_tokens')
+            ->where('tokenable_id', $userId)
+            ->where('token', $token) // Comparação exata é segura
+            ->first();
+
+        if ($tokenRecord) {
+            return response()->json([
+                'authorized' => true,
+                'message' => 'Token válido.'
+            ], 200);
+        }
+
+        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], 200);
     }
 
     /***
@@ -462,36 +685,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'Erro ao registrar o acesso pessoal. Por favor, entre em contato com o time de desenvolvimento de sistemas. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Valida se o token é válido para o usuário fornecido.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function validar(Request $request) {}
-
-    public function teste(Request $request)
-    {
-        $userId = $request->get('user_id');
-        $token = $request->get('token'); // Certifique-se de que o token está correto
-
-        // Buscar o token na tabela personal_access_tokens
-        $tokenRecord = DB::table('personal_access_tokens')
-            ->where('tokenable_id', $userId)
-            ->where('token', $token) // Comparação exata é segura
-            ->first();
-
-        if ($tokenRecord) {
-            return response()->json([
-                'authorized' => true,
-                'message' => 'Token válido.'
-            ], 200);
-        }
-
-        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], 200);
-    }
-
 
     private function getCredentials(Request $request)
     {

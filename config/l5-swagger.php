@@ -51,6 +51,7 @@ return [
                  */
                 'annotations' => [
                     base_path('app'),
+                    base_path('app/Http/Resources'), // Adicione esta linha
                 ],
             ],
         ],
