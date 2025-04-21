@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use App\Models\VerificationCode;
 use App\Http\Requests\MeRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -47,88 +48,64 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/register",
      *     summary="Registra um novo usuário",
-     *     tags={"Usuário"},
+     *     tags={"Autenticação"},
      *     @OA\RequestBody(
      *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UserRegisterRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Created",
      *         @OA\JsonContent(
-     *             required={"name", "email", "password"},
-     *             @OA\Property(property="name", type="string", example="João Silva"),
-     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="Senha123@",
-     *                 description="Deve conter pelo menos 8 caracteres, 1 letra maiúscula e 1 número")
+     *             @OA\Property(property="user", ref="#/components/schemas/UserResource"),
+     *             @OA\Property(property="token", type="string", example="1|abcdef123456")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
-     *         description="Registro bem-sucedido",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Verificação do código enviada. Por gentileza cheque seu e-mail.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Senha inválida",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="A senha não atende aos critérios mínimos")
-     *         )
+     *         response=422,
+     *         description="Validation Error",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Erro ao registrar o usuário")
-     *         )
+     *         description="Server Error",
+     *         @OA\JsonContent(ref="#/components/schemas/ServerErrorResponse")
      *     )
      * )
      */
     public function register(UserRegisterValidationRequest $request)
     {
-        // Validar os dados do request
-        $validatedData = $request->validated();
-
-        DB::beginTransaction();
-
-        // Verificar se a senha atende aos critérios
-        $password = $validatedData['password'];
-        if (!preg_match('/^(?=.*\d)(?=.*[A-Z]).{8,}$/', $password)) {
-            return response()->json(['error' => 'A senha não atende aos critérios mínimos: deve conter pelo menos um número, uma letra maiúscula e ter mais de 8 caracteres.'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Criar o usuário
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-        ]);
-
         try {
-            $user->save();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+            DB::beginTransaction();
 
-        try {
-            // Gerar e armazenar código de verificação
-            $code = Str::random(6);
-            VerificationCode::create([
-                'user_id' => $user->id,
-                'email' => $request->email,
-                'code' => $code,
-            ]);
+            $data = $request->validated();
+            $data['password'] = bcrypt($data['password']);
 
-            // Enviar código de verificação por email
-            $this->sendVerificationEmail($user->email, $code, $user->name);
+            if ($request->hasFile('foto_perfil')) {
+                $data['foto_perfil'] = $request->file('foto_perfil')->store('perfis', 'public');
+            }
+
+            $user = User::create($data);
+
+            $token = $user->createToken('auth_token')->accessToken;
 
             DB::commit();
 
-            // Retornar resposta para que o usuário verifique o código
-            return response()->json(['message' => 'Verificação do código enviada. Por gentileza cheque seu e-mail.'], Response::HTTP_OK);
+            return response()->json([
+                'user' => $user,
+                'access_token' => $token,
+                'token_type' => 'Bearer'
+            ], Response::HTTP_CREATED);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Erro ao registrar o usuário. Por favor, tente novamente. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => 'Erro ao registrar usuário',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     /**
      * @OA\Post(
@@ -166,72 +143,75 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function login(LoginRequest $request)
-    {
-        // Captura as credenciais e o IP do cliente
-        $credentials = $this->getCredentials($request);
-        $ip = $request->ip();
+/**
+ * @OA\Post(
+ *     path="/api/login",
+ *     summary="Login de um usuário",
+ *     tags={"Autenticação"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"email_corporativo", "password"},
+ *             @OA\Property(property="email_corporativo", type="string", format="email", example="usuario@empresa.com"),
+ *             @OA\Property(property="password", type="string", format="password", example="Senha123@")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Login bem-sucedido",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."),
+ *             @OA\Property(property="user", ref="#/components/schemas/User"),
+ *             @OA\Property(property="token_type", type="string", example="Bearer"),
+ *             @OA\Property(property="expires_at", type="string", format="date-time")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Credenciais inválidas",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Credenciais inválidas")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Erro interno",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Erro ao realizar o login")
+ *         )
+ *     )
+ * )
+ */
+public function login(LoginRequest $request)
+{
+    try {
+        $credentials = $request->only('email_corporativo', 'password');
 
-        // Inicia a transação
-        DB::beginTransaction();
-
-        try {
-            // Verifica as credenciais
-            $user = $this->authenticate($credentials);
-
-            if (!$user) {
-                DB::rollBack();
-                return response()->json(['error' => 'Credenciais inválidas'], 401);
-            }
-
-            // Cria o token para o usuário autenticado
-            try {
-                $tokenStr = $this->createToken($user);
-            } catch (\Throwable $e) {
-                DB::rollBack();
-                return response()->json(['error' => 'Erro ao criar o token: ' . $e->getMessage()], 500);
-            }
-
-            // Salva o token na tabela `personal_access_tokens`
-            try {
-                DB::table('personal_access_tokens')->insert([
-                    'tokenable_type' => 'App\Models\User',
-                    'tokenable_id' => $user->id,
-                    'name' => 'API Token',
-                    'token' => $tokenStr,  // Armazena o hash do token
-                    'abilities' => json_encode(['*']),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'last_used_at' => null
-                ]);
-            } catch (\Throwable $e) {
-                DB::rollBack();
-                return response()->json(['error' => 'Erro ao salvar o token: ' . $e->getMessage()], 500);
-            }
-
-            // Registra o acesso do usuário
-            try {
-                $this->logAccess($user->id, $ip);
-            } catch (\Throwable $e) {
-                DB::rollBack();
-                return response()->json(['error' => 'Erro ao registrar o acesso: ' . $e->getMessage()], 500);
-            }
-
-            // Confirma a transação
-            DB::commit();
-
-            // Retorna o token e o user_id
-            return response()->json([
-                'token' => $tokenStr,
-                'user_id' => $user->id
-            ], 200);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Erro: ' . $e->getMessage()], 500);
+        if (!auth()->attempt($credentials)) {
+            return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
+
+        $user = auth()->user();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->accessToken;
+
+        // Registra o acesso (se necessário)
+        $this->logAccess($user->id, $request->ip());
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer',
+            'expires_at' => $tokenResult->token->expires_at
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Erro ao realizar login',
+            'error' => config('app.debug') ? $e->getMessage() : null
+        ], 500);
     }
-
-
+}
     /**
      * @OA\Get(
      *     path="/api/me",
@@ -568,15 +548,15 @@ class AuthController extends Controller
         }
 
         // Verifica se o usuário já está inativo
-        if ($user->active == User::USUARIO_INATIVO && $user->situacao == User::SITUACAO_INATIVO) {
+        if ($user->active == User::INATIVO && $user->situacao == User::INATIVO) {
             return response()->json([
                 'message' => 'O usuário já está inativo.',
             ], 400);
         }
 
         // Atualize as colunas para marcar o usuário como inativo
-        $user->active = User::USUARIO_INATIVO;
-        $user->situacao = User::SITUACAO_INATIVO;
+        $user->active = User::INATIVO;
+        $user->situacao = User::INATIVO;
 
         try {
             $user->save(); // Salva as alterações
@@ -589,7 +569,7 @@ class AuthController extends Controller
         }
     }
 
-     /**
+    /**
      * @OA\Post(
      *     path="/api/validate-token",
      *     summary="Valida um token de acesso",
