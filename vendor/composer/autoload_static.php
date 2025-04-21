@@ -648,6 +648,7 @@ class ComposerStaticInitc61ff82cbf0142a401a48a8161e1595a
         'App\\Models\\Permission' => __DIR__ . '/../..' . '/app/Models/Permission.php',
         'App\\Models\\PersonalAcessToken' => __DIR__ . '/../..' . '/app/Models/PersonalAcessToken.php',
         'App\\Models\\Questionario' => __DIR__ . '/../..' . '/app/Models/Questionario.php',
+        'App\\Models\\Resposta' => __DIR__ . '/../..' . '/app/Models/Resposta.php',
         'App\\Models\\Rule' => __DIR__ . '/../..' . '/app/Models/Rule.php',
         'App\\Models\\RulePermission' => __DIR__ . '/../..' . '/app/Models/RulePermission.php',
         'App\\Models\\RuleUser' => __DIR__ . '/../..' . '/app/Models/RuleUser.php',

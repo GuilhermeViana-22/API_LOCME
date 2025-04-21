@@ -52,6 +52,7 @@ return array(
     'App\\Models\\Permission' => $baseDir . '/app/Models/Permission.php',
     'App\\Models\\PersonalAcessToken' => $baseDir . '/app/Models/PersonalAcessToken.php',
     'App\\Models\\Questionario' => $baseDir . '/app/Models/Questionario.php',
+    'App\\Models\\Resposta' => $baseDir . '/app/Models/Resposta.php',
     'App\\Models\\Rule' => $baseDir . '/app/Models/Rule.php',
     'App\\Models\\RulePermission' => $baseDir . '/app/Models/RulePermission.php',
     'App\\Models\\RuleUser' => $baseDir . '/app/Models/RuleUser.php',
