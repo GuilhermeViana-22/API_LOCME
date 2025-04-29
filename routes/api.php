@@ -5,26 +5,45 @@ use App\Http\Controllers\ApiTokenValidationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UnidadeController;
 use Illuminate\Support\Facades\Route;
+
+// Rotas públicas para autenticação e gerenciamento de conta
 Route::post('/verifycode', [VerificationCodeController::class, 'verifyCode'])->name('api.verifycode');
+Route::post('/register', [AuthController::class, 'register'])->name('api.register');
+Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mailverify');
+Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 
-// Rotas públicas para autenticação e gerenciamento de conta com Rate Limiting
-
-    Route::post('/register', [AuthController::class, 'register'])->name('api.register');
-    Route::post('/login', [AuthController::class, 'login'])->name('api.login');
-    Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mailverify');
-    Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
-
-
+// Rotas de teste (se realmente necessário)
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
 
+
+
+
+ // Rotas para gestão de unidades (protegidas)
+// Rotas para gestão de unidades (protegidas)
+Route::prefix('unidades')->group(function () {
+    Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
+    Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
+    Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
+    Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
+    Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
+});
+
+
+
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
-
+    // Rotas de autenticação do usuário
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.updateProfile');
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
+
+    // Rotas de atividades e notificações
     Route::get('/activity', [ActivityLogController::class, 'index'])->name('api.activityLog');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
+
+
 });

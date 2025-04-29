@@ -1,109 +1,18 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Sistema de Gerenciamento de Usuários",
-        "description": "API para gerenciamento de autenticação de usuários",
+        "title": "Sistema de Gerenciamento - DECOLA SCHOOL",
+        "description": "API para gerenciamento DECOLA SCHOOL",
         "contact": {
             "email": "suporte@sistema.com"
         },
         "version": "1.0.0"
     },
     "paths": {
-        "/api/register": {
-            "post": {
-                "tags": [
-                    "Usuário"
-                ],
-                "summary": "Registra um novo usuário",
-                "operationId": "8a56853624e025573120a09a4c75d468",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "João Silva"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "joao@exemplo.com"
-                                    },
-                                    "password": {
-                                        "description": "Deve conter pelo menos 8 caracteres, 1 letra maiúscula e 1 número",
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "Senha123@"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Registro bem-sucedido",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Verificação do código enviada. Por gentileza cheque seu e-mail."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Senha inválida",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "A senha não atende aos critérios mínimos"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Erro ao registrar o usuário"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/login": {
             "post": {
                 "tags": [
-                    "Usuário"
+                    "Autenticação"
                 ],
                 "summary": "Login de um usuário",
                 "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
@@ -113,14 +22,14 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
+                                    "email_corporativo",
                                     "password"
                                 ],
                                 "properties": {
-                                    "email": {
+                                    "email_corporativo": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "joao@exemplo.com"
+                                        "example": "usuario@empresa.com"
                                     },
                                     "password": {
                                         "type": "string",
@@ -140,9 +49,20 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "token": {
                                             "type": "string",
-                                            "example": "Login realizado com sucesso!"
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
                                         }
                                     },
                                     "type": "object"
@@ -150,15 +70,15 @@
                             }
                         }
                     },
-                    "400": {
+                    "401": {
                         "description": "Credenciais inválidas",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "error": {
+                                        "message": {
                                             "type": "string",
-                                            "example": "Credenciais inválidas."
+                                            "example": "Credenciais inválidas"
                                         }
                                     },
                                     "type": "object"
@@ -172,9 +92,9 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "error": {
+                                        "message": {
                                             "type": "string",
-                                            "example": "Erro ao realizar o login."
+                                            "example": "Erro ao realizar o login"
                                         }
                                     },
                                     "type": "object"
@@ -686,6 +606,67 @@
                 }
             }
         },
+        "/api/unidades": {
+            "get": {
+                "tags": [
+                    "Unidades"
+                ],
+                "summary": "Lista todas as unidades cadastradas no sistema Decola",
+                "description": "Retorna um array com todas as unidades do sistema",
+                "operationId": "0c9baef10d156dabf3eeb1740c369edf",
+                "responses": {
+                    "200": {
+                        "description": "Listagem de unidades bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidades recuperadas com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao recuperar unidades"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/verify-code": {
             "post": {
                 "tags": [
@@ -844,6 +825,10 @@
     },
     "tags": [
         {
+            "name": "Autenticação",
+            "description": "Autenticação"
+        },
+        {
             "name": "Usuário",
             "description": "Usuário"
         },
@@ -852,8 +837,8 @@
             "description": "Logs"
         },
         {
-            "name": "Autenticação",
-            "description": "Autenticação"
+            "name": "Unidades",
+            "description": "Unidades"
         }
     ],
     "security": [

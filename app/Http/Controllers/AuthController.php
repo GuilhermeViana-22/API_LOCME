@@ -29,9 +29,9 @@ use App\Models\Log;
 
 /**
  * @OA\Info(
- *     title="Sistema de Gerenciamento de Usuários",
+ *     title="Sistema de Gerenciamento - DECOLA SCHOOL",
  *     version="1.0.0",
- *     description="API para gerenciamento de autenticação de usuários",
+ *     description="API para gerenciamento DECOLA SCHOOL",
  *     @OA\Contact(email="suporte@sistema.com")
  * )
  *
@@ -44,35 +44,7 @@ use App\Models\Log;
  */
 class AuthController extends Controller
 {
-    /**
-     * @OA\Post(
-     *     path="/api/register",
-     *     summary="Registra um novo usuário",
-     *     tags={"Autenticação"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/UserRegisterRequest")
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Created",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="user", ref="#/components/schemas/UserResource"),
-     *             @OA\Property(property="token", type="string", example="1|abcdef123456")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Validation Error",
-     *         @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Server Error",
-     *         @OA\JsonContent(ref="#/components/schemas/ServerErrorResponse")
-     *     )
-     * )
-     */
+
     public function register(UserRegisterValidationRequest $request)
     {
         try {
@@ -548,15 +520,15 @@ public function login(LoginRequest $request)
         }
 
         // Verifica se o usuário já está inativo
-        if ($user->active == User::INATIVO && $user->situacao == User::INATIVO) {
+        if ($user->active == User::USUARIO_INATIVO && $user->situacao == User::USUARIO_INATIVO) {
             return response()->json([
                 'message' => 'O usuário já está inativo.',
             ], 400);
         }
 
         // Atualize as colunas para marcar o usuário como inativo
-        $user->active = User::INATIVO;
-        $user->situacao = User::INATIVO;
+        $user->active = User::USUARIO_INATIVO;
+        $user->situacao = User::USUARIO_INATIVO;
 
         try {
             $user->save(); // Salva as alterações

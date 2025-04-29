@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RuleSeeder::class,
             PermissionSeeder::class,
-            PassportSeeder::class
+            PassportSeeder::class,
+            TipoUnidadeSeeder::class,
         ]);
     }
 }
