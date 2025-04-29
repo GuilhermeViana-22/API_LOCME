@@ -606,6 +606,65 @@
                 }
             }
         },
+        "/api/cargos": {
+            "get": {
+                "tags": [
+                    "Cargos"
+                ],
+                "summary": "Lista todos os cargos cadastrados",
+                "operationId": "143b348d146eb6cfc359a591f24a1c6f",
+                "responses": {
+                    "200": {
+                        "description": "Listagem de cargos bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargos recuperados com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao recuperar cargos"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/unidades": {
             "get": {
                 "tags": [
@@ -835,6 +894,10 @@
         {
             "name": "Logs",
             "description": "Logs"
+        },
+        {
+            "name": "Cargos",
+            "description": "Cargos"
         },
         {
             "name": "Unidades",
