@@ -15,7 +15,10 @@ class CargoStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nome_cargo' => 'required|string|max:100',
+            'nivel_hierarquico' => 'required|integer|min:1',
+            'departamento' => 'required|string|max:50',
+            'descricao' => 'nullable|string',
         ];
     }
 }

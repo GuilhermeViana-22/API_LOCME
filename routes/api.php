@@ -32,6 +32,15 @@ Route::prefix('unidades')->group(function () {
     Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
 });
 
+ // Rotas para gestão de cargos (protegidas)
+Route::prefix('cargos')->group(function () {
+    Route::get('/', [CargoController::class, 'index'])->name('api.cargos.index');
+    Route::post('/', [CargoController::class, 'store'])->name('api.cargos.store');
+    Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
+    Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
+    Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
+});
+
 
 
 // Grupo de rotas protegidas por autenticação

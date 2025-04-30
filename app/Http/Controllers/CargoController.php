@@ -68,7 +68,7 @@ class CargoController extends Controller
      *             @OA\Property(property="nome_cargo", type="string", maxLength=100, example="Gerente de Vendas"),
      *             @OA\Property(property="nivel_hierarquico", type="integer", example=3),
      *             @OA\Property(property="departamento", type="string", maxLength=50, example="Vendas"),
-     *             @OA\Property(property="descricao", type="string", example="Responsável por toda a equipe de vendas", nullable=true)
+     *             @OA\Property(property="descricao", type="string", example="Responsï¿½vel por toda a equipe de vendas", nullable=true)
      *         )
      *     ),
      *     @OA\Response(
@@ -82,10 +82,10 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Erro de validação",
+     *         description="Erro de validaï¿½ï¿½o",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Erro de validação"),
+     *             @OA\Property(property="message", type="string", example="Erro de validaï¿½ï¿½o"),
      *             @OA\Property(property="errors", type="object")
      *         )
      *     ),
@@ -122,7 +122,7 @@ class CargoController extends Controller
     /**
      * @OA\Get(
      *     path="/api/cargos/{id}",
-     *     summary="Obtém um cargo específico",
+     *     summary="Obtï¿½m um cargo especï¿½fico",
      *     tags={"Cargos"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
@@ -143,10 +143,10 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Cargo não encontrado",
+     *         description="Cargo nï¿½o encontrado",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo não encontrado")
+     *             @OA\Property(property="message", type="string", example="Cargo nï¿½o encontrado")
      *         )
      *     ),
      *     @OA\Response(
@@ -168,7 +168,7 @@ class CargoController extends Controller
             if (!$cargo) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo não encontrado'
+                    'message' => 'Cargo nÃ£o encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -205,7 +205,7 @@ class CargoController extends Controller
      *             @OA\Property(property="nome_cargo", type="string", maxLength=100, example="Gerente de Vendas"),
      *             @OA\Property(property="nivel_hierarquico", type="integer", example=3),
      *             @OA\Property(property="departamento", type="string", maxLength=50, example="Vendas"),
-     *             @OA\Property(property="descricao", type="string", example="Responsável por toda a equipe de vendas", nullable=true)
+     *             @OA\Property(property="descricao", type="string", example="Responsï¿½vel por toda a equipe de vendas", nullable=true)
      *         )
      *     ),
      *     @OA\Response(
@@ -219,18 +219,18 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Cargo não encontrado",
+     *         description="Cargo nï¿½o encontrado",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo não encontrado")
+     *             @OA\Property(property="message", type="string", example="Cargo nï¿½o encontrado")
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Erro de validação",
+     *         description="Erro de validaï¿½ï¿½o",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Erro de validação"),
+     *             @OA\Property(property="message", type="string", example="Erro de validaï¿½ï¿½o"),
      *             @OA\Property(property="errors", type="object")
      *         )
      *     ),
@@ -253,7 +253,7 @@ class CargoController extends Controller
             if (!$cargo) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo não encontrado'
+                    'message' => 'Cargo nï¿½o encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -296,10 +296,10 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Cargo não encontrado",
+     *         description="Cargo nï¿½o encontrado",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo não encontrado")
+     *             @OA\Property(property="message", type="string", example="Cargo nï¿½o encontrado")
      *         )
      *     ),
      *     @OA\Response(
@@ -321,7 +321,7 @@ class CargoController extends Controller
             if (!$cargo) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo não encontrado'
+                    'message' => 'Cargo nï¿½o encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
 
