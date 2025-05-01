@@ -14,7 +14,7 @@ class TipoPerguntaSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tipo_pergunta')->insert([
+        DB::table('tipo_perguntas')->insert([
             [
                 'id' => 1,
                 'tipo_pergunta' => 'Pessoal',

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTipoPerguntaTable extends Migration
+class CreateTipoPerguntasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTipoPerguntaTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_pergunta', function (Blueprint $table) {
+        Schema::create('tipo_perguntas', function (Blueprint $table) {
             $table->id();
             $table->string('tipo_pergunta');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateTipoPerguntaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_pergunta');
+        Schema::dropIfExists('tipo_perguntas');
     }
 }
