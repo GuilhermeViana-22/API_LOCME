@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Questionario;
-use App\Models\Pergunta; // vamos presumir que já existe
+use App\Models\Pergunta; // vamos presumir que jï¿½ existe
 use Illuminate\Http\Request;
 
 class QuestionarioController extends Controller
@@ -11,7 +11,7 @@ class QuestionarioController extends Controller
     /**
      * @OA\Get(
      *     path="/api/questionarios",
-     *     summary="Lista todos os questionários",
+     *     summary="Lista todos os questionï¿½rios",
      *     tags={"Questionarios"}
      * )
      */
@@ -24,7 +24,7 @@ class QuestionarioController extends Controller
     /**
      * @OA\Post(
      *     path="/api/questionarios",
-     *     summary="Cria um novo questionário",
+     *     summary="Cria um novo questionÃ¡rio",
      *     tags={"Questionarios"}
      * )
      */
@@ -60,7 +60,7 @@ class QuestionarioController extends Controller
     /**
      * @OA\Get(
      *     path="/api/questionarios/{id}",
-     *     summary="Exibe um questionário específico",
+     *     summary="Exibe um questionï¿½rio especï¿½fico",
      *     tags={"Questionarios"}
      * )
      */
@@ -72,7 +72,7 @@ class QuestionarioController extends Controller
     /**
      * @OA\Put(
      *     path="/api/questionarios/{id}",
-     *     summary="Atualiza um questionário",
+     *     summary="Atualiza um questionï¿½rio",
      *     tags={"Questionarios"}
      * )
      */
@@ -96,7 +96,7 @@ class QuestionarioController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/questionarios/{id}",
-     *     summary="Remove um questionário",
+     *     summary="Remove um questionï¿½rio",
      *     tags={"Questionarios"}
      * )
      */
@@ -104,6 +104,6 @@ class QuestionarioController extends Controller
     {
         $questionario->delete();
 
-        return response()->json(['message' => 'Questionário removido com sucesso']);
+        return response()->json(['message' => 'Questionï¿½rio removido com sucesso']);
     }
 }

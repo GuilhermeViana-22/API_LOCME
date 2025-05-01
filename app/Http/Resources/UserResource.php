@@ -12,7 +12,7 @@ use OpenApi\Annotations as OA;
  *     description="User resource with all fields",
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="João Silva"),
+ *     @OA\Property(property="name", type="string", example="Joï¿½o Silva"),
  *     @OA\Property(property="email", type="string", format="email", example="joao@example.com"),
  *     @OA\Property(property="active", type="integer", example=1),
  *     @OA\Property(property="situacao_id", type="integer", example=1),
@@ -30,7 +30,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->name, 
             'email' => $this->email,
             'active' => $this->active,
             'situacao_id' => $this->situacao_id,

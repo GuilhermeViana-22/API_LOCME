@@ -15,10 +15,14 @@ class CreatePerguntasTable extends Migration
     {
         Schema::create('perguntas', function (Blueprint $table) {
             $table->id();
+            $table->string('pergunta');
+            $table->integer('tipo_pergunta_id');
+            $table->integer('tipo_periodicidade_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *

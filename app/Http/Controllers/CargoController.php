@@ -324,7 +324,7 @@ class CargoController extends Controller
                     'message' => 'Cargo não encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
-          
+
             $cargo->delete();
 
             return response()->json([

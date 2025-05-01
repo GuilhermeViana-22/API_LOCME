@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             PassportSeeder::class,
             TipoUnidadeSeeder::class,
+            TipoPerguntaSeeder::class,
+            PeriodicidadeSeeder::class,
         ]);
     }
 }
