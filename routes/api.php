@@ -6,6 +6,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PerguntaController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.updateProfile');
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
+
+    // Rotas de gerenciamento de conta
+     Route::get('/profile', [ProfileController::class, 'show']);
+     Route::put('/profile', [ProfileController::class, 'update']);
 
     // Rotas de atividades e notificações
     Route::get('/activity', [ActivityLogController::class, 'index'])->name('api.activityLog');

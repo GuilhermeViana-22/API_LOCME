@@ -126,4 +126,17 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    // app/Models/User.php
+
+    public function cargo()
+    {
+        return $this->belongsTo(Cargo::class);
+    }
+
+    public function unidade()
+    {
+        return $this->belongsTo(Unidade::class);
+    }
 }
