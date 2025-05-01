@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Pergunta extends Model
 {
-    protected $table = 'perguntas';
+    use HasFactory; // Esta trait é essencial para usar factories
+
     protected $fillable = [
         'pergunta',
         'tipo_pergunta_id',
         'data',
         'tipo_periodicidade_id'
     ];
-
 }
