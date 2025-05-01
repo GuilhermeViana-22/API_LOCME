@@ -3,84 +3,89 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pergunta;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Perguntas\PerguntaStoreRequest;
+use App\Http\Requests\Perguntas\PerguntaUpdateRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class PerguntaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Lista todas as perguntas
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        try {
+            $perguntas = Pergunta::all();
+            return response()->json($perguntas);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao listar perguntas',
+                'error' => $e->getMessage()
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Cria uma nova pergunta
      */
-    public function create()
+    public function store(PerguntaStoreRequest $request): JsonResponse
     {
-        //
+        try {
+            $pergunta = Pergunta::create($request->validated());
+            return response()->json($pergunta, Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao criar pergunta',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Exibe uma pergunta específica
      */
-    public function store(Request $request)
+    public function show(Pergunta $pergunta): JsonResponse
     {
-        //
+        try {
+            return response()->json($pergunta);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao exibir pergunta',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Pergunta  $pergunta
-     * @return \Illuminate\Http\Response
+     * Atualiza uma pergunta
      */
-    public function show(Pergunta $pergunta)
+    public function update(PerguntaUpdateRequest $request, Pergunta $pergunta): JsonResponse
     {
-        //
+        try {
+            $pergunta->update($request->validated());
+            return response()->json($pergunta);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao atualizar pergunta',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Pergunta  $pergunta
-     * @return \Illuminate\Http\Response
+     * Remove uma pergunta
      */
-    public function edit(Pergunta $pergunta)
+    public function destroy(Pergunta $pergunta): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Pergunta  $pergunta
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Pergunta $pergunta)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Pergunta  $pergunta
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Pergunta $pergunta)
-    {
-        //
+        try {
+            $pergunta->delete();
+            return response()->json(null, Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao excluir pergunta',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
