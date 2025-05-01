@@ -6,6 +6,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UnidadeController;
+use App\Http\Controllers\CargoController;
 use Illuminate\Support\Facades\Route;
 
 // Rotas públicas para autenticação e gerenciamento de conta

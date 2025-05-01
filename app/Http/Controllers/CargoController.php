@@ -122,7 +122,7 @@ class CargoController extends Controller
     /**
      * @OA\Get(
      *     path="/api/cargos/{id}",
-     *     summary="Obt�m um cargo espec�fico",
+     *     summary="Obtém um cargo específico",
      *     tags={"Cargos"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
@@ -321,10 +321,10 @@ class CargoController extends Controller
             if (!$cargo) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo n�o encontrado'
+                    'message' => 'Cargo não encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
-
+          
             $cargo->delete();
 
             return response()->json([

@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Cargo extends Model
 {
     use HasFactory;
+
+    protected $table = 'cargos';
+
+    protected $fillable = [
+        'nome_cargo',
+        'nivel_hierarquico',
+        'departamento',
+        'descricao',
+    ];
+
 }
