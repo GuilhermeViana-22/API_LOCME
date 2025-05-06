@@ -20,6 +20,18 @@ Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 
 
+  // Rotas para gestão de unidades (protegidas)
+  Route::prefix('unidades')->group(function () {
+    Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
+    Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
+    Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
+    Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
+    Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
+});
+
+
+
+
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
     // Rotas de autenticação do usuário
@@ -35,14 +47,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/activity', [ActivityLogController::class, 'index'])->name('api.activityLog');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
 
-    // Rotas para gestão de unidades (protegidas)
-    Route::prefix('unidades')->group(function () {
-        Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
-        Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
-        Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
-        Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
-        Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
-    });
+
 
     // Rotas para gestão de cargos (protegidas)
     Route::prefix('cargos')->group(function () {

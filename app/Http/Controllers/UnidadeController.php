@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Unidades\UnidadeStoreRequest;
 use App\Http\Requests\Unidades\UnidadeUpdateRequest;
-use App\Models\Unidade;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Requests\Unidades\UnidadesIndexRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
+use App\Models\Unidade;
 
 class UnidadeController extends Controller
 {
@@ -59,10 +59,34 @@ class UnidadeController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(UnidadesIndexRequest $request)
     {
         try {
-            $unidades = Unidade::all();
+            $query = Unidade::query();
+
+            // Filtros opcionais
+            if ($request->filled('nome_unidade')) {
+                $query->where('nome_unidade', 'like', '%' . $request->nome_unidade . '%');
+            }
+
+            if ($request->filled('ativo')) {
+                $query->where('ativo', $request->ativo);
+            }
+
+            if ($request->filled('tipo_unidade_id')) {
+                $query->where('tipo_unidade_id', $request->tipo_unidade_id);
+            }
+
+            if ($request->filled('created_at')) {
+                $query->whereDate('created_at', '>=', $request->created_at);
+            }
+
+            if ($request->filled('codigo_unidade')) {
+                $query->where('codigo_unidade', 'like', '%' . $request->codigo_unidade . '%');
+            }
+
+            // OrdenaÃ§Ã£o padrÃ£o
+            $unidades = $query->orderBy('nome_unidade', 'asc')->get();
 
             return response()->json([
                 'success' => true,
@@ -79,68 +103,68 @@ class UnidadeController extends Controller
     }
 
 
-/**
- * @OA\Tag(
- *     name="Unidades",
- *     description="Gerenciamento de unidades do sistema"
- * )
- */
+    /**
+     * @OA\Tag(
+     *     name="Unidades",
+     *     description="Gerenciamento de unidades do sistema"
+     * )
+     */
 
-/**
- * @OA\Post(
- *     path="/api/unidades",
- *     summary="Cria uma nova unidade",
- *     tags={"Unidades"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"nome_unidade", "codigo_unidade", "tipo_unidade_id", "endereco_rua", "endereco_numero", "endereco_bairro", "endereco_cidade", "endereco_estado", "endereco_cep", "telefone_principal"},
- *             @OA\Property(property="nome_unidade", type="string", maxLength=100, example="Unidade Central"),
- *             @OA\Property(property="codigo_unidade", type="string", maxLength=20, example="UC001"),
- *             @OA\Property(property="tipo_unidade_id", type="integer", example=1),
- *             @OA\Property(property="endereco_rua", type="string", maxLength=100, example="Rua Principal"),
- *             @OA\Property(property="endereco_numero", type="string", maxLength=20, example="123"),
- *             @OA\Property(property="endereco_complemento", type="string", maxLength=50, example="Sala 45", nullable=true),
- *             @OA\Property(property="endereco_bairro", type="string", maxLength=50, example="Centro"),
- *             @OA\Property(property="endereco_cidade", type="string", maxLength=50, example="São Paulo"),
- *             @OA\Property(property="endereco_estado", type="string", maxLength=2, example="SP"),
- *             @OA\Property(property="endereco_cep", type="string", maxLength=10, example="01001000"),
- *             @OA\Property(property="telefone_principal", type="string", maxLength=20, example="1133334444"),
- *             @OA\Property(property="email_unidade", type="string", format="email", maxLength=100, example="contato@unidade.com", nullable=true),
- *             @OA\Property(property="data_inauguracao", type="string", format="date", example="2023-01-01", nullable=true),
- *             @OA\Property(property="quantidade_setores", type="integer", example=5, nullable=true),
- *             @OA\Property(property="ativo", type="boolean", example=true, nullable=true)
- *         )
- *     ),
- *     @OA\Response(
- *         response=201,
- *         description="Unidade criada com sucesso",
- *         @OA\JsonContent(
- *             @OA\Property(property="success", type="boolean", example=true),
- *             @OA\Property(property="message", type="string", example="Unidade criada com sucesso"),
- *             @OA\Property(property="data", type="object")
- *         )
- *     ),
- *     @OA\Response(
- *         response=422,
- *         description="Erro de validação",
- *         @OA\JsonContent(
- *             @OA\Property(property="success", type="boolean", example=false),
- *             @OA\Property(property="message", type="string", example="Erro de validação"),
- *             @OA\Property(property="errors", type="object")
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Erro interno",
- *         @OA\JsonContent(
- *             @OA\Property(property="success", type="boolean", example=false),
- *             @OA\Property(property="message", type="string", example="Falha ao criar unidade"),
- *             @OA\Property(property="error", type="string")
- *         )
- *     )
- * )
- */
+    /**
+     * @OA\Post(
+     *     path="/api/unidades",
+     *     summary="Cria uma nova unidade",
+     *     tags={"Unidades"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nome_unidade", "codigo_unidade", "tipo_unidade_id", "endereco_rua", "endereco_numero", "endereco_bairro", "endereco_cidade", "endereco_estado", "endereco_cep", "telefone_principal"},
+     *             @OA\Property(property="nome_unidade", type="string", maxLength=100, example="Unidade Central"),
+     *             @OA\Property(property="codigo_unidade", type="string", maxLength=20, example="UC001"),
+     *             @OA\Property(property="tipo_unidade_id", type="integer", example=1),
+     *             @OA\Property(property="endereco_rua", type="string", maxLength=100, example="Rua Principal"),
+     *             @OA\Property(property="endereco_numero", type="string", maxLength=20, example="123"),
+     *             @OA\Property(property="endereco_complemento", type="string", maxLength=50, example="Sala 45", nullable=true),
+     *             @OA\Property(property="endereco_bairro", type="string", maxLength=50, example="Centro"),
+     *             @OA\Property(property="endereco_cidade", type="string", maxLength=50, example="Sï¿½o Paulo"),
+     *             @OA\Property(property="endereco_estado", type="string", maxLength=2, example="SP"),
+     *             @OA\Property(property="endereco_cep", type="string", maxLength=10, example="01001000"),
+     *             @OA\Property(property="telefone_principal", type="string", maxLength=20, example="1133334444"),
+     *             @OA\Property(property="email_unidade", type="string", format="email", maxLength=100, example="contato@unidade.com", nullable=true),
+     *             @OA\Property(property="data_inauguracao", type="string", format="date", example="2023-01-01", nullable=true),
+     *             @OA\Property(property="quantidade_setores", type="integer", example=5, nullable=true),
+     *             @OA\Property(property="ativo", type="boolean", example=true, nullable=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Unidade criada com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Unidade criada com sucesso"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validaï¿½ï¿½o",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Erro de validaï¿½ï¿½o"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Falha ao criar unidade"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
 
     public function store(UnidadeStoreRequest $request)
     {
@@ -165,7 +189,7 @@ class UnidadeController extends Controller
     /**
      * @OA\Get(
      *     path="/api/unidades/{id}",
-     *     summary="Obtém uma unidade específica",
+     *     summary="Obtï¿½m uma unidade especï¿½fica",
      *     tags={"Unidades"},
      *     @OA\Parameter(
      *         name="id",
@@ -185,10 +209,10 @@ class UnidadeController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Unidade não encontrada",
+     *         description="Unidade nï¿½o encontrada",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Unidade não encontrada")
+     *             @OA\Property(property="message", type="string", example="Unidade nï¿½o encontrada")
      *         )
      *     ),
      *     @OA\Response(
@@ -210,7 +234,7 @@ class UnidadeController extends Controller
             if (!$unidade) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unidade não encontrada'
+                    'message' => 'Unidade nï¿½o encontrada'
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -251,7 +275,7 @@ class UnidadeController extends Controller
      *             @OA\Property(property="endereco_numero", type="string", maxLength=20, example="123"),
      *             @OA\Property(property="endereco_complemento", type="string", maxLength=50, nullable=true, example="Sala 45"),
      *             @OA\Property(property="endereco_bairro", type="string", maxLength=50, example="Centro"),
-     *             @OA\Property(property="endereco_cidade", type="string", maxLength=50, example="São Paulo"),
+     *             @OA\Property(property="endereco_cidade", type="string", maxLength=50, example="Sï¿½o Paulo"),
      *             @OA\Property(property="endereco_estado", type="string", maxLength=2, example="SP"),
      *             @OA\Property(property="endereco_cep", type="string", maxLength=10, example="01001000"),
      *             @OA\Property(property="telefone_principal", type="string", maxLength=20, example="1133334444"),
@@ -272,18 +296,18 @@ class UnidadeController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Unidade não encontrada",
+     *         description="Unidade nï¿½o encontrada",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Unidade não encontrada")
+     *             @OA\Property(property="message", type="string", example="Unidade nï¿½o encontrada")
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Erro de validação",
+     *         description="Erro de validaï¿½ï¿½o",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Erro de validação"),
+     *             @OA\Property(property="message", type="string", example="Erro de validaï¿½ï¿½o"),
      *             @OA\Property(property="errors", type="object")
      *         )
      *     ),
@@ -306,7 +330,7 @@ class UnidadeController extends Controller
             if (!$unidade) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unidade não encontrada'
+                    'message' => 'Unidade nï¿½o encontrada'
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -315,7 +339,7 @@ class UnidadeController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Erro de validação',
+                    'message' => 'Erro de validaï¿½ï¿½o',
                     'errors' => $validator->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
@@ -358,10 +382,10 @@ class UnidadeController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Unidade não encontrada",
+     *         description="Unidade nï¿½o encontrada",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Unidade não encontrada")
+     *             @OA\Property(property="message", type="string", example="Unidade nï¿½o encontrada")
      *         )
      *     ),
      *     @OA\Response(
@@ -383,7 +407,7 @@ class UnidadeController extends Controller
             if (!$unidade) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unidade não encontrada'
+                    'message' => 'Unidade nï¿½o encontrada'
                 ], Response::HTTP_NOT_FOUND);
             }
 
