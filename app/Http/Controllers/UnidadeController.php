@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Unidades\UnidadeStoreRequest;
 use App\Http\Requests\Unidades\UnidadeUpdateRequest;
 use App\Http\Requests\Unidades\UnidadesIndexRequest;
+use App\Http\Requests\Unidades\UnidadesDeleteRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
 use App\Models\Unidade;
@@ -399,15 +400,21 @@ class UnidadeController extends Controller
      *     )
      * )
      */
-    public function destroy($id)
+    public function destroy(UnidadesDeleteRequest $request)
     {
         try {
-            $unidade = Unidade::find($id);
+            $unidade = Unidade::find($request->get('id'));
+            if (!$unidade) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unidade nâo encontrada'
+                ], Response::HTTP_NOT_FOUND);
+            }
 
             if (!$unidade) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unidade n�o encontrada'
+                    'message' => 'Unidade nâo encontrada'
                 ], Response::HTTP_NOT_FOUND);
             }
 
