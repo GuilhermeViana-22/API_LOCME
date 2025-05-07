@@ -19,19 +19,6 @@ Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 // Rotas de teste (se realmente necessário)
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 
-
-  // Rotas para gestão de unidades (protegidas)
-  Route::prefix('unidades')->group(function () {
-    Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
-    Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
-    Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
-    Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
-    Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
-});
-
-
-
-
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
     // Rotas de autenticação do usuário
@@ -40,14 +27,12 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
 
     // Rotas de gerenciamento de conta
-     Route::get('/profile', [ProfileController::class, 'show']);
-     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::put('/profile', [ProfileController::class, 'update']);
 
     // Rotas de atividades e notificações
     Route::get('/activity', [ActivityLogController::class, 'index'])->name('api.activityLog');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
-
-
 
     // Rotas para gestão de cargos (protegidas)
     Route::prefix('cargos')->group(function () {
@@ -65,6 +50,15 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{id}', [PerguntaController::class, 'show'])->name('api.perguntas.show');
         Route::put('/{id}', [PerguntaController::class, 'update'])->name('api.perguntas.update');
         Route::delete('/{id}', [PerguntaController::class, 'destroy'])->name('api.perguntas.destroy');
+    });
+
+    // Rotas para gestão de unidades (protegidas)
+    Route::prefix('unidades')->group(function () {
+        Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
+        Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
+        Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
+        Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
+        Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
     });
 });
 
