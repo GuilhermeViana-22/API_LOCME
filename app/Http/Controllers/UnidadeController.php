@@ -340,7 +340,7 @@ class UnidadeController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Erro de valida��o',
+                    'message' => 'Erro de validação',
                     'errors' => $validator->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
