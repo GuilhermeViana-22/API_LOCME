@@ -8,7 +8,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('unidades', function (Blueprint $table) {
-            $table->foreignId('tipo_unidade_id')->constrained('tipo_unidades');
+            $table->integer('tipo_unidade_id');
             $table->dropColumn('tipo_unidade'); // Remove a coluna antiga
         });
     }
@@ -17,7 +17,7 @@ return new class extends Migration
     {
         Schema::table('unidades', function (Blueprint $table) {
             $table->dropForeign(['tipo_unidade_id']);
-            $table->string('tipo_unidade', 50); // Recria a coluna antiga se necessário
+            $table->string('tipo_unidade', 50); // Recria a coluna antiga se necessï¿½rio
         });
     }
 };

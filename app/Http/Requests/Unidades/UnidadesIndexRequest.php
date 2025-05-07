@@ -14,11 +14,11 @@ class UnidadesIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome_unidade' => 'string|max:255',
-            'ativo' => 'integer|between:0,1',
-            'tipo_unidade_id' => 'integer',
-            'created_at' => 'date_format:Y-m-d',
-            'codigo_unidade' => 'string|max:255',
+            'nome_unidade' => 'nullable|string|max:255',
+            'ativo' => 'nullable|integer|between:0,1',
+            'tipo_unidade_id' => 'nullable|integer',
+            'created_at' => 'nullable|date_format:Y-m-d',
+            'codigo_unidade' => 'nullable|string|max:255',
         ];
     }
 }

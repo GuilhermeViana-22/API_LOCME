@@ -61,47 +61,53 @@ class UnidadeController extends Controller
      * )
      */
     public function index(UnidadesIndexRequest $request)
-    {
-        try {
-            $query = Unidade::query();
+{
+    try {
+        $query = Unidade::query();
 
-            // Filtros opcionais
-            if ($request->filled('nome_unidade')) {
-                $query->where('nome_unidade', 'like', '%' . $request->nome_unidade . '%');
-            }
-
-            if ($request->filled('ativo')) {
-                $query->where('ativo', $request->ativo);
-            }
-
-            if ($request->filled('tipo_unidade_id')) {
-                $query->where('tipo_unidade_id', $request->tipo_unidade_id);
-            }
-
-            if ($request->filled('created_at')) {
-                $query->whereDate('created_at', '>=', $request->created_at);
-            }
-
-            if ($request->filled('codigo_unidade')) {
-                $query->where('codigo_unidade', 'like', '%' . $request->codigo_unidade . '%');
-            }
-
-            // Ordenação padrão
-            $unidades = $query->orderBy('nome_unidade', 'asc')->get();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Unidades recuperadas com sucesso',
-                'data' => $unidades
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Falha ao recuperar unidades',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // Aplica os filtros normalmente
+        if ($request->filled('nome_unidade')) {
+            $query->where('nome_unidade', 'like', '%' . $request->nome_unidade . '%');
         }
+
+        if ($request->filled('ativo')) {
+            $query->where('ativo', $request->ativo);
+        }
+
+        if ($request->filled('tipo_unidade_id')) {
+            $query->where('tipo_unidade_id', $request->tipo_unidade_id);
+        }
+
+        if ($request->filled('created_at')) {
+            $query->whereDate('created_at', '>=', $request->created_at);
+        }
+
+        if ($request->filled('codigo_unidade')) {
+            $query->where('codigo_unidade', 'like', '%' . $request->codigo_unidade . '%');
+        }
+
+        // Verifica se a query NÃO tem nenhum WHERE (nenhum filtro aplicado)
+        if (empty($query->getQuery()->wheres)) {
+            $unidades = Unidade::orderBy('nome_unidade', 'asc')->get(); // Find All
+        } else {
+            $unidades = $query->orderBy('nome_unidade', 'asc')->get(); // Query com filtros
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Unidades recuperadas com sucesso',
+            'data' => $unidades,
+            'filters_applied' => !empty($query->getQuery()->wheres) // (Opcional) Indica se filtros foram usados
+        ], Response::HTTP_OK);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Falha ao recuperar unidades',
+            'error' => $e->getMessage()
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
 
 
     /**
