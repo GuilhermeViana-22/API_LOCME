@@ -2,33 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Resposta extends Model
 {
-    protected $fillable = ['user_id', 'pergunta_id', 'resposta', 'data_resposta'];
+    use HasFactory;
 
-    // Relação com usuário
-    public function user()
+    protected $fillable = [
+        'questionario_id',
+        'pergunta_id',
+        'user_id',
+        'resposta'
+    ];
+
+    public function questionario()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Questionario::class);
     }
 
-    // Relação com pergunta
     public function pergunta()
     {
         return $this->belongsTo(Pergunta::class);
     }
 
-    // Opções de resposta
-    public static function opcoesResposta()
+    public function user()
     {
-        return [
-            'A' => 'Não é verdade',
-            'B' => 'Raramente é verdade',
-            'C' => 'Às vezes é verdade',
-            'D' => 'Frequentemente é verdade',
-            'E' => 'Sempre é verdade'
-        ];
+        return $this->belongsTo(User::class);
     }
 }

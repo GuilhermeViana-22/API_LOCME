@@ -14,4 +14,10 @@ class Pergunta extends Model
         'tipo_pergunta_id',
         'tipo_periodicidade_id'
     ];
+
+
+    public function tipoPergunta()
+{
+    return $this->belongsTo(TipoPergunta::class, 'tipo_pergunta_id');
+}
 }

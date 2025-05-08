@@ -24,7 +24,6 @@ return new class extends Migration
             $table->integer('opcao_id')->nullable();
             $table->foreign('opcao_id')->references('id')->on('opcoes_resposta');
             $table->text('resposta_texto')->nullable();
-            $table->date('data_resposta')->index();
             $table->time('hora_resposta');
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
