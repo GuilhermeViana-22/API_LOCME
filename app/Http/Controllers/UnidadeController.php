@@ -6,6 +6,8 @@ use App\Http\Requests\Unidades\UnidadeStoreRequest;
 use App\Http\Requests\Unidades\UnidadeUpdateRequest;
 use App\Http\Requests\Unidades\UnidadesIndexRequest;
 use App\Http\Requests\Unidades\UnidadesDeleteRequest;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Unidades\UnidadeResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
 use App\Models\Unidade;
@@ -61,53 +63,19 @@ class UnidadeController extends Controller
      * )
      */
     public function index(UnidadesIndexRequest $request)
-{
-    try {
-        $query = Unidade::query();
-
-        // Aplica os filtros normalmente
-        if ($request->filled('nome_unidade')) {
-            $query->where('nome_unidade', 'like', '%' . $request->nome_unidade . '%');
+    {
+        try {
+            $query = $this->applyFilters(Unidade::query(), $request);
+            $unidades = $this->paginateResults($query, $request);
+            return $this->buildPaginatedResponse($unidades, $request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Falha ao recuperar unidades',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        if ($request->filled('ativo')) {
-            $query->where('ativo', $request->ativo);
-        }
-
-        if ($request->filled('tipo_unidade_id')) {
-            $query->where('tipo_unidade_id', $request->tipo_unidade_id);
-        }
-
-        if ($request->filled('created_at')) {
-            $query->whereDate('created_at', '>=', $request->created_at);
-        }
-
-        if ($request->filled('codigo_unidade')) {
-            $query->where('codigo_unidade', 'like', '%' . $request->codigo_unidade . '%');
-        }
-
-        // Verifica se a query NÃO tem nenhum WHERE (nenhum filtro aplicado)
-        if (empty($query->getQuery()->wheres)) {
-            $unidades = Unidade::orderBy('nome_unidade', 'asc')->get(); // Find All
-        } else {
-            $unidades = $query->orderBy('nome_unidade', 'asc')->get(); // Query com filtros
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Unidades recuperadas com sucesso',
-            'data' => $unidades,
-            'filters_applied' => !empty($query->getQuery()->wheres) // (Opcional) Indica se filtros foram usados
-        ], Response::HTTP_OK);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Falha ao recuperar unidades',
-            'error' => $e->getMessage()
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-}
 
 
     /**
@@ -173,24 +141,25 @@ class UnidadeController extends Controller
      * )
      */
 
-    public function store(UnidadeStoreRequest $request)
-    {
+     public function store(UnidadeStoreRequest $request)
+     {
+         try {
+             $unidade = Unidade::create($request->validated());
 
-        try {
-            $unidade = Unidade::create($request->validated());
-            return response()->json([
-                'success' => true,
-                'message' => 'Unidade criada com sucesso',
-                'data' => $unidade
-            ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Falha ao criar unidade',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+             return response()->json([
+                 'success' => true,
+                 'message' => 'Unidade criada com sucesso',
+                 'data' => new UnidadeResource($unidade)
+             ], Response::HTTP_CREATED);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'success' => false,
+                 'message' => 'Falha ao criar unidade',
+                 'error' => $e->getMessage()
+             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+         }
+     }
 
 
     /**
@@ -234,30 +203,31 @@ class UnidadeController extends Controller
      * )
      */
     public function show($id)
-    {
-        try {
-            $unidade = Unidade::find($id);
+{
+    try {
+        $unidade = Unidade::find($id);
 
-            if (!$unidade) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unidade n�o encontrada'
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Unidade recuperada com sucesso',
-                'data' => $unidade
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
+        if (!$unidade) {
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao recuperar unidade',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => 'Unidade não encontrada'
+            ], Response::HTTP_NOT_FOUND);
         }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Unidade recuperada com sucesso',
+            'data' => new UnidadeResource($unidade)
+        ], Response::HTTP_OK);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Falha ao recuperar unidade',
+            'error' => $e->getMessage()
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
 
 
     /**
@@ -330,42 +300,33 @@ class UnidadeController extends Controller
      * )
      */
     public function update(UnidadeUpdateRequest $request, $id)
-    {
-        try {
-            $unidade = Unidade::find($id);
+{
+    try {
+        $unidade = Unidade::find($id);
 
-            if (!$unidade) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unidade n�o encontrada'
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            $validator = Validator::make($request->all(), []);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Erro de validação',
-                    'errors' => $validator->errors()
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            $unidade->update($request->all());
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Unidade atualizada com sucesso',
-                'data' => $unidade
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
+        if (!$unidade) {
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao atualizar unidade',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => 'Unidade não encontrada'
+            ], Response::HTTP_NOT_FOUND);
         }
+
+        $unidade->update($request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Unidade atualizada com sucesso',
+            'data' => new UnidadeResource($unidade->fresh())
+        ], Response::HTTP_OK);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Falha ao atualizar unidade',
+            'error' => $e->getMessage()
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
 
     /**
      * @OA\Delete(
@@ -437,5 +398,86 @@ class UnidadeController extends Controller
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    /**
+     * Aplica todos os filtros à query
+     */
+    private function applyFilters($query, $request)
+    {
+        if ($request->filled('nome_unidade')) {
+            $query->where('nome_unidade', 'like', '%' . $request->nome_unidade . '%');
+        }
+
+        if ($request->filled('ativo')) {
+            $query->where('ativo', $request->ativo);
+        }
+
+        if ($request->filled('tipo_unidade_id')) {
+            $query->where('tipo_unidade_id', $request->tipo_unidade_id);
+        }
+
+        if ($request->filled('created_at')) {
+            $query->whereDate('created_at', '>=', $request->created_at);
+        }
+
+        if ($request->filled('codigo_unidade')) {
+            $query->where('codigo_unidade', 'like', '%' . $request->codigo_unidade . '%');
+        }
+
+        return $query->orderBy('nome_unidade', 'asc');
+    }
+
+    /**
+     * Executa a paginação dos resultados
+     */
+    private function paginateResults($query, $request)
+    {
+        $perPage = $request->input('per_page', 15);
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Constroi a resposta padronizada com paginação
+     */
+    private function buildPaginatedResponse($paginatedResults, $request)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Unidades recuperadas com sucesso',
+            'data' => UnidadeResource::collection($paginatedResults),
+            'meta' => $this->buildMetaData($paginatedResults, $request),
+            'links' => $this->buildPaginationLinks($paginatedResults)
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Constroi os metadados da paginação
+     */
+    private function buildMetaData($paginatedResults, $request)
+    {
+        return [
+            'current_page' => $paginatedResults->currentPage(),
+            'per_page' => $paginatedResults->perPage(),
+            'total' => $paginatedResults->total(),
+            'last_page' => $paginatedResults->lastPage(),
+            'from' => $paginatedResults->firstItem(),
+            'to' => $paginatedResults->lastItem(),
+            'filters_applied' => $request->except(['page', 'per_page'])
+        ];
+    }
+
+    /**
+     * Constroi os links de navegação
+     */
+    private function buildPaginationLinks($paginatedResults)
+    {
+        return [
+            'first' => $paginatedResults->url(1),
+            'last' => $paginatedResults->url($paginatedResults->lastPage()),
+            'prev' => $paginatedResults->previousPageUrl(),
+            'next' => $paginatedResults->nextPageUrl()
+        ];
     }
 }

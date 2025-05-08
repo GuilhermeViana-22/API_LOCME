@@ -10,32 +10,6 @@ use App\Http\Requests\Cargos\CargoUpdateRequest;
 
 class CargoController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/cargos",
-     *     summary="Lista todos os cargos cadastrados",
-     *     tags={"Cargos"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Listagem de cargos bem-sucedida",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargos recuperados com sucesso"),
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao recuperar cargos"),
-     *             @OA\Property(property="error", type="string")
-     *         )
-     *     )
-     * )
-     */
     public function index()
     {
         try {
@@ -55,51 +29,7 @@ class CargoController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/cargos",
-     *     summary="Cria um novo cargo",
-     *     tags={"Cargos"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"nome_cargo", "nivel_hierarquico", "departamento"},
-     *             @OA\Property(property="nome_cargo", type="string", maxLength=100, example="Gerente de Vendas"),
-     *             @OA\Property(property="nivel_hierarquico", type="integer", example=3),
-     *             @OA\Property(property="departamento", type="string", maxLength=50, example="Vendas"),
-     *             @OA\Property(property="descricao", type="string", example="Respons�vel por toda a equipe de vendas", nullable=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Cargo criado com sucesso",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo criado com sucesso"),
-     *             @OA\Property(property="data", type="object", ref="#/components/schemas/Cargo")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Erro de valida��o",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Erro de valida��o"),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao criar cargo"),
-     *             @OA\Property(property="error", type="string")
-     *         )
-     *     )
-     * )
-     */
+
     public function store(CargoStoreRequest $request)
     {
         try {
@@ -119,47 +49,7 @@ class CargoController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/cargos/{id}",
-     *     summary="Obtém um cargo específico",
-     *     tags={"Cargos"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID do cargo",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Cargo recuperado com sucesso",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo recuperado com sucesso"),
-     *             @OA\Property(property="data", type="object", ref="#/components/schemas/Cargo")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Cargo n�o encontrado",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo n�o encontrado")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao recuperar cargo"),
-     *             @OA\Property(property="error", type="string")
-     *         )
-     *     )
-     * )
-     */
+
     public function show($id)
     {
         try {
@@ -186,65 +76,7 @@ class CargoController extends Controller
         }
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/cargos/{id}",
-     *     summary="Atualiza um cargo existente",
-     *     tags={"Cargos"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID do cargo",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="nome_cargo", type="string", maxLength=100, example="Gerente de Vendas"),
-     *             @OA\Property(property="nivel_hierarquico", type="integer", example=3),
-     *             @OA\Property(property="departamento", type="string", maxLength=50, example="Vendas"),
-     *             @OA\Property(property="descricao", type="string", example="Respons�vel por toda a equipe de vendas", nullable=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Cargo atualizado com sucesso",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo atualizado com sucesso"),
-     *             @OA\Property(property="data", type="object", ref="#/components/schemas/Cargo")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Cargo n�o encontrado",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo n�o encontrado")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Erro de valida��o",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Erro de valida��o"),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao atualizar cargo"),
-     *             @OA\Property(property="error", type="string")
-     *         )
-     *     )
-     * )
-     */
+
     public function update(CargoUpdateRequest $request, $id)
     {
         try {
@@ -273,46 +105,7 @@ class CargoController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/cargos/{id}",
-     *     summary="Remove um cargo",
-     *     tags={"Cargos"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID do cargo",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Cargo removido com sucesso",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo removido com sucesso")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Cargo n�o encontrado",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo n�o encontrado")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao remover cargo"),
-     *             @OA\Property(property="error", type="string")
-     *         )
-     *     )
-     * )
-     */
+   
     public function destroy($id)
     {
         try {
