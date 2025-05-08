@@ -611,7 +611,8 @@
                 "tags": [
                     "Cargos"
                 ],
-                "summary": "Lista todos os cargos cadastrados",
+                "summary": "Lista todos os cargos cadastrados no sistema",
+                "description": "Retorna um array com todos os cargos do sistema",
                 "operationId": "143b348d146eb6cfc359a591f24a1c6f",
                 "responses": {
                     "200": {
@@ -627,6 +628,30 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Cargos recuperados com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "nome": {
+                                                        "type": "string",
+                                                        "example": "Gerente"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -635,7 +660,7 @@
                         }
                     },
                     "500": {
-                        "description": "Erro interno",
+                        "description": "Erro interno do servidor",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -649,7 +674,1692 @@
                                             "example": "Falha ao recuperar cargos"
                                         },
                                         "error": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Cargos"
+                ],
+                "summary": "Cria um novo cargo no sistema",
+                "description": "Cadastra um novo cargo com os dados fornecidos",
+                "operationId": "023dc3f03a8ad84b13b9564e0c1a6cd6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Analista de TI"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cargo criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo criado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nome": {
+                                                    "type": "string",
+                                                    "example": "Analista de TI"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dados inválidos"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "nome": [
+                                                    "O campo nome é obrigatório."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao criar cargo"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cargos/{id}": {
+            "get": {
+                "tags": [
+                    "Cargos"
+                ],
+                "summary": "Recupera um cargo específico",
+                "description": "Retorna os dados de um cargo pelo seu ID",
+                "operationId": "921eaac3d029d1b526ebb17b6e65aad3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do cargo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cargo recuperado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo recuperado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nome": {
+                                                    "type": "string",
+                                                    "example": "Gerente"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cargo não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao recuperar cargo"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Cargos"
+                ],
+                "summary": "Atualiza um cargo existente",
+                "description": "Atualiza os dados de um cargo pelo seu ID",
+                "operationId": "fbd188a2942e4d9ccc044377c04fba1b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do cargo a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Analista de TI Jr"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cargo atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo atualizado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nome": {
+                                                    "type": "string",
+                                                    "example": "Analista de TI Jr"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cargo não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dados inválidos"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "nome": [
+                                                    "O campo nome é obrigatório."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao atualizar cargo"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Cargos"
+                ],
+                "summary": "Remove um cargo do sistema",
+                "description": "Remove permanentemente um cargo pelo seu ID",
+                "operationId": "70272059823dc19b8d5e9c398a9bb616",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do cargo a ser removido",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cargo removido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo removido com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cargo não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cargo não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao remover cargo"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/perguntas": {
+            "get": {
+                "tags": [
+                    "Perguntas"
+                ],
+                "summary": "Lista todas as perguntas",
+                "description": "Retorna uma lista com todas as perguntas cadastradas no sistema",
+                "operationId": "a1df49494d8f5b2e8d5461ac4abe6d44",
+                "responses": {
+                    "200": {
+                        "description": "Lista de perguntas retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "questionario_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "texto": {
+                                                "type": "string",
+                                                "example": "Qual é seu nível de satisfação?"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao listar perguntas"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Perguntas"
+                ],
+                "summary": "Cria uma nova pergunta",
+                "description": "Cadastra uma nova pergunta no sistema",
+                "operationId": "d9c5c3447083ab038d1312c606e6ba96",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "questionario_id",
+                                    "texto"
+                                ],
+                                "properties": {
+                                    "questionario_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "texto": {
+                                        "type": "string",
+                                        "example": "Qual é seu nível de satisfação?"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pergunta criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "questionario_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "texto": {
+                                            "type": "string",
+                                            "example": "Qual é seu nível de satisfação?"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dados inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Os dados fornecidos são inválidos"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "texto": [
+                                                    "O campo texto é obrigatório."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao criar pergunta"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/perguntas/{id}": {
+            "get": {
+                "tags": [
+                    "Perguntas"
+                ],
+                "summary": "Exibe uma pergunta específica",
+                "description": "Retorna os detalhes de uma pergunta pelo seu ID",
+                "operationId": "f73f40cf3ce604fb320ddb6ad461c238",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da pergunta",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pergunta encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "questionario_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "texto": {
+                                            "type": "string",
+                                            "example": "Qual é seu nível de satisfação?"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pergunta não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pergunta não encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao exibir pergunta"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Perguntas"
+                ],
+                "summary": "Atualiza uma pergunta",
+                "description": "Atualiza os dados de uma pergunta existente",
+                "operationId": "2883d3df6c57fe58184383edc4bd8c43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da pergunta",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "questionario_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "texto": {
+                                        "type": "string",
+                                        "example": "Qual é seu nível de satisfação? (atualizado)"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pergunta atualizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "questionario_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "texto": {
+                                            "type": "string",
+                                            "example": "Qual é seu nível de satisfação? (atualizado)"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pergunta não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pergunta não encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dados inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Os dados fornecidos são inválidos"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "texto": [
+                                                    "O campo texto é obrigatório."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao atualizar pergunta"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Perguntas"
+                ],
+                "summary": "Remove uma pergunta",
+                "description": "Remove permanentemente uma pergunta do sistema",
+                "operationId": "6a9e2e4b977c27f63a4e98b5c085bb3f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da pergunta",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Pergunta removida com sucesso"
+                    },
+                    "404": {
+                        "description": "Pergunta não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pergunta não encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao excluir pergunta"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/profile": {
+            "get": {
+                "tags": [
+                    "Perfil"
+                ],
+                "summary": "Retorna os dados do usuário autenticado",
+                "operationId": "ede45b19680d6fb1319013a741a05734",
+                "responses": {
+                    "200": {
+                        "description": "Dados do usuário autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "João da Silva"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "joao@example.com"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-01-01T12:00:00Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-06-01T12:00:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "500": {
+                        "description": "Erro interno no servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/questionarios": {
+            "get": {
+                "tags": [
+                    "Questionarios"
+                ],
+                "summary": "Lista todos os questionários",
+                "description": "Retorna uma lista de todos os questionários com suas perguntas",
+                "operationId": "d78cc228314f1bf69e3a8b8a4a599d9a",
+                "responses": {
+                    "200": {
+                        "description": "Lista de questionários",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Questionário de Satisfação"
+                                                    },
+                                                    "descricao": {
+                                                        "type": "string",
+                                                        "example": "Descrição do questionário"
+                                                    },
+                                                    "perguntas": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "texto": {
+                                                                    "type": "string",
+                                                                    "example": "Você está satisfeito com nosso serviço?"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao listar questionários"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem de erro detalhada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Questionarios"
+                ],
+                "summary": "Cria um novo questionário",
+                "description": "Cria um novo questionário com as perguntas associadas",
+                "operationId": "bdcc1955bafc2f2b985fe96651d0fc1f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "periodicidade",
+                                    "data_inicio",
+                                    "publico_alvo",
+                                    "criado_por"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Questionário de Satisfação"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição do questionário"
+                                    },
+                                    "periodicidade": {
+                                        "type": "string",
+                                        "example": "mensal"
+                                    },
+                                    "data_inicio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-01-01"
+                                    },
+                                    "data_termino": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-12-31"
+                                    },
+                                    "ativo": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "publico_alvo": {
+                                        "type": "string",
+                                        "example": "clientes"
+                                    },
+                                    "criado_por": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "perguntas": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "texto": {
+                                                    "type": "string",
+                                                    "example": "Você está satisfeito com nosso serviço?"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Questionário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questionário criado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "Questionário de Satisfação"
+                                                },
+                                                "perguntas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "texto": {
+                                                                "type": "string",
+                                                                "example": "Você está satisfeito com nosso serviço?"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dados inválidos"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "titulo": [
+                                                    "O campo titulo é obrigatório."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao criar questionário"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem de erro detalhada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/questionarios/{id}": {
+            "get": {
+                "tags": [
+                    "Questionarios"
+                ],
+                "summary": "Exibe um questionário específico",
+                "description": "Retorna os detalhes de um questionário com suas perguntas",
+                "operationId": "a75abde79da2956a3297375a5e72d974",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do questionário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questionário encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "Questionário de Satisfação"
+                                                },
+                                                "perguntas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "texto": {
+                                                                "type": "string",
+                                                                "example": "Você está satisfeito com nosso serviço?"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Questionário não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questionário não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao recuperar questionário"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem de erro detalhada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Questionarios"
+                ],
+                "summary": "Atualiza um questionário",
+                "description": "Atualiza os dados de um questionário existente",
+                "operationId": "a388d8f5f2393e6030fd896d52d88726",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do questionário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Questionário Atualizado"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Nova descrição"
+                                    },
+                                    "periodicidade": {
+                                        "type": "string",
+                                        "example": "trimestral"
+                                    },
+                                    "data_inicio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-01-01"
+                                    },
+                                    "data_termino": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-12-31"
+                                    },
+                                    "ativo": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "publico_alvo": {
+                                        "type": "string",
+                                        "example": "colaboradores"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Questionário atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questionário atualizado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "Questionário Atualizado"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Questionário não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questionário não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dados inválidos"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "titulo": [
+                                                    "O campo titulo é obrigatório."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao atualizar questionário"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem de erro detalhada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Questionarios"
+                ],
+                "summary": "Remove um questionário",
+                "description": "Remove permanentemente um questionário do sistema",
+                "operationId": "a330dc1e5696a63bcc4b0a53d4cfaf40",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do questionário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questionário removido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questionário removido com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Questionário não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questionário não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao remover questionário"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem de erro detalhada"
                                         }
                                     },
                                     "type": "object"
@@ -724,6 +2434,556 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Unidades"
+                ],
+                "summary": "Cria uma nova unidade",
+                "operationId": "630809295267e4bd587485d8a29519a2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome_unidade",
+                                    "codigo_unidade",
+                                    "tipo_unidade_id",
+                                    "endereco_rua",
+                                    "endereco_numero",
+                                    "endereco_bairro",
+                                    "endereco_cidade",
+                                    "endereco_estado",
+                                    "endereco_cep",
+                                    "telefone_principal"
+                                ],
+                                "properties": {
+                                    "nome_unidade": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "Unidade Central"
+                                    },
+                                    "codigo_unidade": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "UC001"
+                                    },
+                                    "tipo_unidade_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "endereco_rua": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "Rua Principal"
+                                    },
+                                    "endereco_numero": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "123"
+                                    },
+                                    "endereco_complemento": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Sala 45",
+                                        "nullable": true
+                                    },
+                                    "endereco_bairro": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Centro"
+                                    },
+                                    "endereco_cidade": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "S�o Paulo"
+                                    },
+                                    "endereco_estado": {
+                                        "type": "string",
+                                        "maxLength": 2,
+                                        "example": "SP"
+                                    },
+                                    "endereco_cep": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "example": "01001000"
+                                    },
+                                    "telefone_principal": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "1133334444"
+                                    },
+                                    "email_unidade": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 100,
+                                        "example": "contato@unidade.com",
+                                        "nullable": true
+                                    },
+                                    "data_inauguracao": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-01-01",
+                                        "nullable": true
+                                    },
+                                    "quantidade_setores": {
+                                        "type": "integer",
+                                        "example": 5,
+                                        "nullable": true
+                                    },
+                                    "ativo": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Unidade criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade criada com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de valida��o",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro de valida��o"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao criar unidade"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/unidades/{id}": {
+            "get": {
+                "tags": [
+                    "Unidades"
+                ],
+                "summary": "Obt�m uma unidade espec�fica",
+                "operationId": "460b6c13458ccbe2b8584cd7097d9a0a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da unidade",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unidade retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade recuperada com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unidade n�o encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade n�o encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao recuperar unidade"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Unidades"
+                ],
+                "summary": "Atualiza uma unidade existente",
+                "operationId": "323706e2f822d031fdeebebd9013f931",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da unidade",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome_unidade": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "Unidade Central"
+                                    },
+                                    "codigo_unidade": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "UC001"
+                                    },
+                                    "tipo_unidade_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "endereco_rua": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "Rua Principal"
+                                    },
+                                    "endereco_numero": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "123"
+                                    },
+                                    "endereco_complemento": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Sala 45",
+                                        "nullable": true
+                                    },
+                                    "endereco_bairro": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Centro"
+                                    },
+                                    "endereco_cidade": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "S�o Paulo"
+                                    },
+                                    "endereco_estado": {
+                                        "type": "string",
+                                        "maxLength": 2,
+                                        "example": "SP"
+                                    },
+                                    "endereco_cep": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "example": "01001000"
+                                    },
+                                    "telefone_principal": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "1133334444"
+                                    },
+                                    "email_unidade": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 100,
+                                        "example": "contato@unidade.com",
+                                        "nullable": true
+                                    },
+                                    "data_inauguracao": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-01-01",
+                                        "nullable": true
+                                    },
+                                    "quantidade_setores": {
+                                        "type": "integer",
+                                        "example": 5,
+                                        "nullable": true
+                                    },
+                                    "ativo": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Unidade atualizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade atualizada com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unidade n�o encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade n�o encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de valida��o",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro de valida��o"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao atualizar unidade"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Unidades"
+                ],
+                "summary": "Remove uma unidade",
+                "operationId": "a52327e7319d99b373e840cef59c1afa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da unidade",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unidade removida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade removida com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unidade n�o encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unidade n�o encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Falha ao remover unidade"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/verify-code": {
@@ -778,7 +3038,7 @@
     },
     "components": {
         "schemas": {
-            "UserResource": {
+            "VerificationCodeController": {
                 "title": "User Resource",
                 "properties": {
                     "id": {
@@ -801,6 +3061,59 @@
                     "situacao_id": {
                         "type": "integer",
                         "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "title": "User Resource",
+                "description": "User resource with all fields",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jo�o Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "joao@example.com"
+                    },
+                    "active": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "situacao_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "remember_token": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "password": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -898,6 +3211,18 @@
         {
             "name": "Cargos",
             "description": "Cargos"
+        },
+        {
+            "name": "Perguntas",
+            "description": "Perguntas"
+        },
+        {
+            "name": "Perfil",
+            "description": "Perfil"
+        },
+        {
+            "name": "Questionarios",
+            "description": "Questionarios"
         },
         {
             "name": "Unidades",

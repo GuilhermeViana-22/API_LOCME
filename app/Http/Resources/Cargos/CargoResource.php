@@ -1,22 +1,19 @@
-
 <?php
 
+namespace App\Http\Resources\Cargos;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
 
 class CargoResource extends JsonResource
 {
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'nome_cargo' => $this->nome_cargo,
-            'nivel_hierarquico' => $this->nivel_hierarquico,
-            'departamento' => $this->departamento,
-            'descricao' => $this->descricao,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ];
+        return parent::toArray($request);
     }
 }
