@@ -11,7 +11,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PerguntaController;
 use App\Http\Controllers\QuestionarioController;
 
-
 use Illuminate\Support\Facades\Route;
 
 // Rotas públicas para autenticação e gerenciamento de conta
@@ -22,36 +21,6 @@ Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 
 // Rotas de teste (se realmente necessário)
 Route::get('/me', [AuthController::class, 'me'])->name('me');
-
-
-Route::prefix('questionarios')->group(function () {
-    // Rotas para perguntas
-    Route::get('tipo/{tipoId}/perguntas', [QuestionarioController::class, 'listarPerguntasPorTipo'])
-        ->name('api.questionarios.perguntas.por-tipo');
-
-    // Rotas para respostas
-    Route::post('tipo/{tipoId}/responder', [QuestionarioController::class, 'responderPorTipo'])
-        ->name('api.questionarios.responder.por-tipo');
-
-    Route::get('/progresso', [QuestionarioController::class, 'verificarProgresso'])
-        ->name('api.questionarios.progresso');
-
-    // Rotas existentes que você mencionou
-    Route::get('/responder', [QuestionarioController::class, 'responder'])->name('api.questionarios.responder');
-    Route::get('/{id}/respostas', [QuestionarioController::class, 'respostas'])->name('api.questionarios.respostas');
-    Route::get('/{id}/respostas/usuario', [QuestionarioController::class, 'respostasUsuario'])->name('api.questionarios.respostas.usuario');
-});
-
-
-   // Rotas para gestão de unidades (protegidas)
-   Route::prefix('unidades')->group(function () {
-    Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
-    Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
-    Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
-    Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
-    Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
-});
-
 
 
 // // Rotas para gestão de usuários (protegidas e com verificação de permissões)
@@ -79,16 +48,6 @@ Route::prefix('questionarios')->group(function () {
 //     Route::post('/{id}/assign-role', [UserController::class, 'assignRole'])->name('api.users.assignRole')
 //         ->middleware('permission:assign_roles');
 // });
-
-
-
-
-
-
-
-
-
-
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
@@ -138,7 +97,38 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/{id}/assign-role', [UserController::class, 'assignRole']);
         Route::post('/{id}/remove-role', [UserController::class, 'removeRole']);
     });
+
+
+
+
+    Route::prefix('questionarios')->group(function () {
+        // Rotas para perguntas
+        Route::get('tipo/{tipoId}/perguntas', [QuestionarioController::class, 'listarPerguntasPorTipo'])
+            ->name('api.questionarios.perguntas.por-tipo');
+
+        // Rotas para respostas
+        Route::post('tipo/{tipoId}/responder', [QuestionarioController::class, 'responderPorTipo'])
+            ->name('api.questionarios.responder.por-tipo');
+
+        Route::get('/progresso', [QuestionarioController::class, 'verificarProgresso'])
+            ->name('api.questionarios.progresso');
+
+        // Rotas existentes que você mencionou
+        Route::get('/responder', [QuestionarioController::class, 'responder'])->name('api.questionarios.responder');
+        Route::get('/{id}/respostas', [QuestionarioController::class, 'respostas'])->name('api.questionarios.respostas');
+        Route::get('/{id}/respostas/usuario', [QuestionarioController::class, 'respostasUsuario'])->name('api.questionarios.respostas.usuario');
+    });
+
+
+    // Rotas para gestão de unidades (protegidas)
+    Route::prefix('unidades')->group(function () {
+        Route::get('/', [UnidadeController::class, 'index'])->name('api.unidades.index');
+        Route::post('/', [UnidadeController::class, 'store'])->name('api.unidades.store');
+        Route::get('/{id}', [UnidadeController::class, 'show'])->name('api.unidades.show');
+        Route::put('/{id}', [UnidadeController::class, 'update'])->name('api.unidades.update');
+        Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
+    });
 });
 
-
+//rota teste
 Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
