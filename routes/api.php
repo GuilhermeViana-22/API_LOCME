@@ -21,6 +21,60 @@ Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 
 
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index']);
+    Route::post('/', [UserController::class, 'store']);
+    Route::get('/{id}', [UserController::class, 'show']);
+    Route::put('/{id}', [UserController::class, 'update']);
+    Route::delete('/{id}', [UserController::class, 'destroy']);
+
+    Route::post('/{id}/activate', [UserController::class, 'activate']);
+    Route::post('/{id}/deactivate', [UserController::class, 'deactivate']);
+
+    Route::post('/{id}/assign-role', [UserController::class, 'assignRole']);
+    Route::post('/{id}/remove-role', [UserController::class, 'removeRole']);
+});
+
+
+
+
+
+// // Rotas para gestão de usuários (protegidas e com verificação de permissões)
+// Route::prefix('users')->group(function () {
+//     //listar todos os ususarios
+//     Route::get('/', [UserController::class, 'index'])->name('api.users.index');
+//     //rotas para salvar dados do user
+//     Route::post('/', [UserController::class, 'store'])->name('api.users.store')
+//         ->middleware('permission:create_users');
+//     //rotas para mostrar dados do user
+//     Route::get('/{id}', [UserController::class, 'show'])->name('api.users.show')
+//         ->middleware('permission:view_users');
+//     //rotas para atualizar dados do user
+//     Route::put('/{id}', [UserController::class, 'update'])->name('api.users.update')
+//         ->middleware('permission:edit_users');
+//     //rotas para deletar de forma inteligente dados do user
+//     Route::delete('/{id}', [UserController::class, 'destroy'])->name('api.users.destroy')
+//         ->middleware('permission:delete_users');
+
+//     // Rotas adicionais para gerenciamento de usuários
+//     Route::post('/{id}/activate', [UserController::class, 'activate'])->name('api.users.activate')
+//         ->middleware('permission:manage_users');
+//     Route::post('/{id}/deactivate', [UserController::class, 'deactivate'])->name('api.users.deactivate')
+//         ->middleware('permission:manage_users');
+//     Route::post('/{id}/assign-role', [UserController::class, 'assignRole'])->name('api.users.assignRole')
+//         ->middleware('permission:assign_roles');
+// });
+
+
+
+
+
+
+
+
+
+
+
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
     // Rotas de autenticação do usuário
@@ -35,29 +89,6 @@ Route::middleware('auth:api')->group(function () {
     // Rotas de atividades e notificações
     Route::get('/activity', [ActivityLogController::class, 'index'])->name('api.activityLog');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
-
-
-    // Rotas para gestão de usuários (protegidas e com verificação de permissões)
-Route::prefix('users')->group(function () {
-    Route::get('/', [UserController::class, 'index'])->name('api.users.index')
-         ->middleware('permission:view_users');
-    Route::post('/', [UserController::class, 'store'])->name('api.users.store')
-         ->middleware('permission:create_users');
-    Route::get('/{id}', [UserController::class, 'show'])->name('api.users.show')
-         ->middleware('permission:view_users');
-    Route::put('/{id}', [UserController::class, 'update'])->name('api.users.update')
-         ->middleware('permission:edit_users');
-    Route::delete('/{id}', [UserController::class, 'destroy'])->name('api.users.destroy')
-         ->middleware('permission:delete_users');
-
-    // Rotas adicionais para gerenciamento de usuários
-    Route::post('/{id}/activate', [UserController::class, 'activate'])->name('api.users.activate')
-         ->middleware('permission:manage_users');
-    Route::post('/{id}/deactivate', [UserController::class, 'deactivate'])->name('api.users.deactivate')
-         ->middleware('permission:manage_users');
-    Route::post('/{id}/assign-role', [UserController::class, 'assignRole'])->name('api.users.assignRole')
-         ->middleware('permission:assign_roles');
-});
 
     // Rotas para gestão de cargos (protegidas)
     Route::prefix('perguntas')->group(function () {

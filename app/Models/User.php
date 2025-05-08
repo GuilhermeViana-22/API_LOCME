@@ -138,4 +138,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Unidade::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class, 'client_id'); // Especifica que a FK é client_id
+    }
 }

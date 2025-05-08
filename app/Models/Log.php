@@ -18,6 +18,11 @@ class Log extends Model
         'rota',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'client_id'); // Define a relação inversa
+    }
+
     public static function error($exception, $client_id, $ip, $name, $autenticado, $rota)
     {
         try {
