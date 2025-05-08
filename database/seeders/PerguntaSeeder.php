@@ -9,7 +9,7 @@ class PerguntaSeeder extends Seeder
 {
     public function run()
     {
-        $tipoPerguntaId = 1;
+        $tipoPerguntaId = range(1, 2);
         $tipoPeriodicidadeId = 1;
 
         $perguntas = [
@@ -39,15 +39,15 @@ class PerguntaSeeder extends Seeder
             "Como você demonstra empatia no ambiente profissional?"
         ];
 
-        $dados = array_map(function($texto) use ($tipoPerguntaId, $tipoPeriodicidadeId) {
+        $dados = array_map(function($texto, $index) use ($tipoPeriodicidadeId) {
             return [
                 'pergunta' => $texto,
-                'tipo_pergunta_id' => $tipoPerguntaId,
+                'tipo_pergunta_id' => ($index < 12) ? 1 : 2,
                 'tipo_periodicidade_id' => $tipoPeriodicidadeId,
                 'created_at' => now(),
                 'updated_at' => now()
             ];
-        }, $perguntas);
+        }, $perguntas, array_keys($perguntas));
 
         Pergunta::insert($dados);
     }

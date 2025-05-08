@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('respostas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('questionario_id')->constrained()->onDelete('cascade');
+            $table->integer('questionario_id');
             $table->foreignId('pergunta_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('resposta');

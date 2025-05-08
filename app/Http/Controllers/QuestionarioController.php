@@ -53,24 +53,28 @@ class QuestionarioController extends Controller
             $tipo = TipoPergunta::findOrFail($tipoId);
             $validated = $request->validated();
 
+            // Obter o último questionario_id usado pelo usuário
+            $ultimoQuestionario = Resposta::where('user_id', $validated['user_id'])
+                                        ->max('questionario_id') ?? 0;
+
+            $novoQuestionarioId = $ultimoQuestionario + 1;
+
             foreach ($validated['respostas'] as $resposta) {
-                Resposta::updateOrCreate(
-                    [
-                        'user_id' => $validated['user_id'],
-                        'pergunta_id' => $resposta['pergunta_id']
-                    ],
-                    [
-                        'tipo_pergunta_id' => $tipoId,
-                        'resposta' => $resposta['resposta']
-                    ]
-                );
+                Resposta::create([ // Usamos create() em vez de updateOrCreate()
+                    'user_id' => $validated['user_id'],
+                    'pergunta_id' => $resposta['pergunta_id'],
+                    'questionario_id' => $novoQuestionarioId,
+                    'tipo_pergunta_id' => $tipoId,
+                    'resposta' => $resposta['resposta']
+                ]);
             }
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => "Respostas do tipo {$tipo->tipo_pergunta} salvas com sucesso!"
+                'message' => "Questionário #$novoQuestionarioId do tipo {$tipo->tipo_pergunta} salvo com sucesso!",
+                'questionario_id' => $novoQuestionarioId
             ]);
 
         } catch (\Exception $e) {
