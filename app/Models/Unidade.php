@@ -47,4 +47,17 @@ class Unidade extends Model
     {
         return $this->belongsTo(TipoUnidade::class);
     }
+
+
+    // Relacionamento com Franqueados
+    public function franqueados()
+    {
+        return $this->hasMany(Franqueado::class);
+    }
+
+    // Método para franqueados ativos
+    public function franqueadosAtivos()
+    {
+        return $this->hasMany(Franqueado::class)->where('ativo', true);
+    }
 }

@@ -57,6 +57,7 @@ return array(
     'App\\Http\\Requests\\UpdateVerificationCodeRequest' => $baseDir . '/app/Http/Requests/UpdateVerificationCodeRequest.php',
     'App\\Http\\Requests\\UpdateWeb_AppsRequest' => $baseDir . '/app/Http/Requests/UpdateWeb_AppsRequest.php',
     'App\\Http\\Requests\\UserRegisterValidationRequest' => $baseDir . '/app/Http/Requests/UserRegisterValidationRequest.php',
+    'App\\Http\\Resources\\Unidades\\UnidadeResource' => $baseDir . '/app/Http/Resources/Unidades/UnidadeResource.php',
     'App\\Http\\Resources\\UserResource' => $baseDir . '/app/Http/Resources/UserResource.php',
     'App\\Mail\\ResetPassword' => $baseDir . '/app/Mail/ResetPassword.php',
     'App\\Mail\\SendMail' => $baseDir . '/app/Mail/SendMail.php',

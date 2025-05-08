@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -7,15 +8,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('tipo_unidades', function (Blueprint $table) {
+        Schema::create('franqueados', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo', 50)->unique();
+            $table->integer('unidade_id');
+            $table->boolean('ativo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('tipo_unidades');
+        Schema::dropIfExists('franqueados');
     }
 };

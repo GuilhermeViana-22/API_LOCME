@@ -648,6 +648,7 @@ class ComposerStaticInitc61ff82cbf0142a401a48a8161e1595a
         'App\\Http\\Requests\\UpdateVerificationCodeRequest' => __DIR__ . '/../..' . '/app/Http/Requests/UpdateVerificationCodeRequest.php',
         'App\\Http\\Requests\\UpdateWeb_AppsRequest' => __DIR__ . '/../..' . '/app/Http/Requests/UpdateWeb_AppsRequest.php',
         'App\\Http\\Requests\\UserRegisterValidationRequest' => __DIR__ . '/../..' . '/app/Http/Requests/UserRegisterValidationRequest.php',
+        'App\\Http\\Resources\\Unidades\\UnidadeResource' => __DIR__ . '/../..' . '/app/Http/Resources/Unidades/UnidadeResource.php',
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\Mail\\ResetPassword' => __DIR__ . '/../..' . '/app/Mail/ResetPassword.php',
         'App\\Mail\\SendMail' => __DIR__ . '/../..' . '/app/Mail/SendMail.php',

@@ -17,7 +17,7 @@ class CreateUnidadesTable extends Migration
             $table->id();
             $table->string('nome_unidade', 100);
             $table->string('codigo_unidade', 20)->unique();
-            $table->enum('tipo_unidade', [""]);
+            $table->integer('tipo_unidade_id');
             $table->string('endereco_rua', 100);
             $table->string('endereco_numero', 20);
             $table->string('endereco_complemento', 50)->nullable();

@@ -68,7 +68,6 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer'
             ], Response::HTTP_CREATED);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -115,75 +114,74 @@ class AuthController extends Controller
      *     )
      * )
      */
-/**
- * @OA\Post(
- *     path="/api/login",
- *     summary="Login de um usuário",
- *     tags={"Autenticação"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email_corporativo", "password"},
- *             @OA\Property(property="email_corporativo", type="string", format="email", example="usuario@empresa.com"),
- *             @OA\Property(property="password", type="string", format="password", example="Senha123@")
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Login bem-sucedido",
- *         @OA\JsonContent(
- *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."),
- *             @OA\Property(property="user", ref="#/components/schemas/User"),
- *             @OA\Property(property="token_type", type="string", example="Bearer"),
- *             @OA\Property(property="expires_at", type="string", format="date-time")
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Credenciais inválidas",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Credenciais inválidas")
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Erro interno",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Erro ao realizar o login")
- *         )
- *     )
- * )
- */
-public function login(LoginRequest $request)
-{
-    try {
-        $credentials = $request->only('email_corporativo', 'password');
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login de um usuário",
+     *     tags={"Autenticação"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email_corporativo", "password"},
+     *             @OA\Property(property="email_corporativo", type="string", format="email", example="usuario@empresa.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="Senha123@")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login bem-sucedido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."),
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(property="token_type", type="string", example="Bearer"),
+     *             @OA\Property(property="expires_at", type="string", format="date-time")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Credenciais inválidas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Credenciais inválidas")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Erro ao realizar o login")
+     *         )
+     *     )
+     * )
+     */
+    public function login(LoginRequest $request)
+    {
+        try {
+            $credentials = $request->only('email_corporativo', 'password');
 
-        if (!auth()->attempt($credentials)) {
-            return response()->json(['message' => 'Credenciais inválidas'], 401);
+            if (!auth()->attempt($credentials)) {
+                return response()->json(['message' => 'Credenciais inválidas'], 401);
+            }
+
+            $user = auth()->user();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->accessToken;
+
+            // Registra o acesso (se necessário)
+            $this->logAccess($user->id, $request->ip());
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'expires_at' => $tokenResult->token->expires_at
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao realizar login',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
-
-        $user = auth()->user();
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->accessToken;
-
-        // Registra o acesso (se necessário)
-        $this->logAccess($user->id, $request->ip());
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'expires_at' => $tokenResult->token->expires_at
-        ], 200);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Erro ao realizar login',
-            'error' => config('app.debug') ? $e->getMessage() : null
-        ], 500);
     }
-}
     /**
      * @OA\Get(
      *     path="/api/me",
@@ -318,9 +316,6 @@ public function login(LoginRequest $request)
         return response()->json(['message' => 'Successfully logged out'], Response::HTTP_OK);
     }
 
-
-
-
     /**
      * @OA\Post(
      *     path="/api/log-access",
@@ -374,8 +369,6 @@ public function login(LoginRequest $request)
             return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     /**
      * @OA\Post(

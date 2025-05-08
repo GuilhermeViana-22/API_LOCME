@@ -12,7 +12,6 @@ class Pergunta extends Model
     protected $fillable = [
         'pergunta',
         'tipo_pergunta_id',
-        'data',
         'tipo_periodicidade_id'
     ];
 }

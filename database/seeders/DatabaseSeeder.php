@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cargo;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,13 +15,17 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            CargoSeeder::class,
             RuleSeeder::class,
+            LogSeeder::class,
             PermissionSeeder::class,
             PassportSeeder::class,
-            // TipoUnidadeSeeder::class,
+            PerguntaSeeder::class,
+            TipoUnidadeSeeder::class,
             TipoPerguntaSeeder::class,
             PeriodicidadeSeeder::class,
             UnidadesTableSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

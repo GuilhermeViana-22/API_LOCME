@@ -91,11 +91,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
-        'email',
         'password',
         'situacao_id',
         'cpf',
-        'email_corporativo',
+        'email',
         'data_nascimento',
         'telefone_celular',
         'genero',

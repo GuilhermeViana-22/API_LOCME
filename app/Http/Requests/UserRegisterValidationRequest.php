@@ -13,7 +13,7 @@ class UserRegisterValidationRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'cpf' => 'required|string|size:13|unique:users,cpf',
-            'email_corporativo' => 'required|email|max:255|unique:users,email_corporativo',
+            'email' => 'required|email|max:255',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
             'data_nascimento' => 'required|date_format:Y-m-d',

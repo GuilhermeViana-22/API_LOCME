@@ -4,6 +4,7 @@ namespace App\Http\Resources\Unidades;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
+use App\Http\Resources\Franqueado\FranqueadoResource;
 
 class UnidadeResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class UnidadeResource extends JsonResource
             'codigo_unidade' => $this->codigo_unidade,
             'endereco_completo' => $this->formatarEndereco(),
             'endereco_rua' => $this->endereco_rua,
-            'endereco_numero' => $this->endereco_numero, // Note: há um typo aqui (numero vs numero)
+            'endereco_numero' => $this->endereco_numero,
             'endereco_complemento' => $this->endereco_complemento,
             'endereco_bairro' => $this->endereco_bairro,
             'endereco_cidade' => $this->endereco_cidade,
@@ -36,6 +37,14 @@ class UnidadeResource extends JsonResource
             'updated_at' => $this->formatarDataHora($this->updated_at),
             'tipo_unidade_id' => $this->tipo_unidade_id,
             'tipo_unidade' => $this->tipo_unidade,
+            'franqueados' => FranqueadoResource::collection($this->whenLoaded('franqueados')),
+            'franqueados_ativos' => FranqueadoResource::collection($this->whenLoaded('franqueadosAtivos')),
+            'total_franqueados' => $this->whenLoaded('franqueados', function () {
+                return $this->franqueados->count();
+            }),
+            'total_franqueados_ativos' => $this->whenLoaded('franqueados', function () {
+                return $this->franqueados->where('ativo', true)->count();
+            }),
         ];
     }
 
