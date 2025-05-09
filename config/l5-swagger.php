@@ -5,14 +5,14 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'API SGU',
-                'description' => 'Documentação da API',
-                'version' => '1.0.0', // Adicionei a versão, é uma boa prática
+                'title' => 'API DECOLA SCHOOL',
+                'description' => 'Documentaï¿½ï¿½o da API',
+                'version' => '1.0.0', // Adicionei a versï¿½o, ï¿½ uma boa prï¿½tica
             ],
 
             'routes' => [
                 /*
-                 * Rota para acessar a interface de documentação da API
+                 * Rota para acessar a interface de documentaï¿½ï¿½o da API
                  */
                 'api' => 'api/documentation',
             ],
@@ -24,30 +24,30 @@ return [
                 'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
 
                 /*
-                 * Caminho onde os assets do Swagger UI serão armazenados
+                 * Caminho onde os assets do Swagger UI serï¿½o armazenados
                  */
                 'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
                 /*
-                 * Arquivo de documentação com a menção dos esquemas necessarios na nossa aplicação
+                 * Arquivo de documentaï¿½ï¿½o com a menï¿½ï¿½o dos esquemas necessarios na nossa aplicaï¿½ï¿½o
                  */
                 'docs' => base_path('app/Documentation'),
                 /*
-                 * Nome do arquivo JSON que será gerado com a documentação
+                 * Nome do arquivo JSON que serï¿½ gerado com a documentaï¿½ï¿½o
                  */
                 'docs_json' => 'api-docs.json',
 
                 /*
-                 * Nome do arquivo YAML (se você preferir gerar esse formato)
+                 * Nome do arquivo YAML (se vocï¿½ preferir gerar esse formato)
                  */
                 'docs_yaml' => 'api-docs.yaml',
 
                 /*
-                 * Formato da documentação que será usado no Swagger UI (json ou yaml)
+                 * Formato da documentaï¿½ï¿½o que serï¿½ usado no Swagger UI (json ou yaml)
                  */
                 'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
 
                 /*
-                 * Caminho absoluto para o diretório onde as anotações do Swagger estão armazenadas
+                 * Caminho absoluto para o diretï¿½rio onde as anotaï¿½ï¿½es do Swagger estï¿½o armazenadas
                  */
                 'annotations' => [
                     base_path('app'),
@@ -60,17 +60,17 @@ return [
     'defaults' => [
         'routes' => [
             /*
-             * Rota para acessar as anotações do Swagger
+             * Rota para acessar as anotaï¿½ï¿½es do Swagger
              */
             'docs' => 'docs',
 
             /*
-             * Rota para o callback de autenticação OAuth2
+             * Rota para o callback de autenticaï¿½ï¿½o OAuth2
              */
             'oauth2_callback' => 'api/oauth2-callback',
 
             /*
-             * Middleware para controlar o acesso à documentação da API
+             * Middleware para controlar o acesso ï¿½ documentaï¿½ï¿½o da API
              */
             'middleware' => [
                 'api' => [],
@@ -80,36 +80,36 @@ return [
             ],
 
             /*
-             * Opções para os grupos de rotas
+             * Opï¿½ï¿½es para os grupos de rotas
              */
             'group_options' => [],
         ],
 
         'paths' => [
             /*
-             * Caminho absoluto para onde as anotações parseadas serão armazenadas
+             * Caminho absoluto para onde as anotaï¿½ï¿½es parseadas serï¿½o armazenadas
              */
             'docs' => storage_path('api-docs'),
 
             /*
-             * Caminho absoluto para onde as views da documentação serão exportadas
+             * Caminho absoluto para onde as views da documentaï¿½ï¿½o serï¿½o exportadas
              */
             'views' => base_path('resources/views/vendor/l5-swagger'),
 
             /*
-             * Caminho base da API (geralmente se você usa algo como /v1, /api)
+             * Caminho base da API (geralmente se vocï¿½ usa algo como /v1, /api)
              */
             'base' => env('L5_SWAGGER_BASE_PATH', null),
 
             /*
-             * Diretórios que devem ser excluídos da varredura de anotações
+             * Diretï¿½rios que devem ser excluï¿½dos da varredura de anotaï¿½ï¿½es
              */
             'excludes' => [],
         ],
 
         'scanOptions' => [
             /**
-             * Configuração para os processadores padrão. Permite passar a configuração para o swagger-php.
+             * Configuraï¿½ï¿½o para os processadores padrï¿½o. Permite passar a configuraï¿½ï¿½o para o swagger-php.
              *
              * @link https://zircote.github.io/swagger-php/reference/processors.html
              */
@@ -125,12 +125,12 @@ return [
             ],
 
             /**
-             * Analisador de rotas: usa o padrão \OpenApi\StaticAnalyser .
+             * Analisador de rotas: usa o padrï¿½o \OpenApi\StaticAnalyser .
              */
             'analyser' => null,
 
             /**
-             * Análise: usa uma nova instância de \OpenApi\Analysis .
+             * Anï¿½lise: usa uma nova instï¿½ncia de \OpenApi\Analysis .
              */
             'analysis' => null,
 
@@ -143,24 +143,24 @@ return [
             ],
 
             /*
-             * Padrão de arquivo para varredura (default: *.php)
+             * Padrï¿½o de arquivo para varredura (default: *.php)
              */
             'pattern' => null,
 
             /*
-             * Caminho absoluto para diretórios que devem ser excluídos da varredura
+             * Caminho absoluto para diretï¿½rios que devem ser excluï¿½dos da varredura
              */
             'exclude' => [],
 
             /*
-             * Permite gerar especificações para OpenAPI 3.0.0 ou 3.1.0.
-             * Por padrão, será gerado com a versão 3.0.0
+             * Permite gerar especificaï¿½ï¿½es para OpenAPI 3.0.0 ou 3.1.0.
+             * Por padrï¿½o, serï¿½ gerado com a versï¿½o 3.0.0
              */
             'open_api_spec_version' => env('L5_SWAGGER_OPEN_API_SPEC_VERSION', \L5Swagger\Generator::OPEN_API_DEFAULT_SPEC_VERSION),
         ],
 
         /*
-         * Definições de segurança da API. Serão geradas no arquivo de documentação.
+         * Definiï¿½ï¿½es de seguranï¿½a da API. Serï¿½o geradas no arquivo de documentaï¿½ï¿½o.
          */
         'securityDefinitions' => [
             'securitySchemes' => [
@@ -179,42 +179,42 @@ return [
         ],
 
         /*
-         * Gera a documentação sempre que a aplicação for acessada.
-         * Defina como false em produção para evitar sobrecarga.
+         * Gera a documentaï¿½ï¿½o sempre que a aplicaï¿½ï¿½o for acessada.
+         * Defina como false em produï¿½ï¿½o para evitar sobrecarga.
          */
         'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
 
         /*
-         * Gera uma cópia da documentação em formato YAML (se ativado)
+         * Gera uma cï¿½pia da documentaï¿½ï¿½o em formato YAML (se ativado)
          */
         'generate_yaml_copy' => env('L5_SWAGGER_GENERATE_YAML_COPY', false),
 
         /*
-         * Configuração de proxy - necessário para balanceadores de carga como o AWS
+         * Configuraï¿½ï¿½o de proxy - necessï¿½rio para balanceadores de carga como o AWS
          */
         'proxy' => false,
 
         /*
-         * Configuração do plugin para pegar configurações externas do Swagger UI
+         * Configuraï¿½ï¿½o do plugin para pegar configuraï¿½ï¿½es externas do Swagger UI
          */
         'additional_config_url' => null,
 
         /*
-         * Classificação das operações na UI. Pode ser 'alpha' (por caminho) ou 'method' (por método HTTP).
+         * Classificaï¿½ï¿½o das operaï¿½ï¿½es na UI. Pode ser 'alpha' (por caminho) ou 'method' (por mï¿½todo HTTP).
          */
         'operations_sort' => env('L5_SWAGGER_OPERATIONS_SORT', null),
 
         /*
-         * Passa o parâmetro validatorUrl para a inicialização do Swagger UI no lado do JS.
+         * Passa o parï¿½metro validatorUrl para a inicializaï¿½ï¿½o do Swagger UI no lado do JS.
          */
         'validator_url' => null,
 
         /*
-         * Configurações da UI do Swagger
+         * Configuraï¿½ï¿½es da UI do Swagger
          */
         'ui' => [
             'display' => [
-                'dark_mode' => false, // Forçar dark mode
+                'dark_mode' => false, // Forï¿½ar dark mode
                 'doc_expansion' => env('L5_SWAGGER_UI_DOC_EXPANSION', 'none'),
                 'filter' => env('L5_SWAGGER_UI_FILTERS', true),
             ],
@@ -231,7 +231,7 @@ return [
         ],
 
         /*
-         * Definições de constantes que podem ser usadas nas anotações
+         * Definiï¿½ï¿½es de constantes que podem ser usadas nas anotaï¿½ï¿½es
          */
         'constants' => [
             'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://meu-host.com'),
