@@ -9,6 +9,181 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Registrar um novo usuário",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "cpf",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "data_nascimento",
+                                    "telefone_celular",
+                                    "genero",
+                                    "cargo_id",
+                                    "unidade_id",
+                                    "status_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "123.456.789-09"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@empresa.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Senha123@"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Senha123@"
+                                    },
+                                    "data_nascimento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    },
+                                    "telefone_celular": {
+                                        "type": "string",
+                                        "example": "(11) 99999-9999"
+                                    },
+                                    "genero": {
+                                        "type": "string",
+                                        "enum": [
+                                            "masculino",
+                                            "feminino",
+                                            "outro",
+                                            "prefiro não informar"
+                                        ],
+                                        "example": "masculino"
+                                    },
+                                    "cargo_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "unidade_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "situacao_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "foto_perfil": {
+                                        "description": "Imagem de perfil (formatos: jpeg,png,jpg,gif, máximo 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "ativo": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário registrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Os dados fornecidos são inválidos."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "O campo nome completo é obrigatório."
+                                                ],
+                                                "cpf": [
+                                                    "O CPF deve ter 14 caracteres (incluindo pontuações)."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao registrar usuário"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensagem detalhada do erro"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -1721,660 +1896,6 @@
                 ]
             }
         },
-        "/api/questionarios": {
-            "get": {
-                "tags": [
-                    "Questionarios"
-                ],
-                "summary": "Lista todos os questionários",
-                "description": "Retorna uma lista de todos os questionários com suas perguntas",
-                "operationId": "d78cc228314f1bf69e3a8b8a4a599d9a",
-                "responses": {
-                    "200": {
-                        "description": "Lista de questionários",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "titulo": {
-                                                        "type": "string",
-                                                        "example": "Questionário de Satisfação"
-                                                    },
-                                                    "descricao": {
-                                                        "type": "string",
-                                                        "example": "Descrição do questionário"
-                                                    },
-                                                    "perguntas": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "properties": {
-                                                                "id": {
-                                                                    "type": "integer",
-                                                                    "example": 1
-                                                                },
-                                                                "texto": {
-                                                                    "type": "string",
-                                                                    "example": "Você está satisfeito com nosso serviço?"
-                                                                }
-                                                            },
-                                                            "type": "object"
-                                                        }
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao listar questionários"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem de erro detalhada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Questionarios"
-                ],
-                "summary": "Cria um novo questionário",
-                "description": "Cria um novo questionário com as perguntas associadas",
-                "operationId": "bdcc1955bafc2f2b985fe96651d0fc1f",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "titulo",
-                                    "periodicidade",
-                                    "data_inicio",
-                                    "publico_alvo",
-                                    "criado_por"
-                                ],
-                                "properties": {
-                                    "titulo": {
-                                        "type": "string",
-                                        "example": "Questionário de Satisfação"
-                                    },
-                                    "descricao": {
-                                        "type": "string",
-                                        "example": "Descrição do questionário"
-                                    },
-                                    "periodicidade": {
-                                        "type": "string",
-                                        "example": "mensal"
-                                    },
-                                    "data_inicio": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2023-01-01"
-                                    },
-                                    "data_termino": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2023-12-31"
-                                    },
-                                    "ativo": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "publico_alvo": {
-                                        "type": "string",
-                                        "example": "clientes"
-                                    },
-                                    "criado_por": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "perguntas": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "texto": {
-                                                    "type": "string",
-                                                    "example": "Você está satisfeito com nosso serviço?"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Questionário criado com sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Questionário criado com sucesso"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "titulo": {
-                                                    "type": "string",
-                                                    "example": "Questionário de Satisfação"
-                                                },
-                                                "perguntas": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "texto": {
-                                                                "type": "string",
-                                                                "example": "Você está satisfeito com nosso serviço?"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Erro de validação",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Dados inválidos"
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "titulo": [
-                                                    "O campo titulo é obrigatório."
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao criar questionário"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem de erro detalhada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/questionarios/{id}": {
-            "get": {
-                "tags": [
-                    "Questionarios"
-                ],
-                "summary": "Exibe um questionário específico",
-                "description": "Retorna os detalhes de um questionário com suas perguntas",
-                "operationId": "a75abde79da2956a3297375a5e72d974",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID do questionário",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Questionário encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "titulo": {
-                                                    "type": "string",
-                                                    "example": "Questionário de Satisfação"
-                                                },
-                                                "perguntas": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "texto": {
-                                                                "type": "string",
-                                                                "example": "Você está satisfeito com nosso serviço?"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Questionário não encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Questionário não encontrado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao recuperar questionário"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem de erro detalhada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Questionarios"
-                ],
-                "summary": "Atualiza um questionário",
-                "description": "Atualiza os dados de um questionário existente",
-                "operationId": "a388d8f5f2393e6030fd896d52d88726",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID do questionário",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "titulo": {
-                                        "type": "string",
-                                        "example": "Questionário Atualizado"
-                                    },
-                                    "descricao": {
-                                        "type": "string",
-                                        "example": "Nova descrição"
-                                    },
-                                    "periodicidade": {
-                                        "type": "string",
-                                        "example": "trimestral"
-                                    },
-                                    "data_inicio": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2023-01-01"
-                                    },
-                                    "data_termino": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2023-12-31"
-                                    },
-                                    "ativo": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "publico_alvo": {
-                                        "type": "string",
-                                        "example": "colaboradores"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Questionário atualizado com sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Questionário atualizado com sucesso"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "titulo": {
-                                                    "type": "string",
-                                                    "example": "Questionário Atualizado"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Questionário não encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Questionário não encontrado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Erro de validação",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Dados inválidos"
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "titulo": [
-                                                    "O campo titulo é obrigatório."
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao atualizar questionário"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem de erro detalhada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Questionarios"
-                ],
-                "summary": "Remove um questionário",
-                "description": "Remove permanentemente um questionário do sistema",
-                "operationId": "a330dc1e5696a63bcc4b0a53d4cfaf40",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID do questionário",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Questionário removido com sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Questionário removido com sucesso"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Questionário não encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Questionário não encontrado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao remover questionário"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem de erro detalhada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/api/unidades": {
             "get": {
                 "tags": [
@@ -2985,139 +2506,10 @@
                     }
                 }
             }
-        },
-        "/api/verify-code": {
-            "post": {
-                "tags": [
-                    "Autenticação"
-                ],
-                "summary": "Verifica um código de verificação",
-                "operationId": "9e91e0f945f49cb7fc6c7e79c4a46576",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "code"
-                                ],
-                                "properties": {
-                                    "code": {
-                                        "type": "string",
-                                        "example": "ABC123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/UserResource"
-                                        },
-                                        "token": {
-                                            "type": "string",
-                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1Ni..."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "components": {
         "schemas": {
-            "VerificationCodeController": {
-                "title": "User Resource",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "João Silva"
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "example": "joao@example.com"
-                    },
-                    "active": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "situacao_id": {
-                        "type": "integer",
-                        "example": 1
-                    }
-                },
-                "type": "object"
-            },
-            "UserResource": {
-                "title": "User Resource",
-                "description": "User resource with all fields",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Jo�o Silva"
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "example": "joao@example.com"
-                    },
-                    "active": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "situacao_id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "email_verified_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "deleted_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
-                    },
-                    "remember_token": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "password": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
             "User": {
                 "title": "User Model",
                 "description": "Modelo de usuário do sistema com status de ativação",
@@ -3219,10 +2611,6 @@
         {
             "name": "Perfil",
             "description": "Perfil"
-        },
-        {
-            "name": "Questionarios",
-            "description": "Questionarios"
         },
         {
             "name": "Unidades",

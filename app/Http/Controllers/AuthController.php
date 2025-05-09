@@ -45,6 +45,78 @@ use App\Models\Log;
 class AuthController extends Controller
 {
 
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Registrar um novo usuário",
+     *     tags={"Autenticação"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name", "cpf", "email", "password", "password_confirmation", "data_nascimento", "telefone_celular", "genero", "cargo_id", "unidade_id", "status_id"},
+     *                 @OA\Property(property="name", type="string", example="João da Silva"),
+     *                 @OA\Property(property="cpf", type="string", example="123.456.789-09"),
+     *                 @OA\Property(property="email", type="string", format="email", example="joao@empresa.com"),
+     *                 @OA\Property(property="password", type="string", format="password", example="Senha123@"),
+     *                 @OA\Property(property="password_confirmation", type="string", format="password", example="Senha123@"),
+     *                 @OA\Property(property="data_nascimento", type="string", format="date", example="1990-01-01"),
+     *                 @OA\Property(property="telefone_celular", type="string", example="(11) 99999-9999"),
+     *                 @OA\Property(
+     *                     property="genero",
+     *                     type="string",
+     *                     enum={"masculino", "feminino", "outro", "prefiro não informar"},
+     *                     example="masculino"
+     *                 ),
+     *                 @OA\Property(property="cargo_id", type="integer", example=1),
+     *                 @OA\Property(property="unidade_id", type="integer", example=1),
+     *                 @OA\Property(property="status_id", type="integer", example=1),
+     *                 @OA\Property(property="situacao_id", type="integer", example=1, nullable=true),
+     *                 @OA\Property(
+     *                     property="foto_perfil",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Imagem de perfil (formatos: jpeg,png,jpg,gif, máximo 2MB)"
+     *                 ),
+     *                 @OA\Property(property="ativo", type="boolean", example=true, nullable=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Usuário registrado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(property="access_token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."),
+     *             @OA\Property(property="token_type", type="string", example="Bearer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validação",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Os dados fornecidos são inválidos."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={
+     *                     "name": {"O campo nome completo é obrigatório."},
+     *                     "cpf": {"O CPF deve ter 14 caracteres (incluindo pontuações)."}
+     *                 }
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno no servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Erro ao registrar usuário"),
+     *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
+     *         )
+     *     )
+     * )
+     */
     public function register(UserRegisterValidationRequest $request)
     {
         try {

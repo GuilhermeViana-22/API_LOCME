@@ -10,50 +10,10 @@ use Illuminate\Http\Response;
 use App\Models\User;
 use OpenApi\Annotations as OA;
 
-/**
- * @OA\Schema(
- *    
- *     title="User Resource",
- *     type="object",
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="João Silva"),
- *     @OA\Property(property="email", type="string", format="email", example="joao@example.com"),
- *     @OA\Property(property="active", type="integer", example=1),
- *     @OA\Property(property="situacao_id", type="integer", example=1)
- * )
- */
+
 class VerificationCodeController extends Controller
 {
-    /**
-     * @OA\Post(
-     *     path="/api/verify-code",
-     *     summary="Verifica um código de verificação",
-     *     tags={"Autenticação"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"code"},
-     *             @OA\Property(property="code", type="string", example="ABC123")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Sucesso",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="user",
-     *                 type="object",
-     *                 ref="#/components/schemas/UserResource"
-     *             ),
-     *             @OA\Property(
-     *                 property="token",
-     *                 type="string",
-     *                 example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1Ni..."
-     *             )
-     *         )
-     *     )
-     * )
-     */
+
     public function verifyCode(CodeRequest $request)
     {
         // Buscar o código de verificação no banco de dados
