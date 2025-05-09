@@ -125,20 +125,8 @@ class AuthController extends Controller
             $data = $request->validated();
             $data['password'] = bcrypt($data['password']);
 
-            if ($request->hasFile('foto_perfil')) {
-                // Adicione validação adicional para o arquivo
-                $request->validate([
-                    'foto_perfil' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-                ]);
-
-                $path = $request->file('foto_perfil')->store('perfis', 'public');
-
-                if (!$path) {
-                    throw new \Exception("Falha ao armazenar a imagem");
-                }
-
-                $data['foto_perfil'] = $path;
-            }
+            // Remova temporariamente o tratamento da imagem
+            unset($data['foto_perfil']);
 
             $user = User::create($data);
 
@@ -153,7 +141,6 @@ class AuthController extends Controller
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Erro no registro: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Erro ao registrar usuário',
                 'error' => $e->getMessage()
