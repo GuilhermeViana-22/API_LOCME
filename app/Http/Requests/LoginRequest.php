@@ -14,7 +14,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email_corporativo' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ];
     }

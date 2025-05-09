@@ -227,7 +227,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $credentials = $request->only('email_corporativo', 'password');
+            $credentials = $request->only('email', 'password');
 
             if (!auth()->attempt($credentials)) {
                 return response()->json(['message' => 'Credenciais inválidas'], 401);
