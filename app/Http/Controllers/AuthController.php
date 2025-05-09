@@ -125,7 +125,7 @@ class AuthController extends Controller
             $data = $request->validated();
             $data['password'] = bcrypt($data['password']);
 
-            // Remova temporariamente o tratamento da imagem
+            // Remove o campo foto_perfil se existir no request
             unset($data['foto_perfil']);
 
             $user = User::create($data);
