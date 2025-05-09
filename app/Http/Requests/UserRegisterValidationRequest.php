@@ -12,7 +12,7 @@ class UserRegisterValidationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'cpf' => 'required|string|size:13|unique:users,cpf',
+            'cpf' => 'required|string',
             'email' => 'required|email|max:255',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
@@ -28,7 +28,7 @@ class UserRegisterValidationRequest extends FormRequest
             'status_id' => 'required|integer',
             'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ativo' => 'sometimes|boolean',
-            'situacao_id' => 'nullable|integer|exists:situacoes,id'
+            'situacao_id' => 'nullable|integer'
         ];
     }
 
