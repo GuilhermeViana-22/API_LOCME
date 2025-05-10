@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Annotations as OA;
 
-
 class UserResource extends JsonResource
 {
     public function toArray($request)
@@ -16,7 +15,6 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'telefone_celular' => $this->telefone_celular,
             'ativo' => $this->ativo,
-            'active' => $this->active,
             'data_nascimento' => $this->data_nascimento
                 ? \Carbon\Carbon::parse($this->data_nascimento)->format('d/m/Y')
                 : null,
@@ -37,11 +35,22 @@ class UserResource extends JsonResource
                     'departamento' => $this->cargo->departamento,
                 ];
             }),
-            'roles' => $this->whenLoaded('roles', function () {
-                return $this->roles->map(function ($role) {
+            'rules' => $this->whenLoaded('rulesUser', function () {
+                return $this->rulesUser->map(function ($ruleUser) {
                     return [
-                        'id' => $role->id,
-                        'name' => $role->name
+                        'rule' => [
+                            'id' => $ruleUser->rule->id,
+                            'name' => $ruleUser->rule->name,
+                            'description' => $ruleUser->rule->description,
+                            'permissions' => $ruleUser->rule->permissions->map(function ($permission) {
+                                return [
+                                    'id' => $permission->id,
+                                    'name' => $permission->name,
+                                    'description' => $permission->description
+                                ];
+                            })
+                        ],
+                        'assigned_at' => $ruleUser->created_at
                     ];
                 });
             }),
@@ -56,6 +65,7 @@ class UserResource extends JsonResource
                     ];
                 });
             }),
+
         ];
     }
 }

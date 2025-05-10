@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DeleteAccountRequest;
-use App\Http\Requests\UserRegisterValidationRequest;
-use App\Http\Requests\MailVerifyRequest;
 use Exception;
+use App\Models\Log;
+use App\Models\User;
+use App\Mail\SendMail;
+use App\Mail\ResetPassword;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
+use App\Http\Requests\MeRequest;
+use App\Models\VerificationCode;
+use Illuminate\Http\JsonResponse;
+use App\Models\PersonalAcessToken;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ResetRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Requests\ResetRequest;
-use App\Http\Requests\LoginRequest;
-use App\Models\PersonalAcessToken;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\JsonResponse;
-use App\Models\VerificationCode;
-use App\Http\Requests\MeRequest;
-use App\Http\Resources\UserResource;
-use Illuminate\Support\Carbon;
-use Illuminate\Http\Response;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use App\Mail\ResetPassword;
-use App\Mail\SendMail;
-use App\Models\User;
-use App\Models\Log;
+use App\Http\Requests\MailVerifyRequest;
+use App\Http\Requests\DeleteAccountRequest;
+use App\Http\Requests\UserRegisterValidationRequest;
 
 
 /**
@@ -132,6 +133,15 @@ class AuthController extends Controller
 
             $token = $user->createToken('auth_token')->accessToken;
 
+            // Registra o log de logout
+            $this->logAccess(
+                $user->id,
+                $request->ip(),
+                true, // autenticado
+                $user->name, // name/action
+                $request->path() // rota
+            );
+
             DB::commit();
 
             return response()->json([
@@ -238,7 +248,7 @@ class AuthController extends Controller
             $token = $tokenResult->accessToken;
 
             // Registra o acesso (se necessário)
-            $this->logAccess($user->id, $request->ip());
+            $this->logAccess($user->id, $request->ip(), true, $user->name, $request->path());
 
             return response()->json([
                 'user' => $user,
@@ -285,14 +295,30 @@ class AuthController extends Controller
     public function me(MeRequest $request)
     {
 
-        // Obter todos os parâmetros da requisição
-        $user = User::find($request->get('id'));
-        if ($user) {
-            return response()->json($user, Response::HTTP_OK);
-        } else {
-            return response()->json(['error' => 'Usuário não encontrado.'], Response::HTTP_NOT_FOUND);
+        $user = User::with([
+            'unidade',
+            'cargo',
+            'rulesUser.rule.permissions' // Carrega a cadeia completa: User → RuleUser → Rule → Permissions
+        ])->findOrFail($request->get('id'));
+
+        if (!$user) {
+            return response()->json(
+                ['error' => 'Usuário não encontrado.'],
+                Response::HTTP_NOT_FOUND
+            );
         }
+
+        $this->logAccess(
+            $user->id,
+            $request->ip(),
+            true, // autenticado
+            $user->name, // name/action
+            $request->path() // rota
+        );
+
+        return new UserResource($user);
     }
+
     /**
      * @OA\Post(
      *     path="/api/mail-verify",
@@ -383,8 +409,28 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
-        return response()->json(['message' => 'Successfully logged out'], Response::HTTP_OK);
+        // Obtém o usuário autenticado antes de revogar o token
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Nenhum usuário autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Revoga o token de acesso
+        $user->token()->revoke();
+
+        // Registra o log de logout
+        $this->logAccess(
+            $user->id,
+            $request->ip(),
+            true, // autenticado
+            $user->name, // name/action
+            $request->path() // rota
+        );
+
+        return response()->json([
+            'message' => 'Logout realizado com sucesso'
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -423,21 +469,55 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function log($client_id, $ip, $autenticado)
+
+    public function log($client_id, $ip, $autenticado = true, $name, $rota)
     {
+        // Verifique se o modelo Log está sendo importado corretamente
+        if (!class_exists(Log::class)) {
+            \Log::error('Classe Log não encontrada');
+            return response()->json(['error' => 'Configuração de modelo inválida'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Prepare os dados garantindo que os campos correspondam à tabela
+        $data = [
+            'client_id' => $client_id,
+            'client_ip' => $ip, // Note que no seu modelo o campo é client_ip, não ip
+            'autenticado' => $autenticado,
+            'name' => $name,
+            'rota' => $rota,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+
         DB::beginTransaction();
 
         try {
+            // Método alternativo que sempre funciona
             $log = new Log();
-            $log->client_id = $client_id;
-            $log->client_ip = $ip;
-            $log->autenticado = $autenticado;
+            $log->fill($data);
             $log->save();
+
             DB::commit();
+
+            // Verificação adicional
+            if (!$log->exists) {
+                throw new \Exception('O registro não foi persistido no banco de dados');
+            }
+
+            return response()->json(['message' => 'Log registrado com sucesso'], Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getMessage(), $client_id, $ip, null,  $autenticado, null);
-            return response()->json(['error' => 'Não foi possivel registrar logs. ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+            \Log::error('Falha ao registrar log', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $data
+            ]);
+
+            return response()->json([
+                'error' => 'Não foi possível registrar logs',
+                'details' => config('app.debug') ? $e->getMessage() : null
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -722,8 +802,9 @@ class AuthController extends Controller
         return $token;
     }
 
-    private function logAccess($userId, $ip)
+    private function logAccess($userId, $ip, $autenticado = true, $name = null,  $rota)
     {
-        $this->Log($userId, $ip, true);
+
+        $this->Log($userId, $ip, $autenticado, $name, $rota);
     }
 }

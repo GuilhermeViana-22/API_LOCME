@@ -13,4 +13,10 @@ class Permission extends Model
         'name',
         'description',
     ];
+
+
+   public function rules()
+{
+    return $this->belongsToMany(Rule::class, 'rule_permissions');
+}
 }

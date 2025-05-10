@@ -143,4 +143,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Log::class, 'client_id'); // Especifica que a FK é client_id
     }
+
+    public function rulesUser()
+    {
+        return $this->hasMany(RuleUser::class, 'user_id'); // Especifica que a FK é user_id
+    }
+
+    // Adicione este relacionamento também para acesso direto
+public function rules()
+{
+    return $this->belongsToMany(Rule::class, 'rule_users');
+}
+
 }

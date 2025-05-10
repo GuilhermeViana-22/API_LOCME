@@ -15,7 +15,7 @@ class CreateRulePermissionsTable extends Migration
     {
         Schema::create('rule_permissions', function (Blueprint $table) {
             $table->id();
-            $table->integer('role_id');
+            $table->integer('rule_id');
             $table->integer('permission_id');
             $table->timestamps();
         });

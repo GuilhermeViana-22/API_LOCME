@@ -4,56 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\Users\UsersIndexRequest;
-use App\Http\Requests\Users\UserStoreRequest;
-use App\Http\Requests\Users\UserUpdateRequest;
-use App\Http\Requests\Users\UserRoleRequest;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\UserCollection;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserCollection;
+use App\Http\Requests\Users\UserRoleRequest;
+use App\Http\Requests\Users\UserStoreRequest;
+use App\Http\Requests\Users\UsersIndexRequest;
+use App\Http\Requests\Users\UserUpdateRequest;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
     /**
-     * Listar todos os usuários (com paginação)
-     * @queryParam page integer Página atual. Example: 1
-     * @queryParam per_page integer Itens por página. Example: 10
-     * @queryParam name string Filtro por nome. Example: João
+     * Listar todos os usuï¿½rios (com paginaï¿½ï¿½o)
+     * @queryParam page integer Pï¿½gina atual. Example: 1
+     * @queryParam per_page integer Itens por pï¿½gina. Example: 10
+     * @queryParam name string Filtro por nome. Example: Joï¿½o
      * @queryParam email string Filtro por email. Example: joao@example.com
      * @queryParam active boolean Filtro por status. Example: true
      * @queryParam unidade_id integer Filtro por unidade. Example: 1
      * @queryParam cargo_id integer Filtro por cargo. Example: 1
-     * @queryParam sort string Campo para ordenação (name, email, created_at). Example: name
-     * @queryParam order string Direção da ordenação (asc, desc). Example: asc
+     * @queryParam sort string Campo para ordenaï¿½ï¿½o (name, email, created_at). Example: name
+     * @queryParam order string Direï¿½ï¿½o da ordenaï¿½ï¿½o (asc, desc). Example: asc
      */
-    public function index(UsersIndexRequest $request)
+  public function index(UsersIndexRequest $request)
     {
-        $query = User::with(['unidade', 'cargo', 'logs'])
-            ->when($request->name, fn($q) => $q->where('name', 'like', "%{$request->name}%"))
-            ->when($request->email, fn($q) => $q->where('email', 'like', "%{$request->email}%"))
-            ->when($request->has('active'), fn($q) => $q->where('active', $request->active))
-            ->when($request->unidade_id, fn($q) => $q->where('unidade_id', $request->unidade_id))
-            ->when($request->cargo_id, fn($q) => $q->where('cargo_id', $request->cargo_id));
-
-        // Ordenação
-        $sortField = $request->sort ?? 'name';
-        $sortOrder = $request->order ?? 'asc';
-        $query->orderBy($sortField, $sortOrder);
-
-        $perPage = $request->per_page ?? 10;
-        $users = $query->paginate($perPage);
-
-        return new UserCollection($users);
+        try {
+            $query = $this->applyFilters(User::query(), $request);
+            $unidades = $this->paginateResults($query, $request);
+            return $this->buildPaginatedResponse($unidades, $request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Falha ao recuperar usuarios',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * Criar novo usuário
-     * @bodyParam name string required Nome do usuário. Example: João Silva
-     * @bodyParam email string required Email do usuário. Example: joao@example.com
+     * Criar novo usuï¿½rio
+     * @bodyParam name string required Nome do usuï¿½rio. Example: Joï¿½o Silva
+     * @bodyParam email string required Email do usuï¿½rio. Example: joao@example.com
      * @bodyParam password string required Senha. Example: secret123
-     * @bodyParam password_confirmation string required Confirmação da senha. Example: secret123
+     * @bodyParam password_confirmation string required Confirmaï¿½ï¿½o da senha. Example: secret123
      * @bodyParam unidade_id integer ID da unidade. Example: 1
      * @bodyParam cargo_id integer ID do cargo. Example: 1
      */
@@ -74,8 +71,8 @@ class UserController extends Controller
     }
 
     /**
-     * Mostrar detalhes de um usuário
-     * @urlParam id integer required ID do usuário. Example: 1
+     * Mostrar detalhes de um usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
      */
     public function show($id)
     {
@@ -86,15 +83,15 @@ class UserController extends Controller
     }
 
     /**
-     * Atualizar usuário
-     * @urlParam id integer required ID do usuário. Example: 1
-     * @bodyParam name string Nome do usuário. Example: João Silva
-     * @bodyParam email string Email do usuário. Example: joao@example.com
+     * Atualizar usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
+     * @bodyParam name string Nome do usuï¿½rio. Example: Joï¿½o Silva
+     * @bodyParam email string Email do usuï¿½rio. Example: joao@example.com
      * @bodyParam password string Senha. Example: newsecret123
-     * @bodyParam password_confirmation string Confirmação da senha. Example: newsecret123
+     * @bodyParam password_confirmation string Confirmaï¿½ï¿½o da senha. Example: newsecret123
      * @bodyParam unidade_id integer ID da unidade. Example: 1
      * @bodyParam cargo_id integer ID do cargo. Example: 1
-     * @bodyParam active boolean Status do usuário. Example: true
+     * @bodyParam active boolean Status do usuï¿½rio. Example: true
      */
     public function update(UserUpdateRequest $request, $id)
     {
@@ -112,8 +109,8 @@ class UserController extends Controller
     }
 
     /**
-     * Remover usuário
-     * @urlParam id integer required ID do usuário. Example: 1
+     * Remover usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
      */
     public function destroy($id)
     {
@@ -124,8 +121,8 @@ class UserController extends Controller
     }
 
     /**
-     * Ativar usuário
-     * @urlParam id integer required ID do usuário. Example: 1
+     * Ativar usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
      */
     public function activate($id)
     {
@@ -139,8 +136,8 @@ class UserController extends Controller
     }
 
     /**
-     * Desativar usuário
-     * @urlParam id integer required ID do usuário. Example: 1
+     * Desativar usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
      */
     public function deactivate($id)
     {
@@ -154,8 +151,8 @@ class UserController extends Controller
     }
 
     /**
-     * Atribuir papel ao usuário
-     * @urlParam id integer required ID do usuário. Example: 1
+     * Atribuir papel ao usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
      * @bodyParam role string required Nome do papel. Example: admin
      */
     public function assignRole(UserRoleRequest $request, $id)
@@ -172,8 +169,8 @@ class UserController extends Controller
     }
 
     /**
-     * Remover papel do usuário
-     * @urlParam id integer required ID do usuário. Example: 1
+     * Remover papel do usuï¿½rio
+     * @urlParam id integer required ID do usuï¿½rio. Example: 1
      * @bodyParam role string required Nome do papel. Example: admin
      */
     public function removeRole(UserRoleRequest $request, $id)
@@ -187,5 +184,78 @@ class UserController extends Controller
             'message' => 'Role removed successfully',
             'data' => new UserResource($user->load('roles'))
         ]);
+    }
+
+
+    /**
+     * Aplica todos os filtros Ã  query
+     */
+    private function applyFilters($query, $request)
+    {
+
+        if ($request->filled('ativo')) {
+            $query->where('ativo', $request->ativo);
+        }
+
+        if ($request->filled('unidade_id')) {
+            $query->where('unidade_id', $request->unidade_id);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+    }
+
+    /**
+     * Executa a paginaÃ§Ã£o dos resultados
+     */
+    private function paginateResults($query, $request)
+    {
+        $perPage = $request->input('per_page', 15);
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Constroi a resposta padronizada com paginaÃ§Ã£o
+     */
+    private function buildPaginatedResponse($paginatedResults, $request)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'UsuÃ¡rios recuperadas com sucesso',
+            'data' => UserCollection::collection($paginatedResults),
+            'meta' => $this->buildMetaData($paginatedResults, $request),
+            'links' => $this->buildPaginationLinks($paginatedResults)
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Constroi os metadados da paginaÃ§Ã£o
+     */
+    private function buildMetaData($paginatedResults, $request)
+    {
+        return [
+            'current_page' => $paginatedResults->currentPage(),
+            'per_page' => $paginatedResults->perPage(),
+            'total' => $paginatedResults->total(),
+            'last_page' => $paginatedResults->lastPage(),
+            'from' => $paginatedResults->firstItem(),
+            'to' => $paginatedResults->lastItem(),
+            'filters_applied' => $request->except(['page', 'per_page'])
+        ];
+    }
+
+    /**
+     * Constroi os links de navegaÃ§Ã£o
+     */
+    private function buildPaginationLinks($paginatedResults)
+    {
+        return [
+            'first' => $paginatedResults->url(1),
+            'last' => $paginatedResults->url($paginatedResults->lastPage()),
+            'prev' => $paginatedResults->previousPageUrl(),
+            'next' => $paginatedResults->nextPageUrl()
+        ];
     }
 }

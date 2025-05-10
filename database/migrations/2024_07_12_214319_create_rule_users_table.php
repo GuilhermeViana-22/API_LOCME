@@ -15,8 +15,8 @@ class CreateRuleUsersTable extends Migration
     {
         Schema::create('rule_users', function (Blueprint $table) {
             $table->id();
-            $table->integer('role_id');
             $table->integer('user_id');
+            $table->integer('rule_id');
             $table->timestamps();
         });
     }
