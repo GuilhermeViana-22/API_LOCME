@@ -9,7 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PerguntaController;
-use App\Http\Controllers\QuestionarioController;
+use App\Http\Controllers\DashboardController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +21,7 @@ Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 
 // Rotas de teste (se realmente necessário)
 Route::get('/me', [AuthController::class, 'me'])->name('me');
+Route::get('/log', [DashboardController::class, 'log'])->name('log');
 
 
   // Rotas para gestão de cargos (protegidas)
@@ -98,32 +99,6 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/{id}', [PerguntaController::class, 'update'])->name('api.perguntas.update');
         Route::delete('/{id}', [PerguntaController::class, 'destroy'])->name('api.perguntas.destroy');
     });
-
-
-
-
-
-
-
-
-    Route::prefix('questionarios')->group(function () {
-        // Rotas para perguntas
-        Route::get('tipo/{tipoId}/perguntas', [QuestionarioController::class, 'listarPerguntasPorTipo'])
-            ->name('api.questionarios.perguntas.por-tipo');
-
-        // Rotas para respostas
-        Route::post('tipo/{tipoId}/responder', [QuestionarioController::class, 'responderPorTipo'])
-            ->name('api.questionarios.responder.por-tipo');
-
-        Route::get('/progresso', [QuestionarioController::class, 'verificarProgresso'])
-            ->name('api.questionarios.progresso');
-
-        // Rotas existentes que você mencionou
-        Route::get('/responder', [QuestionarioController::class, 'responder'])->name('api.questionarios.responder');
-        Route::get('/{id}/respostas', [QuestionarioController::class, 'respostas'])->name('api.questionarios.respostas');
-        Route::get('/{id}/respostas/usuario', [QuestionarioController::class, 'respostasUsuario'])->name('api.questionarios.respostas.usuario');
-    });
-
 
     // Rotas para gestão de unidades (protegidas)
     Route::prefix('unidades')->group(function () {
