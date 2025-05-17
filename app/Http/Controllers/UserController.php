@@ -30,7 +30,7 @@ class UserController extends Controller
      * @queryParam sort string Campo para ordena��o (name, email, created_at). Example: name
      * @queryParam order string Dire��o da ordena��o (asc, desc). Example: asc
      */
-  public function index(UsersIndexRequest $request)
+    public function index(UsersIndexRequest $request)
     {
         try {
             $query = $this->applyFilters(User::query(), $request);
@@ -77,7 +77,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::with(['roles', 'unidade', 'cargo', 'activityLogs'])
-                   ->findOrFail($id);
+            ->findOrFail($id);
 
         return new UserResource($user);
     }
@@ -192,7 +192,6 @@ class UserController extends Controller
      */
     private function applyFilters($query, $request)
     {
-
         if ($request->filled('ativo')) {
             $query->where('ativo', $request->ativo);
         }
@@ -205,6 +204,15 @@ class UserController extends Controller
             $query->where('user_id', $request->user_id);
         }
 
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%'); // Busca parcial
+        }
+
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->email . '%'); // Busca parcial
+        }
+
+        return $query;
     }
 
     /**
@@ -223,10 +231,8 @@ class UserController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => 'Usuários recuperadas com sucesso',
-            'data' => UserCollection::collection($paginatedResults),
-            'meta' => $this->buildMetaData($paginatedResults, $request),
-            'links' => $this->buildPaginationLinks($paginatedResults)
+            'message' => 'Usuários recuperados com sucesso',
+            'data' => new UserCollection($paginatedResults),  // Correção aqui
         ], Response::HTTP_OK);
     }
 

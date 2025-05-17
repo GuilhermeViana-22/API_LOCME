@@ -23,6 +23,33 @@ Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 Route::get('/me', [AuthController::class, 'me'])->name('me');
 
 
+  // Rotas para gestão de cargos (protegidas)
+    Route::prefix('cargos')->group(function () {
+        Route::get('/', [CargoController::class, 'index'])->name('api.cargos.index');
+        Route::post('/', [CargoController::class, 'store'])->name('api.cargos.store');
+        Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
+        Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
+        Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
+    });
+
+
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::post('/', [UserController::class, 'store']);
+        Route::get('/{id}', [UserController::class, 'show']);
+        Route::put('/{id}', [UserController::class, 'update']);
+        Route::delete('/{id}', [UserController::class, 'destroy']);
+
+        Route::post('/{id}/activate', [UserController::class, 'activate']);
+        Route::post('/{id}/deactivate', [UserController::class, 'deactivate']);
+
+        Route::post('/{id}/assign-role', [UserController::class, 'assignRole']);
+        Route::post('/{id}/remove-role', [UserController::class, 'removeRole']);
+    });
+
+
+
 // // Rotas para gestão de usuários (protegidas e com verificação de permissões)
 // Route::prefix('users')->group(function () {
 //     //listar todos os ususarios
@@ -73,30 +100,8 @@ Route::middleware('auth:api')->group(function () {
     });
 
 
-    // Rotas para gestão de cargos (protegidas)
-    Route::prefix('cargos')->group(function () {
-        Route::get('/', [CargoController::class, 'index'])->name('api.cargos.index');
-        Route::post('/', [CargoController::class, 'store'])->name('api.cargos.store');
-        Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
-        Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
-        Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
-    });
 
 
-
-    Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::post('/', [UserController::class, 'store']);
-        Route::get('/{id}', [UserController::class, 'show']);
-        Route::put('/{id}', [UserController::class, 'update']);
-        Route::delete('/{id}', [UserController::class, 'destroy']);
-
-        Route::post('/{id}/activate', [UserController::class, 'activate']);
-        Route::post('/{id}/deactivate', [UserController::class, 'deactivate']);
-
-        Route::post('/{id}/assign-role', [UserController::class, 'assignRole']);
-        Route::post('/{id}/remove-role', [UserController::class, 'removeRole']);
-    });
 
 
 
