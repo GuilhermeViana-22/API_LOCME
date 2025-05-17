@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Sistema de Gerenciamento - DECOLA SCHOOL",
-        "description": "API para gerenciamento DECOLA SCHOOL",
+        "title": "Sistema de Gerenciamento - BOB FLOW",
+        "description": "API para gerenciamento BOB FLOW",
         "contact": {
             "email": "suporte@sistema.com"
         },

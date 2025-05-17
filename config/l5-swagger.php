@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'API DECOLA SCHOOL',
+                'title' => 'API BOB FLOW',
                 'description' => 'Documenta��o da API',
                 'version' => '1.0.0', // Adicionei a vers�o, � uma boa pr�tica
             ],

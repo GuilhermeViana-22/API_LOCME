@@ -30,9 +30,9 @@ use App\Http\Requests\UserRegisterValidationRequest;
 
 /**
  * @OA\Info(
- *     title="Sistema de Gerenciamento - DECOLA SCHOOL",
+ *     title="Sistema de Gerenciamento - BOB FLOW",
  *     version="1.0.0",
- *     description="API para gerenciamento DECOLA SCHOOL",
+ *     description="API para gerenciamento BOB FLOW",
  *     @OA\Contact(email="suporte@sistema.com")
  * )
  *

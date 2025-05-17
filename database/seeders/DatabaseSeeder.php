@@ -22,11 +22,6 @@ class DatabaseSeeder extends Seeder
             LogSeeder::class,
             PermissionSeeder::class,
             PassportSeeder::class,
-            PerguntaSeeder::class,
-            TipoUnidadeSeeder::class,
-            TipoPerguntaSeeder::class,
-            PeriodicidadeSeeder::class,
-            UnidadesTableSeeder::class,
             UserSeeder::class,
         ]);
     }
