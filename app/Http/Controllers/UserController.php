@@ -31,19 +31,28 @@ class UserController extends Controller
      * @queryParam order string Dire��o da ordena��o (asc, desc). Example: asc
      */
     public function index(UsersIndexRequest $request)
-    {
-        try {
-            $query = $this->applyFilters(User::query(), $request);
-            $unidades = $this->paginateResults($query, $request);
-            return $this->buildPaginatedResponse($unidades, $request);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Falha ao recuperar usuarios',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+{
+    try {
+        $query = User::query()->with(['rules', 'unidade', 'cargo', 'logs']);
+        $query = $this->applyFilters($query, $request);
+
+        // Ordenação padrão
+        $sortField = $request->input('sort', 'name');
+        $sortOrder = $request->input('order', 'asc');
+        $query->orderBy($sortField, $sortOrder);
+
+        $perPage = $request->input('per_page', 10); // 10 itens por página padrão
+        $users = $query->paginate($perPage);
+
+        return $this->buildPaginatedResponse($users, $request);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Falha ao recuperar usuários',
+            'error' => $e->getMessage()
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
 
     /**
      * Criar novo usu�rio
@@ -228,14 +237,29 @@ class UserController extends Controller
      * Constroi a resposta padronizada com paginação
      */
     private function buildPaginatedResponse($paginatedResults, $request)
-    {
-        return response()->json([
-            'success' => true,
-            'message' => 'Usuários recuperados com sucesso',
-            'data' => new UserCollection($paginatedResults),  // Correção aqui
-        ], Response::HTTP_OK);
-    }
-
+{
+    return response()->json([
+        'success' => true,
+        'message' => 'Usuários recuperados com sucesso',
+        'data' => [
+            'data' => UserResource::collection($paginatedResults->items()),
+            'meta' => [
+                'total' => $paginatedResults->total(),
+                'per_page' => $paginatedResults->perPage(),
+                'current_page' => $paginatedResults->currentPage(),
+                'last_page' => $paginatedResults->lastPage(),
+                'from' => $paginatedResults->firstItem(),
+                'to' => $paginatedResults->lastItem(),
+            ],
+            'links' => [
+                'first' => $paginatedResults->url(1),
+                'last' => $paginatedResults->url($paginatedResults->lastPage()),
+                'prev' => $paginatedResults->previousPageUrl(),
+                'next' => $paginatedResults->nextPageUrl(),
+            ],
+        ],
+    ], Response::HTTP_OK);
+}
     /**
      * Constroi os metadados da paginação
      */

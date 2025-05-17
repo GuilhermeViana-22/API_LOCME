@@ -6,20 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UsersIndexRequest extends FormRequest
 {
-  
+
     public function rules()
     {
         return [
-            'page' => 'sometimes|integer|min:1',
-            'per_page' => 'sometimes|integer|min:1|max:100',
-            'search' => 'sometimes|string|max:255',
-            'status_id' => 'sometimes|exists:status,id',
-            'situacao_id' => 'sometimes|exists:situacoes,id',
-            'cargo_id' => 'sometimes|exists:cargos,id',
-            'unidade_id' => 'sometimes|exists:unidades,id',
-            'ativo' => 'sometimes|boolean',
-            'sort_by' => 'sometimes|in:name,email,created_at,ultimo_acesso',
-            'sort_dir' => 'sometimes|in:asc,desc',
+              'page' => 'sometimes|integer|min:1',
+        'per_page' => 'sometimes|integer|min:1|max:100',
+        'name' => 'sometimes|string|max:255',
+        'email' => 'sometimes|string|email|max:255',
+        'ativo' => 'sometimes|boolean',
+        'unidade_id' => 'sometimes|integer|exists:unidades,id',
+        'cargo_id' => 'sometimes|integer|exists:cargos,id',
+        'sort' => 'sometimes|string|in:name,email,created_at,updated_at',
+        'order' => 'sometimes|string|in:asc,desc',
         ];
     }
 }
