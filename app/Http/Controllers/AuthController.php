@@ -234,35 +234,52 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function login(LoginRequest $request)
-    {
-        try {
-            $credentials = $request->only('email', 'password');
 
-            if (!auth()->attempt($credentials)) {
-                return response()->json(['message' => 'Credenciais inválidas'], 401);
-            }
+     public function login(LoginRequest $request)
+{
+    try {
+        $credentials = $request->only('email', 'password');
 
-            $user = auth()->user();
-            $tokenResult = $user->createToken('Personal Access Token');
-            $token = $tokenResult->accessToken;
-
-            // Registra o acesso (se necessário)
-            $this->logAccess($user->id, $request->ip(), true, $user->name, $request->path());
-
+        if (!auth()->attempt($credentials)) {
             return response()->json([
-                'user' => $user,
+                'message' => 'Credenciais inválidas',
+                'errors' => [
+                    'email' => ['Credenciais fornecidas são inválidas.']
+                ]
+            ], 401);
+        }
+
+        $user = auth()->user();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->accessToken;
+
+        // Registra o acesso
+        $this->logAccess($user->id, $request->ip(), true, $user->name, $request->path());
+
+        // Retorna apenas os campos necessários do usuário
+        return response()->json([
+            'data' => [  // Adicionando um nível 'data' para padronização
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'telefone_celular' => $user->telefone_celular
+                    // Adicione outros campos necessários
+                ],
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'expires_at' => $tokenResult->token->expires_at
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Erro ao realizar login',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
-        }
+                'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
+            ]
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Erro ao realizar login',
+            'error' => config('app.debug') ? $e->getMessage() : null
+        ], 500);
     }
+}
+
     /**
      * @OA\Get(
      *     path="/api/me",
