@@ -9,7 +9,9 @@ use Ramsey\Uuid\Uuid;
 
 class Log extends Model
 {
-    use HasFactory; // Adicionei o trait HasFactory para facilitar a criação de registros
+    use HasFactory;
+
+    // Adicionei o trait HasFactory para facilitar a criação de registros
 
     protected $table = 'logs';
 
@@ -65,7 +67,7 @@ class Log extends Model
                     'autenticado' => $autenticado,
                     'rota' => $rota
                 ]),
-                'exception' => (string) $exception,
+                'exception' => (string)$exception,
                 'failed_at' => now(),
             ]);
 
@@ -73,7 +75,7 @@ class Log extends Model
         } catch (\Exception $e) {
             // Fallback: Registrar em um arquivo de log se tudo falhar
             \Log::error('Falha ao registrar log e erro', [
-                'original_exception' => (string) $exception,
+                'original_exception' => (string)$exception,
                 'log_error' => $e->getMessage(),
                 'context' => [
                     'client_id' => $client_id,
@@ -89,7 +91,16 @@ class Log extends Model
     /**
      * Método para registrar logs comuns
      */
-    public static function registrar($client_id, $ip, $autenticado = true, $name, $rota)
+    /**
+     * Método para registrar logs comuns
+     */
+    public static function registrar(
+        int    $client_id,
+        string $ip,
+        string $name,
+        string $rota,
+        bool   $autenticado = true
+    )
     {
         try {
             return self::create([
