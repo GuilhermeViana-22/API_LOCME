@@ -819,7 +819,7 @@ class AuthController extends Controller
         return $token;
     }
 
-    private function logAccess($userId, $ip, $autenticado = true, $name = null,  $rota)
+    private function logAccess($userId, $ip, $autenticado = true, $name = null,  $rota = null)
     {
 
         $this->Log($userId, $ip, $autenticado, $name, $rota);
