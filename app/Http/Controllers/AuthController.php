@@ -134,12 +134,7 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->accessToken;
 
             // Registra o log de logout
-            $this->logAccess(
-                $user->id,
-                $request->ip(),
-                true, // autenticado
-                $user->name, // name/action
-                $request->path() // rota
+            $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
             );
 
             DB::commit();
@@ -254,8 +249,7 @@ class AuthController extends Controller
         $token = $tokenResult->accessToken;
 
         // Registra o acesso
-        $this->logAccess($user->id, $request->ip(), true, $user->name, $request->path());
-
+        $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
         // Retorna apenas os campos necessários do usuário
         return response()->json([
             'data' => [  // Adicionando um nível 'data' para padronização
@@ -325,12 +319,7 @@ class AuthController extends Controller
             );
         }
 
-        $this->logAccess(
-            $user->id,
-            $request->ip(),
-            true, // autenticado
-            $user->name, // name/action
-            $request->path() // rota
+        $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
         );
 
         return new UserResource($user);
@@ -437,12 +426,7 @@ class AuthController extends Controller
         $user->token()->revoke();
 
         // Registra o log de logout
-        $this->logAccess(
-            $user->id,
-            $request->ip(),
-            true, // autenticado
-            $user->name, // name/action
-            $request->path() // rota
+        $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
         );
 
         return response()->json([
@@ -487,7 +471,7 @@ class AuthController extends Controller
      * )
      */
 
-    public function log($client_id, $ip, $autenticado = true, $name, $rota)
+    public function log($client_id, $ip, $rota, $autenticado = true, $name = null)
     {
         // Verifique se o modelo Log está sendo importado corretamente
         if (!class_exists(Log::class)) {
@@ -819,9 +803,8 @@ class AuthController extends Controller
         return $token;
     }
 
-    private function logAccess($userId, $ip, $autenticado = true, $name = null,  $rota = null)
+    private function logAccess($userId, $ip, $rota, $autenticado = true, $name = null)
     {
-
-        $this->Log($userId, $ip, $autenticado, $name, $rota);
+        $this->Log($userId, $ip, $rota, $autenticado, $name);
     }
 }
