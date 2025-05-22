@@ -10,8 +10,13 @@ use App\Http\Controllers\CargoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PerguntaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WebhookController;
 
 use Illuminate\Support\Facades\Route;
+
+// Webhooks (no auth required)
+Route::post('/webhook/frontend', [WebhookController::class, 'handleFrontend']);
+Route::post('/webhook/backend', [WebhookController::class, 'handleBackend']);
 
 // Rotas públicas para autenticação e gerenciamento de conta
 Route::post('/register', [AuthController::class, 'register'])->name('api.register');
