@@ -21,10 +21,11 @@ class WebhookController extends Controller
     private function process(Request $request, string $scriptPath, string $logPath)
     {
         $secret = env('GITHUB_WEBHOOK_SECRET');
-        $payload = $request->getContent();
+        $payload = rtrim($request->getContent(), "\r\n");
         $expectedSignature = 'sha256=' . hash_hmac('sha256', $payload, $secret);
         $receivedSignature = $request->header('X-Hub-Signature-256');
-        
+
+        Log::info('[Webhook] RAW Laravel Payload:', [$request->getContent()]);
         Log::info('[Webhook] Received signature:', ['header' => $receivedSignature]);
         Log::info('[Webhook] Expected signature:', ['calculated' => $expectedSignature]);
         
