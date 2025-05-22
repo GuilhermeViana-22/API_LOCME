@@ -135,7 +135,6 @@ class AuthController extends Controller
 
             // Registra o log de logout
             $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
-            );
 
             DB::commit();
 
@@ -320,7 +319,6 @@ class AuthController extends Controller
         }
 
         $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
-        );
 
         return new UserResource($user);
     }
@@ -427,7 +425,6 @@ class AuthController extends Controller
 
         // Registra o log de logout
         $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
-        );
 
         return response()->json([
             'message' => 'Logout realizado com sucesso'
