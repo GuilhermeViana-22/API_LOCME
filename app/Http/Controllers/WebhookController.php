@@ -23,7 +23,10 @@ class WebhookController extends Controller
         $payload = $request->getContent();
         $expectedSignature = 'sha256=' . hash_hmac('sha256', $payload, $secret);
         $receivedSignature = $request->header('X-Hub-Signature-256');
-
+        
+        Log::info('[Webhook] Received signature:', ['header' => $receivedSignature]);
+        Log::info('[Webhook] Expected signature:', ['calculated' => $expectedSignature]);
+        
         if (!hash_equals($expectedSignature, $receivedSignature)) {
             Log::warning('Invalid webhook signature.', [
                 'expected' => $expectedSignature,
