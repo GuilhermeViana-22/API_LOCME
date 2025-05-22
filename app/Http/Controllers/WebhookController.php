@@ -9,6 +9,7 @@ class WebhookController extends Controller
 {
     public function handleFrontend(Request $request)
     {
+        Log::info('[Webhook] Frontend endpoint was hit.');
         return $this->process($request, '/home/bobflows/deploy-frontend.sh', '/home/bobflows/deploy.log');
     }
 
