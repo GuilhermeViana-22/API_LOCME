@@ -123,32 +123,67 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
 
+            // Verificação de email duplicado
+            if (User::where('email', $request->email)->exists()) {
+                return response()->json([
+                    'errors' => [
+                        'email' => ['Este email já está cadastrado']
+                    ],
+                    'message' => 'O email informado já está em uso'
+                ], 422);
+            }
+
             $data = $request->validated();
             $data['password'] = bcrypt($data['password']);
-
-            // Remove o campo foto_perfil se existir no request
             unset($data['foto_perfil']);
 
             $user = User::create($data);
-
             $token = $user->createToken('auth_token')->accessToken;
 
-            // Registra o log de logout
             $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
 
             DB::commit();
 
             return response()->json([
-                'user' => $user,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'telefone_celular' => $user->telefone_celular,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at
+                ],
                 'access_token' => $token,
                 'token_type' => 'Bearer'
-            ], Response::HTTP_CREATED);
+            ], 201);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+
+            if ($e->errorInfo[1] == 1062) {
+                return response()->json([
+                    'errors' => [
+                        'email' => ['Este email já está cadastrado']
+                    ],
+                    'message' => 'O email informado já está em uso'
+                ], 422);
+            }
+
+            return response()->json([
+                'errors' => [
+                    'general' => ['Erro no banco de dados']
+                ],
+                'message' => 'Erro durante o registro'
+            ], 500);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Erro ao registrar usuário',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'errors' => [
+                    'general' => ['Erro inesperado']
+                ],
+                'message' => 'Erro ao registrar usuário'
+            ], 500);
         }
     }
 
