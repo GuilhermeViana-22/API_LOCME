@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UserRegisterValidationRequest extends FormRequest
 {
@@ -15,14 +14,16 @@ class UserRegisterValidationRequest extends FormRequest
             'telefone_celular' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
+
+            // Campos opcionais
             'cpf' => 'nullable|string',
-            'data_nascimento' => 'nullable|date_format:Y-m-d',
-            'genero' => 'nullable|string|in:masculino,feminino,outro,prefiro não informar',
+            'data_nascimento' => 'nullable|date',
+            'genero' => 'nullable|string',
             'cargo_id' => 'nullable|integer',
             'unidade_id' => 'nullable|integer',
             'status_id' => 'nullable|integer',
-            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ativo' => 'sometimes|boolean',
+            'foto_perfil' => 'nullable|image',
+            'ativo' => 'nullable|boolean',
             'situacao_id' => 'nullable|integer'
         ];
     }
@@ -30,26 +31,22 @@ class UserRegisterValidationRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'O campo nome completo é obrigatório.',
-            'name.max' => 'O nome não pode exceder 255 caracteres.',
-            'email.required' => 'O campo email é obrigatório.',
-            'email.email' => 'Informe um email válido.',
-            'email.max' => 'O email não pode exceder 255 caracteres.',
-            'telefone_celular.required' => 'O telefone celular é obrigatório.',
-            'telefone_celular.max' => 'O telefone não pode exceder 20 caracteres.',
-            'password.required' => 'A senha é obrigatória.',
-            'password.min' => 'A senha deve ter no mínimo 8 caracteres.',
-            'password.confirmed' => 'As senhas não coincidem.',
-            'password_confirmation.required' => 'A confirmação de senha é obrigatória.'
-        ];
-    }
+            // Mensagens para campos obrigatórios
+            'name.required' => 'O nome completo é obrigatório',
+            'email.required' => 'O email é obrigatório',
+            'email.email' => 'Digite um email válido',
+            'telefone_celular.required' => 'O telefone é obrigatório',
+            'password.required' => 'A senha é obrigatória',
+            'password.min' => 'A senha deve ter no mínimo 8 caracteres',
+            'password.confirmed' => 'As senhas não coincidem',
+            'password_confirmation.required' => 'Confirme sua senha',
 
-    public function prepareForValidation()
-    {
-        if ($this->has('ativo') && is_string($this->ativo)) {
-            $this->merge([
-                'ativo' => filter_var($this->ativo, FILTER_VALIDATE_BOOLEAN)
-            ]);
-        }
+            // Mensagens genéricas para campos opcionais
+            '*.max' => 'Este campo não pode exceder :max caracteres',
+            '*.date' => 'Digite uma data válida',
+            '*.integer' => 'Este campo deve ser um número',
+            '*.boolean' => 'Este campo deve ser verdadeiro ou falso',
+            'foto_perfil.image' => 'O arquivo deve ser uma imagem válida'
+        ];
     }
 }
