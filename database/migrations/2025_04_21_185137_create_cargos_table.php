@@ -23,7 +23,7 @@ class CreateCargosTable extends Migration
         $table->timestamps();
     });
 
-    // Alterando a tabela para usar utf8mb4, caso não tenha sido criada com essa codificação
+    // Alterando a tabela para usar utf8mb4, caso nï¿½o tenha sido criada com essa codificaï¿½ï¿½o
     DB::statement("ALTER TABLE cargos CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 }
 
