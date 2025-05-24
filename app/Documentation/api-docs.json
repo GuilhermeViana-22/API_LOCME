@@ -1354,101 +1354,44 @@
                 ]
             }
         },
-        "/api/perguntas": {
+        "/api/permissions": {
             "get": {
                 "tags": [
-                    "Perguntas"
+                    "Permissões"
                 ],
-                "summary": "Lista todas as perguntas",
-                "description": "Retorna uma lista com todas as perguntas cadastradas no sistema",
-                "operationId": "a1df49494d8f5b2e8d5461ac4abe6d44",
+                "summary": "Listar todas as permissões",
+                "operationId": "27bb1606a7b293d1d49f57bb94ae71f7",
                 "responses": {
                     "200": {
-                        "description": "Lista de perguntas retornada com sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "questionario_id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "texto": {
-                                                "type": "string",
-                                                "example": "Qual é seu nível de satisfação?"
-                                            },
-                                            "created_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "updated_at": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
+                        "description": "Lista de permissões retornada com sucesso"
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao listar perguntas"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem detalhada do erro"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Erro interno no servidor"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
-                    "Perguntas"
+                    "Permissões"
                 ],
-                "summary": "Cria uma nova pergunta",
-                "description": "Cadastra uma nova pergunta no sistema",
-                "operationId": "d9c5c3447083ab038d1312c606e6ba96",
+                "summary": "Criar uma nova permissão",
+                "operationId": "37c918c86b5085b0eb088fa760c7175d",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "questionario_id",
-                                    "texto"
+                                    "name"
                                 ],
                                 "properties": {
-                                    "questionario_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "texto": {
+                                    "name": {
                                         "type": "string",
-                                        "example": "Qual é seu nível de satisfação?"
+                                        "example": "editar_usuarios"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Permissão para editar usuários"
                                     }
                                 },
                                 "type": "object"
@@ -1458,196 +1401,29 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Pergunta criada com sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "questionario_id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "texto": {
-                                            "type": "string",
-                                            "example": "Qual é seu nível de satisfação?"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Permissão criada com sucesso"
                     },
                     "422": {
-                        "description": "Dados inválidos",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Os dados fornecidos são inválidos"
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "texto": [
-                                                    "O campo texto é obrigatório."
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Dados inválidos"
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao criar pergunta"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem detalhada do erro"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Erro interno no servidor"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
-        "/api/perguntas/{id}": {
-            "get": {
+        "/api/rules/{rule}/permissions": {
+            "post": {
                 "tags": [
-                    "Perguntas"
+                    "Permissões"
                 ],
-                "summary": "Exibe uma pergunta específica",
-                "description": "Retorna os detalhes de uma pergunta pelo seu ID",
-                "operationId": "f73f40cf3ce604fb320ddb6ad461c238",
+                "summary": "Vincular permissão a uma regra",
+                "operationId": "18879864585522ddb27d7f22e2e18fe4",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "rule",
                         "in": "path",
-                        "description": "ID da pergunta",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Pergunta encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "questionario_id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "texto": {
-                                            "type": "string",
-                                            "example": "Qual é seu nível de satisfação?"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Pergunta não encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Pergunta não encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao exibir pergunta"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem detalhada do erro"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Perguntas"
-                ],
-                "summary": "Atualiza uma pergunta",
-                "description": "Atualiza os dados de uma pergunta existente",
-                "operationId": "2883d3df6c57fe58184383edc4bd8c43",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID da pergunta",
+                        "description": "ID da regra",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1659,14 +1435,13 @@
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "permission_id"
+                                ],
                                 "properties": {
-                                    "questionario_id": {
+                                    "permission_id": {
                                         "type": "integer",
                                         "example": 1
-                                    },
-                                    "texto": {
-                                        "type": "string",
-                                        "example": "Qual é seu nível de satisfação? (atualizado)"
                                     }
                                 },
                                 "type": "object"
@@ -1676,168 +1451,15 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Pergunta atualizada com sucesso",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "questionario_id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "texto": {
-                                            "type": "string",
-                                            "example": "Qual é seu nível de satisfação? (atualizado)"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Pergunta não encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Pergunta não encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Permissão vinculada à regra com sucesso"
                     },
                     "422": {
-                        "description": "Dados inválidos",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Os dados fornecidos são inválidos"
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "texto": [
-                                                    "O campo texto é obrigatório."
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Dados inválidos"
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao atualizar pergunta"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem detalhada do erro"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Erro interno no servidor"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Perguntas"
-                ],
-                "summary": "Remove uma pergunta",
-                "description": "Remove permanentemente uma pergunta do sistema",
-                "operationId": "6a9e2e4b977c27f63a4e98b5c085bb3f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID da pergunta",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Pergunta removida com sucesso"
-                    },
-                    "404": {
-                        "description": "Pergunta não encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Pergunta não encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao excluir pergunta"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Mensagem detalhada do erro"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/profile": {
@@ -2589,6 +2211,10 @@
     },
     "tags": [
         {
+            "name": "Permissões",
+            "description": "Gerenciamento de permissões"
+        },
+        {
             "name": "Autenticação",
             "description": "Autenticação"
         },
@@ -2603,10 +2229,6 @@
         {
             "name": "Cargos",
             "description": "Cargos"
-        },
-        {
-            "name": "Perguntas",
-            "description": "Perguntas"
         },
         {
             "name": "Perfil",

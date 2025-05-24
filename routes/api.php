@@ -1,14 +1,12 @@
 <?php
 
-use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\NotificationController;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PerguntaController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DashboardController;
 
 use Illuminate\Support\Facades\Route;
@@ -24,31 +22,37 @@ Route::get('/me', [AuthController::class, 'me'])->name('me');
 Route::get('/log', [DashboardController::class, 'log'])->name('log');
 
 
-  // Rotas para gestão de cargos (protegidas)
-    Route::prefix('cargos')->group(function () {
-        Route::get('/', [CargoController::class, 'index'])->name('api.cargos.index');
-        Route::post('/', [CargoController::class, 'store'])->name('api.cargos.store');
-        Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
-        Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
-        Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
-    });
+// Rotas para gestão de cargos (protegidas)
+Route::prefix('cargos')->group(function () {
+    Route::get('/', [CargoController::class, 'index'])->name('api.cargos.index');
+    Route::post('/', [CargoController::class, 'store'])->name('api.cargos.store');
+    Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
+    Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
+    Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
+});
 
 
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index']);
+    Route::post('/', [UserController::class, 'store']);
+    Route::get('/{id}', [UserController::class, 'show']);
+    Route::put('/{id}', [UserController::class, 'update']);
+    Route::delete('/{id}', [UserController::class, 'destroy']);
+    Route::post('/{id}/activate', [UserController::class, 'activate']);
+    Route::post('/{id}/deactivate', [UserController::class, 'deactivate']);
+    Route::post('/{id}/assign-role', [UserController::class, 'assignRole']);
+    Route::post('/{id}/remove-role', [UserController::class, 'removeRole']);
+});
 
-    Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::post('/', [UserController::class, 'store']);
-        Route::get('/{id}', [UserController::class, 'show']);
-        Route::put('/{id}', [UserController::class, 'update']);
-        Route::delete('/{id}', [UserController::class, 'destroy']);
 
-        Route::post('/{id}/activate', [UserController::class, 'activate']);
-        Route::post('/{id}/deactivate', [UserController::class, 'deactivate']);
+// Listar permissões
+Route::get('/permissions', [PermissionController::class, 'index']);
+// Criar nova permissão
+Route::post('/permissions', [PermissionController::class, 'store']);
+// Vincular permissão a uma regra
+Route::post('/rules/{rule}/permissions', [PermissionController::class, 'attachToRule']);
 
-        Route::post('/{id}/assign-role', [UserController::class, 'assignRole']);
-        Route::post('/{id}/remove-role', [UserController::class, 'removeRole']);
-    });
-
+// Rotas adicionais (atualizar, deletar, etc.)
 
 
 // // Rotas para gestão de usuários (protegidas e com verificação de permissões)
@@ -90,15 +94,6 @@ Route::middleware('auth:api')->group(function () {
 
     // Rotas de atividades e notificações
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
-
-    // Rotas para gestão de cargos (protegidas)
-    Route::prefix('perguntas')->group(function () {
-        Route::get('/', [PerguntaController::class, 'index'])->name('api.perguntas.index');
-        Route::post('/', [PerguntaController::class, 'store'])->name('api.perguntas.store');
-        Route::get('/{id}', [PerguntaController::class, 'show'])->name('api.perguntas.show');
-        Route::put('/{id}', [PerguntaController::class, 'update'])->name('api.perguntas.update');
-        Route::delete('/{id}', [PerguntaController::class, 'destroy'])->name('api.perguntas.destroy');
-    });
 
     // Rotas para gestão de unidades (protegidas)
     Route::prefix('unidades')->group(function () {

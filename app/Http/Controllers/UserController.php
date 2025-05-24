@@ -33,7 +33,7 @@ class UserController extends Controller
     public function index(UsersIndexRequest $request)
 {
     try {
-        $query = User::query()->with(['rules', 'unidade', 'cargo', 'logs']);
+        $query = User::query()->with(['unidade', 'cargo',  'logs', 'rulesUser.rule.permissions']);
         $query = $this->applyFilters($query, $request);
 
         // Ordenação padrão
