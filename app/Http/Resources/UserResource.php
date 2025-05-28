@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'genero' => $this->genero,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'unidade_id' => $this->unidade_id,
             'unidade' => $this->whenLoaded('unidade', function () {
                 return [
                     'id' => $this->unidade->id,

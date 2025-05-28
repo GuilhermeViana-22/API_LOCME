@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
@@ -104,18 +107,47 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
-        $user = User::findOrFail($id);
+        // Verifica se o usuário existe
+        $user = User::find($id);
 
-        $data = $request->only(['name', 'email', 'unidade_id', 'cargo_id', 'active']);
-
-        if ($request->password) {
-            $data['password'] = Hash::make($request->password);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuário não encontrado.'
+            ], 404);
         }
 
-        $user->update($data);
+        try {
+            $data = $request->validated();
 
-        return new UserResource($user->fresh()->load(['roles', 'unidade', 'cargo']));
+            // Remove campos não necessários
+            unset($data['password_confirmation']);
+
+            // Atualiza a senha apenas se foi fornecida
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                unset($data['password']);
+            }
+
+            // Atualiza os dados
+            $user->update($data);
+
+            return response()->json([
+                'success' => true,
+                'data' => new UserResource($user->fresh()->load(['unidade', 'cargo',  'logs', 'rulesUser.rule.permissions'])),
+                'message' => 'Dados do usuário atualizados com sucesso.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar os dados do usuário.',
+                'error' => env('APP_DEBUG') ? $e->getMessage() : null
+            ], 500);
+        }
     }
+
 
     /**
      * Remover usu�rio
