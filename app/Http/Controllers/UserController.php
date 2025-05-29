@@ -107,7 +107,6 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
-        // Verifica se o usuário existe
         $user = User::find($id);
 
         if (!$user) {
@@ -120,22 +119,22 @@ class UserController extends Controller
         try {
             $data = $request->validated();
 
-            // Remove campos não necessários
+            // Remover confirmação de senha se existir
             unset($data['password_confirmation']);
 
-            // Atualiza a senha apenas se foi fornecida
-            if (isset($data['password'])) {
+            // Se senha foi enviada, hash e mantém, senão remove para não atualizar
+            if (!empty($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
             } else {
                 unset($data['password']);
             }
 
-            // Atualiza os dados
+            // Atualiza o usuário com os dados filtrados
             $user->update($data);
 
             return response()->json([
                 'success' => true,
-                'data' => new UserResource($user->fresh()->load(['unidade', 'cargo',  'logs', 'rulesUser.rule.permissions'])),
+                'data' => new UserResource($user->fresh()->load(['unidade', 'cargo', 'logs', 'rulesUser.rule.permissions'])),
                 'message' => 'Dados do usuário atualizados com sucesso.'
             ]);
 
@@ -147,6 +146,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+
 
 
     /**

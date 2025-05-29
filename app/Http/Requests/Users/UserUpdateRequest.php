@@ -7,40 +7,50 @@ use Illuminate\Validation\Rules;
 
 class UserUpdateRequest extends FormRequest
 {
-    public function authorize()
+    protected function prepareForValidation()
     {
-        return true; // Permite que qualquer usuário faça a requisição
+        $input = $this->all();
+
+        // Campos que vamos ignorar no momento
+        $ignoreFields = ['permissions', 'role', 'role_since', 'id'];
+
+        foreach ($ignoreFields as $field) {
+            if (isset($input[$field])) {
+                unset($input[$field]);
+            }
+        }
+
+        $this->replace($input);
     }
 
     public function rules()
     {
-        $userId = $this->route('id'); // Obtém o ID da rota
+        $userId = $this->route('id');
 
         return [
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,'.$userId,
+            'email' => 'sometimes|email|unique:users,email,' . $userId,
             'password' => ['sometimes', 'confirmed', Rules\Password::defaults()],
-            'cpf' => 'nullable|string|max:14|unique:users,cpf,'.$userId,
+            'cpf' => 'nullable|string|max:14|unique:users,cpf,' . $userId,
             'data_nascimento' => 'nullable|date',
             'telefone_celular' => 'nullable|string|max:20',
             'genero' => 'nullable|string|in:masculino,feminino,outro',
             'cargo_id' => 'nullable|exists:cargos,id',
-            'unidade_id' => 'nullable',
+            'unidade_id' => 'nullable|exists:unidades,id',
             'status_id' => 'nullable|exists:status,id',
             'situacao_id' => 'nullable|exists:situacoes,id',
             'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ativo' => 'nullable|boolean'
+            'ativo' => 'nullable|boolean',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.sometimes' => 'O nome é obrigatório.',
-            'email.sometimes' => 'O e-mail é obrigatório.',
+            'name.string' => 'O nome deve ser uma string válida.',
+            'name.max' => 'O nome pode ter no máximo 255 caracteres.',
             'email.email' => 'O e-mail deve ser válido.',
             'email.unique' => 'Este e-mail já está em uso.',
-            'password.sometimes' => 'A senha é obrigatória.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
             'cpf.unique' => 'Este CPF já está cadastrado.',
             'data_nascimento.date' => 'A data de nascimento deve ser uma data válida.',
