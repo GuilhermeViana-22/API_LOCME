@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InterpretacoesController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UnidadeController;
@@ -29,6 +30,61 @@ Route::prefix('cargos')->group(function () {
     Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
     Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
     Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
+});
+
+
+
+
+Route::prefix('interpretacoes')->group(function () {
+    // Rota para listar todas as interpretações (com possibilidade de filtro por job)
+    Route::get('/', [InterpretacoesController::class, 'index'])
+        ->name('interpretacoes.index');
+
+    // Rota para exibir o formulário de upload/criação
+    Route::get('/create', [InterpretacoesController::class, 'create'])
+        ->name('interpretacoes.create');
+
+    // Rota para processar o upload de arquivos (XML ou JSON)
+    Route::post('/', [InterpretacoesController::class, 'store'])
+        ->name('interpretacoes.store');
+
+    // Rota para exibir uma interpretação específica
+    Route::get('/{interpretacoes}', [InterpretacoesController::class, 'show'])
+        ->name('interpretacoes.show');
+
+    // Rota para exibir o formulário de edição
+    Route::get('/{interpretacoes}/edit', [InterpretacoesController::class, 'edit'])
+        ->name('interpretacoes.edit');
+
+    // Rota para atualizar uma interpretação
+    Route::put('/{interpretacoes}', [InterpretacoesController::class, 'update'])
+        ->name('interpretacoes.update');
+
+    // Rota para deletar uma interpretação (soft delete)
+    Route::delete('/{interpretacoes}', [InterpretacoesController::class, 'destroy'])
+        ->name('interpretacoes.destroy');
+
+    // Rotas adicionais específicas para funcionalidades do sistema
+
+    // Pesquisar por número de job
+    Route::get('/job/{job}', [InterpretacoesController::class, 'searchByJob'])
+        ->name('interpretacoes.searchByJob');
+
+    // Upload específico de XML
+    Route::post('/upload-xml', [InterpretacoesController::class, 'uploadXml'])
+        ->name('interpretacoes.uploadXml');
+
+    // Upload específico de JSON
+    Route::post('/upload-json', [InterpretacoesController::class, 'uploadJson'])
+        ->name('interpretacoes.uploadJson');
+
+    // Atualizar status de uma interpretação
+    Route::patch('/{interpretacoes}/status', [InterpretacoesController::class, 'updateStatus'])
+        ->name('interpretacoes.updateStatus');
+
+    // Restaurar uma interpretação deletada (soft delete)
+    Route::post('/{interpretacoes}/restore', [InterpretacoesController::class, 'restore'])
+        ->name('interpretacoes.restore');
 });
 
 
