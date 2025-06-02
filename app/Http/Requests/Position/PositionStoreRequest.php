@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Cargos;
+namespace App\Http\Requests\positions;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CargoStoreRequest extends FormRequest
+class positionStoreRequest extends FormRequest
 {
 
     /**
@@ -15,7 +15,7 @@ class CargoStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome_cargo' => 'required|string|max:100',
+            'nome_position' => 'required|string|max:100',
             'nivel_hierarquico' => 'required|integer|min:1',
             'departamento' => 'required|string|max:50',
             'descricao' => 'nullable|string',
@@ -31,7 +31,7 @@ class CargoStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'nome_cargo.required' => 'O campo cargo é obrigatório.',
+            'nome_position.required' => 'O campo position é obrigatório.',
             'nivel_hierarquico.required' => 'O campo nível hierárquico é obrigatório.',
             'nivel_hierarquico.integer' => 'O campo nível hierárquico deve ser um número inteiro.',
             'nivel_hierarquico.min' => 'O campo nível hierárquico deve ser maior ou igual a 1.',

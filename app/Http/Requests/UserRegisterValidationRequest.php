@@ -19,7 +19,7 @@ class UserRegisterValidationRequest extends FormRequest
             'cpf' => 'nullable|string',
             'data_nascimento' => 'nullable|date',
             'genero' => 'nullable|string',
-            'cargo_id' => 'nullable|integer',
+            'position_id' => 'nullable|integer',
             'unidade_id' => 'nullable|integer',
             'status_id' => 'nullable|integer',
             'foto_perfil' => 'nullable|image',

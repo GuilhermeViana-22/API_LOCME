@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Cargos;
+namespace App\Http\Resources\Positions;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CargoResource extends JsonResource
+class PositionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

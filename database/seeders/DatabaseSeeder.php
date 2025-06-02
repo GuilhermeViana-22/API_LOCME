@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Cargo;
+use App\Models\Position;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            CargoSeeder::class,
+            PositionSeeder::class,
             RuleSeeder::class,
-            RuleUserSeeder::class,
+            RulePositionSeeder::class,
             RulePermissionSeeder::class,
             LogSeeder::class,
             PermissionSeeder::class,

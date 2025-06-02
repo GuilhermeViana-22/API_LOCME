@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Cargos;
+namespace App\Http\Requests\positions;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CargoShowRequest extends FormRequest
+class positionShowRequest extends FormRequest
 {
-  
+
     /**
      * Get the validation rules that apply to the request.
      *

@@ -29,14 +29,14 @@ class UserController extends Controller
      * @queryParam email string Filtro por email. Example: joao@example.com
      * @queryParam active boolean Filtro por status. Example: true
      * @queryParam unidade_id integer Filtro por unidade. Example: 1
-     * @queryParam cargo_id integer Filtro por cargo. Example: 1
+     * @queryParam position_id integer Filtro por position. Example: 1
      * @queryParam sort string Campo para ordena��o (name, email, created_at). Example: name
      * @queryParam order string Dire��o da ordena��o (asc, desc). Example: asc
      */
     public function index(UsersIndexRequest $request)
 {
     try {
-        $query = User::query()->with(['unidade', 'cargo',  'logs', 'rulesUser.rule.permissions']);
+        $query = User::query()->with(['unidade', 'position',  'logs', 'rulesPosition.rule.permissions']);
         $query = $this->applyFilters($query, $request);
 
         // Ordenação padrão
@@ -64,7 +64,7 @@ class UserController extends Controller
      * @bodyParam password string required Senha. Example: secret123
      * @bodyParam password_confirmation string required Confirma��o da senha. Example: secret123
      * @bodyParam unidade_id integer ID da unidade. Example: 1
-     * @bodyParam cargo_id integer ID do cargo. Example: 1
+     * @bodyParam position_id integer ID do position. Example: 1
      */
     public function store(UserStoreRequest $request)
     {
@@ -73,11 +73,11 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'unidade_id' => $request->unidade_id,
-            'cargo_id' => $request->cargo_id,
+            'position_id' => $request->position_id,
             'active' => $request->boolean('active', true),
         ]);
 
-        return (new UserResource($user->load(['roles', 'unidade', 'cargo'])))
+        return (new UserResource($user->load(['roles', 'unidade', 'position'])))
             ->response()
             ->setStatusCode(201);
     }
@@ -88,7 +88,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['roles', 'unidade', 'cargo', 'activityLogs'])
+        $user = User::with(['roles', 'unidade', 'position', 'activityLogs'])
             ->findOrFail($id);
 
         return new UserResource($user);
@@ -102,7 +102,7 @@ class UserController extends Controller
      * @bodyParam password string Senha. Example: newsecret123
      * @bodyParam password_confirmation string Confirma��o da senha. Example: newsecret123
      * @bodyParam unidade_id integer ID da unidade. Example: 1
-     * @bodyParam cargo_id integer ID do cargo. Example: 1
+     * @bodyParam position_id integer ID do position. Example: 1
      * @bodyParam active boolean Status do usu�rio. Example: true
      */
     public function update(UserUpdateRequest $request, $id)
@@ -134,7 +134,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => new UserResource($user->fresh()->load(['unidade', 'cargo', 'logs', 'rulesUser.rule.permissions'])),
+                'data' => new UserResource($user->fresh()->load(['unidade', 'position', 'logs', 'rulesUser.rule.permissions'])),
                 'message' => 'Dados do usuário atualizados com sucesso.'
             ]);
 

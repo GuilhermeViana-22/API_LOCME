@@ -4,29 +4,33 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreatePositionsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('cargos', function (Blueprint $table) {
-            $table->integer('id')->primary()->autoIncrement();
+        Schema::create('positions', function (Blueprint $table) {
+            $table->id();
             $table->string('position', 100);
             $table->integer('nivel_hierarquico');
             $table->string('departamento', 50);
             $table->text('descricao')->nullable();
-            $table->timestamp('criado_em')->nullable()->useCurrent();
-            $table->timestamp('atualizado_em')->nullable()->useCurrent();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('cargos');
+        Schema::dropIfExists('positions');
     }
-};
+}

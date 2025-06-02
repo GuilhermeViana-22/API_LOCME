@@ -28,22 +28,22 @@ class UserResource extends JsonResource
                     'nome_unidade' => $this->unidade->nome_unidade
                 ];
             }),
-            'cargo' => $this->whenLoaded('cargo', function () {
+            'position' => $this->whenLoaded('position', function () {
                 return [
-                    'id' => $this->cargo->id,
-                    'nome_cargo' => $this->cargo->nome_cargo,
-                    'nivel_hierarquico' => $this->cargo->nivel_hierarquico,
-                    'departamento' => $this->cargo->departamento,
+                    'id' => $this->position->id,
+                    'position' => $this->position->nome_position,
+                    'nivel_hierarquico' => $this->position->nivel_hierarquico,
+                    'departamento' => $this->position->departamento,
                 ];
             }),
-            'rules' => $this->whenLoaded('rulesUser', function () {
-                return $this->rulesUser->map(function ($ruleUser) {
+            'rules' => $this->whenLoaded('rulePosition', function () {
+                return $this->rulePosition->map(function ($rulePosition) {
                     return [
                         'rule' => [
-                            'id' => $ruleUser->rule->id,
-                            'name' => $ruleUser->rule->name,
-                            'description' => $ruleUser->rule->description,
-                            'permissions' => $ruleUser->rule->permissions->map(function ($permission) {
+                            'id' => $rulePosition->rule->id,
+                            'name' => $rulePosition->rule->name,
+                            'description' => $rulePosition->rule->description,
+                            'permissions' => $rulePosition->rule->permissions->map(function ($permission) {
                                 return [
                                     'id' => $permission->id,
                                     'name' => $permission->name,
@@ -51,7 +51,7 @@ class UserResource extends JsonResource
                                 ];
                             })
                         ],
-                        'assigned_at' => $ruleUser->created_at
+                        'assigned_at' => $rulePosition->created_at
                     ];
                 });
             }),

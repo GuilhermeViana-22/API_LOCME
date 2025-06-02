@@ -56,7 +56,7 @@ class AuthController extends Controller
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={"name", "cpf", "email", "password", "password_confirmation", "data_nascimento", "telefone_celular", "genero", "cargo_id", "unidade_id", "status_id"},
+     *                 required={"name", "cpf", "email", "password", "password_confirmation", "data_nascimento", "telefone_celular", "genero", "position_id", "unidade_id", "status_id"},
      *                 @OA\Property(property="name", type="string", example="João da Silva"),
      *                 @OA\Property(property="cpf", type="string", example="123.456.789-09"),
      *                 @OA\Property(property="email", type="string", format="email", example="joao@empresa.com"),
@@ -70,7 +70,7 @@ class AuthController extends Controller
      *                     enum={"masculino", "feminino", "outro", "prefiro não informar"},
      *                     example="masculino"
      *                 ),
-     *                 @OA\Property(property="cargo_id", type="integer", example=1),
+     *                 @OA\Property(property="position_id", type="integer", example=1),
      *                 @OA\Property(property="unidade_id", type="integer", example=1),
      *                 @OA\Property(property="status_id", type="integer", example=1),
      *                 @OA\Property(property="situacao_id", type="integer", example=1, nullable=true),
@@ -342,8 +342,8 @@ class AuthController extends Controller
 
         $user = User::with([
             'unidade',
-            'cargo',
-            'rulesUser.rule.permissions' // Carrega a cadeia completa: User → RuleUser → Rule → Permissions
+            'position',
+            'rulesUser.rule.permissions' // Carrega a cadeia completa: User → RulePosition → Rule → Permissions
         ])->findOrFail($request->get('id'));
 
         if (!$user) {

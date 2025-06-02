@@ -86,7 +86,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
@@ -98,7 +97,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'data_nascimento',
         'telefone_celular',
         'genero',
-        'cargo_id',
+        'position_id',
         'unidade_id',
         'status_id',
         'foto_perfil',
@@ -109,7 +108,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * The attributes that should be hidden for serialization.
-     *
      * @var array<int, string>
      */
     protected $hidden = [
@@ -119,20 +117,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * The attributes that should be cast.
-     *
      * @var array<string, string>
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-
-    // app/Models/User.php
-
-    public function cargo()
-    {
-        return $this->belongsTo(Cargo::class);
-    }
 
     public function unidade()
     {
@@ -144,15 +133,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Log::class, 'client_id'); // Especifica que a FK é client_id
     }
 
-    public function rulesUser()
+    public function rulesPosition()
     {
-        return $this->hasMany(RuleUser::class, 'user_id'); // Especifica que a FK é user_id
+        return $this->hasMany(RulePosition::class, 'position_id'); // Especifica que a FK é user_id
     }
 
-    // Adicione este relacionamento também para acesso direto
-public function rules()
-{
-    return $this->belongsToMany(Rule::class, 'rule_users');
-}
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id', 'id');
+    }
 
 }

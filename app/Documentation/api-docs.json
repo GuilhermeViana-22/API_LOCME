@@ -30,7 +30,7 @@
                                     "data_nascimento",
                                     "telefone_celular",
                                     "genero",
-                                    "cargo_id",
+                                    "position_id",
                                     "unidade_id",
                                     "status_id"
                                 ],
@@ -77,7 +77,7 @@
                                         ],
                                         "example": "masculino"
                                     },
-                                    "cargo_id": {
+                                    "position_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -781,17 +781,17 @@
                 }
             }
         },
-        "/api/cargos": {
+        "/api/positions": {
             "get": {
                 "tags": [
-                    "Cargos"
+                    "positions"
                 ],
-                "summary": "Lista todos os cargos cadastrados no sistema",
-                "description": "Retorna um array com todos os cargos do sistema",
+                "summary": "Lista todos os positions cadastrados no sistema",
+                "description": "Retorna um array com todos os positions do sistema",
                 "operationId": "143b348d146eb6cfc359a591f24a1c6f",
                 "responses": {
                     "200": {
-                        "description": "Listagem de cargos bem-sucedida",
+                        "description": "Listagem de positions bem-sucedida",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -802,7 +802,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargos recuperados com sucesso"
+                                            "example": "positions recuperados com sucesso"
                                         },
                                         "data": {
                                             "type": "array",
@@ -846,7 +846,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Falha ao recuperar cargos"
+                                            "example": "Falha ao recuperar positions"
                                         },
                                         "error": {
                                             "type": "string",
@@ -867,10 +867,10 @@
             },
             "post": {
                 "tags": [
-                    "Cargos"
+                    "positions"
                 ],
-                "summary": "Cria um novo cargo no sistema",
-                "description": "Cadastra um novo cargo com os dados fornecidos",
+                "summary": "Cria um novo position no sistema",
+                "description": "Cadastra um novo position com os dados fornecidos",
                 "operationId": "023dc3f03a8ad84b13b9564e0c1a6cd6",
                 "requestBody": {
                     "required": true,
@@ -893,7 +893,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Cargo criado com sucesso",
+                        "description": "position criado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -904,7 +904,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo criado com sucesso"
+                                            "example": "position criado com sucesso"
                                         },
                                         "data": {
                                             "properties": {
@@ -973,7 +973,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Falha ao criar cargo"
+                                            "example": "Falha ao criar position"
                                         },
                                         "error": {
                                             "type": "string",
@@ -993,19 +993,19 @@
                 ]
             }
         },
-        "/api/cargos/{id}": {
+        "/api/positions/{id}": {
             "get": {
                 "tags": [
-                    "Cargos"
+                    "positions"
                 ],
-                "summary": "Recupera um cargo específico",
-                "description": "Retorna os dados de um cargo pelo seu ID",
+                "summary": "Recupera um position específico",
+                "description": "Retorna os dados de um position pelo seu ID",
                 "operationId": "921eaac3d029d1b526ebb17b6e65aad3",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID do cargo",
+                        "description": "ID do position",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1014,7 +1014,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cargo recuperado com sucesso",
+                        "description": "position recuperado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1025,7 +1025,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo recuperado com sucesso"
+                                            "example": "position recuperado com sucesso"
                                         },
                                         "data": {
                                             "properties": {
@@ -1055,7 +1055,7 @@
                         }
                     },
                     "404": {
-                        "description": "Cargo não encontrado",
+                        "description": "position não encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1066,7 +1066,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo não encontrado"
+                                            "example": "position não encontrado"
                                         }
                                     },
                                     "type": "object"
@@ -1086,7 +1086,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Falha ao recuperar cargo"
+                                            "example": "Falha ao recuperar position"
                                         },
                                         "error": {
                                             "type": "string",
@@ -1107,16 +1107,16 @@
             },
             "put": {
                 "tags": [
-                    "Cargos"
+                    "positions"
                 ],
-                "summary": "Atualiza um cargo existente",
-                "description": "Atualiza os dados de um cargo pelo seu ID",
+                "summary": "Atualiza um position existente",
+                "description": "Atualiza os dados de um position pelo seu ID",
                 "operationId": "fbd188a2942e4d9ccc044377c04fba1b",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID do cargo a ser atualizado",
+                        "description": "ID do position a ser atualizado",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1144,7 +1144,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Cargo atualizado com sucesso",
+                        "description": "position atualizado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1155,7 +1155,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo atualizado com sucesso"
+                                            "example": "position atualizado com sucesso"
                                         },
                                         "data": {
                                             "properties": {
@@ -1185,7 +1185,7 @@
                         }
                     },
                     "404": {
-                        "description": "Cargo não encontrado",
+                        "description": "position não encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1196,7 +1196,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo não encontrado"
+                                            "example": "position não encontrado"
                                         }
                                     },
                                     "type": "object"
@@ -1244,7 +1244,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Falha ao atualizar cargo"
+                                            "example": "Falha ao atualizar position"
                                         },
                                         "error": {
                                             "type": "string",
@@ -1265,16 +1265,16 @@
             },
             "delete": {
                 "tags": [
-                    "Cargos"
+                    "positions"
                 ],
-                "summary": "Remove um cargo do sistema",
-                "description": "Remove permanentemente um cargo pelo seu ID",
+                "summary": "Remove um position do sistema",
+                "description": "Remove permanentemente um position pelo seu ID",
                 "operationId": "70272059823dc19b8d5e9c398a9bb616",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID do cargo a ser removido",
+                        "description": "ID do position a ser removido",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1283,7 +1283,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cargo removido com sucesso",
+                        "description": "position removido com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1294,7 +1294,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo removido com sucesso"
+                                            "example": "position removido com sucesso"
                                         }
                                     },
                                     "type": "object"
@@ -1303,7 +1303,7 @@
                         }
                     },
                     "404": {
-                        "description": "Cargo não encontrado",
+                        "description": "position não encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1314,7 +1314,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cargo não encontrado"
+                                            "example": "position não encontrado"
                                         }
                                     },
                                     "type": "object"
@@ -1334,7 +1334,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Falha ao remover cargo"
+                                            "example": "Falha ao remover position"
                                         },
                                         "error": {
                                             "type": "string",
@@ -2227,8 +2227,8 @@
             "description": "Logs"
         },
         {
-            "name": "Cargos",
-            "description": "Cargos"
+            "name": "positions",
+            "description": "positions"
         },
         {
             "name": "Perfil",

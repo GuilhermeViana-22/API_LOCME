@@ -10,13 +10,14 @@ class UsersIndexRequest extends FormRequest
     public function rules()
     {
         return [
-              'page' => 'sometimes|integer|min:1',
+
+        'page' => 'sometimes|integer|min:1',
         'per_page' => 'sometimes|integer|min:1|max:100',
         'name' => 'sometimes|string|max:255',
         'email' => 'sometimes|string|email|max:255',
         'ativo' => 'sometimes|boolean',
         'unidade_id' => 'sometimes|integer|exists:unidades,id',
-        'cargo_id' => 'sometimes|integer|exists:cargos,id',
+        'position_id' => 'sometimes|integer|exists:positions,id',
         'sort' => 'sometimes|string|in:name,email,created_at,updated_at',
         'order' => 'sometimes|string|in:asc,desc',
         ];

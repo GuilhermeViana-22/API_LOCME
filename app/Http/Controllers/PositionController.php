@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cargo;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Requests\Cargos\CargoStoreRequest;
-use App\Http\Requests\Cargos\CargoUpdateRequest;
+use App\Http\Requests\positions\positionStoreRequest;
+use App\Http\Requests\positions\positionUpdateRequest;
 
-class CargoController extends Controller
+class PositionController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/cargos",
-     *     summary="Lista todos os cargos cadastrados no sistema",
-     *     description="Retorna um array com todos os cargos do sistema",
-     *     tags={"Cargos"},
+     *     path="/api/positions",
+     *     summary="Lista todos os positions cadastrados no sistema",
+     *     description="Retorna um array com todos os positions do sistema",
+     *     tags={"positions"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Listagem de cargos bem-sucedida",
+     *         description="Listagem de positions bem-sucedida",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -30,7 +30,7 @@ class CargoController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Cargos recuperados com sucesso"
+     *                 example="positions recuperados com sucesso"
      *             ),
      *             @OA\Property(
      *                 property="data",
@@ -50,7 +50,7 @@ class CargoController extends Controller
      *         description="Erro interno do servidor",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao recuperar cargos"),
+     *             @OA\Property(property="message", type="string", example="Falha ao recuperar positions"),
      *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
      *         )
      *     )
@@ -59,28 +59,39 @@ class CargoController extends Controller
     public function index()
     {
         try {
-            $cargos = Cargo::all();
+            $positions = Position::with([
+                'rules' => function ($query) {
+                    $query->select('rules.id', 'rules.name');
+                },
+                'rulePositions' => function ($query) {
+                    $query->with(['rule' => function ($subQuery) {
+                        $subQuery->select('id', 'name');
+                    }]);
+                }
+            ])->get();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cargos recuperados com sucesso',
-                'data' => $cargos
-            ], Response::HTTP_OK);
+                'message' => 'Positions recuperados com sucesso',
+                'data' => $positions
+            ], 200);
+
         } catch (\Exception $e) {
+
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao recuperar cargos',
+                'message' => 'Falha ao recuperar positions',
                 'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], 500);
         }
     }
 
     /**
      * @OA\Post(
-     *     path="/api/cargos",
-     *     summary="Cria um novo cargo no sistema",
-     *     description="Cadastra um novo cargo com os dados fornecidos",
-     *     tags={"Cargos"},
+     *     path="/api/positions",
+     *     summary="Cria um novo position no sistema",
+     *     description="Cadastra um novo position com os dados fornecidos",
+     *     tags={"positions"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -91,11 +102,11 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Cargo criado com sucesso",
+     *         description="Position criado com sucesso",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo criado com sucesso"),
+     *             @OA\Property(property="message", type="string", example="Position criado com sucesso"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -124,26 +135,26 @@ class CargoController extends Controller
      *         description="Erro interno do servidor",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao criar cargo"),
+     *             @OA\Property(property="message", type="string", example="Falha ao criar position"),
      *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
      *         )
      *     )
      * )
      */
-    public function store(CargoStoreRequest $request)
+    public function store(positionStoreRequest $request)
     {
         try {
-            $cargo = Cargo::create($request->validated());
+            $position = Position::create($request->validated());
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cargo criado com sucesso',
-                'data' => $cargo
+                'message' => 'Position criado com sucesso',
+                'data' => $position
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao criar cargo',
+                'message' => 'Falha ao criar position',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -151,25 +162,25 @@ class CargoController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/cargos/{id}",
-     *     summary="Recupera um cargo específico",
-     *     description="Retorna os dados de um cargo pelo seu ID",
-     *     tags={"Cargos"},
+     *     path="/api/positions/{id}",
+     *     summary="Recupera um position específico",
+     *     description="Retorna os dados de um position pelo seu ID",
+     *     tags={"positions"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID do cargo",
+     *         description="ID do position",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Cargo recuperado com sucesso",
+     *         description="Position recuperado com sucesso",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo recuperado com sucesso"),
+     *             @OA\Property(property="message", type="string", example="Position recuperado com sucesso"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -182,10 +193,10 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Cargo não encontrado",
+     *         description="Position não encontrado",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo não encontrado")
+     *             @OA\Property(property="message", type="string", example="Position não encontrado")
      *         )
      *     ),
      *     @OA\Response(
@@ -193,7 +204,7 @@ class CargoController extends Controller
      *         description="Erro interno do servidor",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao recuperar cargo"),
+     *             @OA\Property(property="message", type="string", example="Falha ao recuperar position"),
      *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
      *         )
      *     )
@@ -202,24 +213,24 @@ class CargoController extends Controller
     public function show($id)
     {
         try {
-            $cargo = Cargo::find($id);
+            $position = Position::find($id);
 
-            if (!$cargo) {
+            if (!$position) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo não encontrado'
+                    'message' => 'Position não encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cargo recuperado com sucesso',
-                'data' => $cargo
+                'message' => 'Position recuperado com sucesso',
+                'data' => $position
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao recuperar cargo',
+                'message' => 'Falha ao recuperar position',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -227,15 +238,15 @@ class CargoController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/cargos/{id}",
-     *     summary="Atualiza um cargo existente",
-     *     description="Atualiza os dados de um cargo pelo seu ID",
-     *     tags={"Cargos"},
+     *     path="/api/positions/{id}",
+     *     summary="Atualiza um position existente",
+     *     description="Atualiza os dados de um position pelo seu ID",
+     *     tags={"positions"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID do cargo a ser atualizado",
+     *         description="ID do position a ser atualizado",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
@@ -248,11 +259,11 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Cargo atualizado com sucesso",
+     *         description="Position atualizado com sucesso",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo atualizado com sucesso"),
+     *             @OA\Property(property="message", type="string", example="Position atualizado com sucesso"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -265,10 +276,10 @@ class CargoController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Cargo não encontrado",
+     *         description="Position não encontrado",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo não encontrado")
+     *             @OA\Property(property="message", type="string", example="Position não encontrado")
      *         )
      *     ),
      *     @OA\Response(
@@ -289,35 +300,35 @@ class CargoController extends Controller
      *         description="Erro interno do servidor",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao atualizar cargo"),
+     *             @OA\Property(property="message", type="string", example="Falha ao atualizar position"),
      *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
      *         )
      *     )
      * )
      */
-    public function update(CargoUpdateRequest $request, $id)
+    public function update(positionUpdateRequest $request, $id)
     {
         try {
-            $cargo = Cargo::find($id);
+            $position = Position::find($id);
 
-            if (!$cargo) {
+            if (!$position) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo não encontrado'
+                    'message' => 'Position não encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $cargo->update($request->validated());
+            $position->update($request->validated());
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cargo atualizado com sucesso',
-                'data' => $cargo
+                'message' => 'Position atualizado com sucesso',
+                'data' => $position
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao atualizar cargo',
+                'message' => 'Falha ao atualizar position',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -325,33 +336,33 @@ class CargoController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/cargos/{id}",
-     *     summary="Remove um cargo do sistema",
-     *     description="Remove permanentemente um cargo pelo seu ID",
-     *     tags={"Cargos"},
+     *     path="/api/positions/{id}",
+     *     summary="Remove um position do sistema",
+     *     description="Remove permanentemente um position pelo seu ID",
+     *     tags={"positions"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID do cargo a ser removido",
+     *         description="ID do position a ser removido",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Cargo removido com sucesso",
+     *         description="Position removido com sucesso",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Cargo removido com sucesso")
+     *             @OA\Property(property="message", type="string", example="Position removido com sucesso")
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Cargo não encontrado",
+     *         description="Position não encontrado",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Cargo não encontrado")
+     *             @OA\Property(property="message", type="string", example="Position não encontrado")
      *         )
      *     ),
      *     @OA\Response(
@@ -359,7 +370,7 @@ class CargoController extends Controller
      *         description="Erro interno do servidor",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Falha ao remover cargo"),
+     *             @OA\Property(property="message", type="string", example="Falha ao remover position"),
      *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
      *         )
      *     )
@@ -368,25 +379,25 @@ class CargoController extends Controller
     public function destroy($id)
     {
         try {
-            $cargo = Cargo::find($id);
+            $position = Position::find($id);
 
-            if (!$cargo) {
+            if (!$position) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cargo não encontrado'
+                    'message' => 'Position não encontrado'
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $cargo->delete();
+            $position->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cargo removido com sucesso'
+                'message' => 'Position removido com sucesso'
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao remover cargo',
+                'message' => 'Falha ao remover position',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

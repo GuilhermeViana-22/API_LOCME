@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\RuleUser;
+use App\Models\RulePosition;
 use App\Models\RulePermission;
 use Illuminate\Database\Seeder;
 

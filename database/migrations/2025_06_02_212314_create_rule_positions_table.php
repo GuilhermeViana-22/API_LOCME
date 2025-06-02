@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRuleUsersTable extends Migration
+class CreateRulePositionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateRuleUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('rule_users', function (Blueprint $table) {
+        Schema::create('rule_positions', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->integer('position_id');
             $table->integer('rule_id');
             $table->timestamps();
+
         });
     }
 
@@ -28,6 +29,6 @@ class CreateRuleUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rule_users');
+        Schema::dropIfExists('rule_positions');
     }
 }

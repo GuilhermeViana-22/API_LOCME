@@ -3,14 +3,14 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Cargo;
+use App\Models\Position;
 
-class CargoSeeder extends Seeder
+class PositionSeeder extends Seeder
 {
     public function run()
     {
         $cargos = [
-            // Cargo, Nível Hierárquico, Departamento, Descrição (opcional)
+
             ['Auxiliar Administrativo', 1, 'Administrativo', 'Responsavel por tarefas administrativas gerais.'],
             ['Assistente Administrativo', 2, 'Administrativo', 'Auxilia nas atividades administrativas e operacionais.'],
             ['Coordenador Pedagogico', 3, 'Pedagogia', 'Coordena a equipe pedagogica e os planos de ensino.'],
@@ -25,13 +25,13 @@ class CargoSeeder extends Seeder
         ];
 
 
-        // Inserção em massa
+        // Inserï¿½ï¿½o em massa
         foreach ($cargos as $cargo) {
-            Cargo::create([
-                'nome_cargo' => $cargo[0],
+            Position::create([
+                'position' => $cargo[0],
                 'nivel_hierarquico' => $cargo[1],
                 'departamento' => $cargo[2],
-                'descricao' => $cargo[3] ?? null,  // Descrição é opcional
+                'descricao' => $cargo[3] ?? null,
             ]);
         }
     }

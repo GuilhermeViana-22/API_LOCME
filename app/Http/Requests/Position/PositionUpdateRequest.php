@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Cargos;
+namespace App\Http\Requests\positions;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CargoUpdateRequest extends FormRequest
+class positionUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-    
+
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -16,7 +16,7 @@ class CargoUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome_cargo' => 'required|string|max:100',
+            'nome_position' => 'required|string|max:100',
             'nivel_hierarquico' => 'required|integer|min:1',
             'departamento' => 'required|string|max:50',
             'descricao' => 'nullable|string',

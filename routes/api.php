@@ -4,7 +4,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UnidadeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CargoController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DashboardController;
@@ -23,12 +23,12 @@ Route::get('/log', [DashboardController::class, 'log'])->name('log');
 
 
 // Rotas para gestão de cargos (protegidas)
-Route::prefix('cargos')->group(function () {
-    Route::get('/', [CargoController::class, 'index'])->name('api.cargos.index');
-    Route::post('/', [CargoController::class, 'store'])->name('api.cargos.store');
-    Route::get('/{id}', [CargoController::class, 'show'])->name('api.cargos.show');
-    Route::put('/{id}', [CargoController::class, 'update'])->name('api.cargos.update');
-    Route::delete('/{id}', [CargoController::class, 'destroy'])->name('api.cargos.destroy');
+Route::prefix('positions')->group(function () {
+    Route::get('/', [PositionController::class, 'index'])->name('api.positions.index');
+    Route::post('/', [PositionController::class, 'store'])->name('api.positions.store');
+    Route::get('/{id}', [PositionController::class, 'show'])->name('api.positions.show');
+    Route::put('/{id}', [PositionController::class, 'update'])->name('api.positions.update');
+    Route::delete('/{id}', [PositionController::class, 'destroy'])->name('api.positions.destroy');
 });
 
 

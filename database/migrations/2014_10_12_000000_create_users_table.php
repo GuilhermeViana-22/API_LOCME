@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->date('data_nascimento')->nullable(); // Alterado para date
             $table->string('telefone_celular', 20);
             $table->string('genero', 20)->nullable(); // Alterado para string
-            $table->integer('cargo_id')->nullable(); // Mantido como inteiro sem FK
+            $table->integer('position_id')->nullable(); // Mantido como inteiro sem FK
             $table->integer('unidade_id')->nullable(); // Mantido como inteiro sem FK
             $table->integer('status_id')->nullable(); // Mantido como inteiro sem FK
             $table->string('foto_perfil', 255)->nullable();

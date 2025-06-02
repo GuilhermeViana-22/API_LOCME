@@ -18,22 +18,22 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Criando 30 usuários
+        // Criando 30 usuï¿½rios
         foreach (range(1, 30) as $index) {
             User::create([
                 'name' => $faker->name,
-                'password' => Hash::make('password123'), // Senha fixa para todos os usuários
-                'cpf' => $faker->numerify('###########'), // Gerar um CPF com 11 números
+                'password' => Hash::make('password123'), // Senha fixa para todos os usuï¿½rios
+                'cpf' => $faker->numerify('###########'), // Gerar um CPF com 11 nï¿½meros
                 'email' => $faker->unique()->userName.'@empresa.com', // E-mail corporativo gerado
                 'data_nascimento' => $faker->date(),
                 'telefone_celular' => $faker->phoneNumber,
                 'genero' => $faker->randomElement(['masculino', 'feminino', 'outro']),
-                'cargo_id' => $faker->numberBetween(1, 5), // Exemplo, ajuste conforme seus cargos
+                'position_id' => $faker->numberBetween(1, 10), // Exemplo, ajuste conforme seus cargos
                 'unidade_id' => $faker->numberBetween(1, 5), // Exemplo, ajuste conforme suas unidades
                 'status_id' => $faker->numberBetween(1, 3), // Exemplo, ajuste conforme seus status
-                'situacao_id' => $faker->numberBetween(1, 2), // Exemplo, ajuste conforme suas situações
-                'foto_perfil' => null, // Caso queira adicionar fotos de perfil, você pode usar uma URL aleatória ou criar imagens fake
-                'ativo' => $faker->boolean(90), // 90% de chance de o usuário ser ativo
+                'situacao_id' => $faker->numberBetween(1, 2), // Exemplo, ajuste conforme suas situaï¿½ï¿½es
+                'foto_perfil' => null, // Caso queira adicionar fotos de perfil, vocï¿½ pode usar uma URL aleatï¿½ria ou criar imagens fake
+                'ativo' => $faker->boolean(90), // 90% de chance de o usuï¿½rio ser ativo
             ]);
         }
     }
