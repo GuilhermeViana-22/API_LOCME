@@ -133,11 +133,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Log::class, 'client_id'); // Especifica que a FK é client_id
     }
 
-    public function rulesPosition()
-    {
-        return $this->hasMany(RulePosition::class, 'position_id'); // Especifica que a FK é user_id
-    }
-
     public function position()
     {
         return $this->belongsTo(Position::class, 'position_id', 'id');

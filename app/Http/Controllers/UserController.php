@@ -36,7 +36,7 @@ class UserController extends Controller
     public function index(UsersIndexRequest $request)
 {
     try {
-        $query = User::query()->with(['unidade', 'position',  'logs', 'rulesPosition.rule.permissions']);
+        $query = User::query()->with(['unidade', 'position',  'logs']);
         $query = $this->applyFilters($query, $request);
 
         // Ordenação padrão
@@ -44,7 +44,7 @@ class UserController extends Controller
         $sortOrder = $request->input('order', 'asc');
         $query->orderBy($sortField, $sortOrder);
 
-        $perPage = $request->input('per_page', 10); // 10 itens por página padrão
+        $perPage = $request->input('per_page', 10);
         $users = $query->paginate($perPage);
 
         return $this->buildPaginatedResponse($users, $request);
