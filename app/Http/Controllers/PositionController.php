@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Position;
-use Illuminate\Http\Request;
+
 use Illuminate\Http\Response;
 use App\Http\Requests\positions\positionStoreRequest;
 use App\Http\Requests\positions\positionUpdateRequest;
