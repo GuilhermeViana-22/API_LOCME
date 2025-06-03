@@ -63,6 +63,7 @@ class PositionResource extends JsonResource
 
     /**
      * Get all unique permissions from all rules
+     * ajustes
      */
     protected function getAggregatedPermissions()
     {
