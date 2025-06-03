@@ -10,6 +10,7 @@ use App\Http\Requests\positions\positionUpdateRequest;
 
 class PositionController extends Controller
 {
+
     /**
      * @OA\Get(
      *     path="/api/positions",
