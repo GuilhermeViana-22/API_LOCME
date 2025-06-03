@@ -15,8 +15,15 @@ class PositionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            // ... outros campos ...
+            'id' => $this->id,
+            'position' => $this->position,
+            'hierarchical_level' => $this->nivel_hierarquico,
+            'department' => $this->departamento,
+            'description' => $this->descricao,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
 
+            // Relacionamentos condicionais usando whenLoaded
             'rules' => $this->whenLoaded('rules', function() {
                 return $this->rules->map(function($rule) {
                     return [
