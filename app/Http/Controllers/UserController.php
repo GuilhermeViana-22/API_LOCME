@@ -22,16 +22,16 @@ use Illuminate\Http\Response;
 class UserController extends Controller
 {
     /**
-     * Listar todos os usu�rios (com pagina��o)
-     * @queryParam page integer P�gina atual. Example: 1
-     * @queryParam per_page integer Itens por p�gina. Example: 10
-     * @queryParam name string Filtro por nome. Example: Jo�o
+     * Listar todos os usuários (com paginação)
+     * @queryParam page integer Página atual. Example: 1
+     * @queryParam per_page integer Itens por página. Example: 10
+     * @queryParam name string Filtro por nome. Example: João
      * @queryParam email string Filtro por email. Example: joao@example.com
      * @queryParam active boolean Filtro por status. Example: true
      * @queryParam unidade_id integer Filtro por unidade. Example: 1
      * @queryParam position_id integer Filtro por position. Example: 1
-     * @queryParam sort string Campo para ordena��o (name, email, created_at). Example: name
-     * @queryParam order string Dire��o da ordena��o (asc, desc). Example: asc
+     * @queryParam sort string Campo para ordenação (name, email, created_at). Example: name
+     * @queryParam order string Direção da ordenação (asc, desc). Example: asc
      */
     public function index(UsersIndexRequest $request)
 {
@@ -58,11 +58,11 @@ class UserController extends Controller
 }
 
     /**
-     * Criar novo usu�rio
-     * @bodyParam name string required Nome do usu�rio. Example: Jo�o Silva
-     * @bodyParam email string required Email do usu�rio. Example: joao@example.com
+     * Criar novo usuário
+     * @bodyParam name string required Nome do usuário. Example: João Silva
+     * @bodyParam email string required Email do usuário. Example: joao@example.com
      * @bodyParam password string required Senha. Example: secret123
-     * @bodyParam password_confirmation string required Confirma��o da senha. Example: secret123
+     * @bodyParam password_confirmation string required Confirmação da senha. Example: secret123
      * @bodyParam unidade_id integer ID da unidade. Example: 1
      * @bodyParam position_id integer ID do position. Example: 1
      */
@@ -83,8 +83,8 @@ class UserController extends Controller
     }
 
     /**
-     * Mostrar detalhes de um usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
+     * Mostrar detalhes de um usuário
+     * @urlParam id integer required ID do usuário. Example: 1
      */
     public function show($id)
     {
@@ -95,15 +95,15 @@ class UserController extends Controller
     }
 
     /**
-     * Atualizar usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
-     * @bodyParam name string Nome do usu�rio. Example: Jo�o Silva
-     * @bodyParam email string Email do usu�rio. Example: joao@example.com
+     * Atualizar usuário
+     * @urlParam id integer required ID do usuário. Example: 1
+     * @bodyParam name string Nome do usuário. Example: João Silva
+     * @bodyParam email string Email do usuário. Example: joao@example.com
      * @bodyParam password string Senha. Example: newsecret123
-     * @bodyParam password_confirmation string Confirma��o da senha. Example: newsecret123
+     * @bodyParam password_confirmation string Confirmação da senha. Example: newsecret123
      * @bodyParam unidade_id integer ID da unidade. Example: 1
      * @bodyParam position_id integer ID do position. Example: 1
-     * @bodyParam active boolean Status do usu�rio. Example: true
+     * @bodyParam active boolean Status do usuário. Example: true
      */
     public function update(UserUpdateRequest $request, $id)
     {
@@ -150,8 +150,8 @@ class UserController extends Controller
 
 
     /**
-     * Remover usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
+     * Remover usuário
+     * @urlParam id integer required ID do usuário. Example: 1
      */
     public function destroy($id)
     {
@@ -162,8 +162,8 @@ class UserController extends Controller
     }
 
     /**
-     * Ativar usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
+     * Ativar usuário
+     * @urlParam id integer required ID do usuário. Example: 1
      */
     public function activate($id)
     {
@@ -177,8 +177,8 @@ class UserController extends Controller
     }
 
     /**
-     * Desativar usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
+     * Desativar usuário
+     * @urlParam id integer required ID do usuário. Example: 1
      */
     public function deactivate($id)
     {
@@ -192,8 +192,8 @@ class UserController extends Controller
     }
 
     /**
-     * Atribuir papel ao usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
+     * Atribuir papel ao usuário
+     * @urlParam id integer required ID do usuário. Example: 1
      * @bodyParam role string required Nome do papel. Example: admin
      */
     public function assignRole(UserRoleRequest $request, $id)
@@ -210,8 +210,8 @@ class UserController extends Controller
     }
 
     /**
-     * Remover papel do usu�rio
-     * @urlParam id integer required ID do usu�rio. Example: 1
+     * Remover papel do usuário
+     * @urlParam id integer required ID do usuário. Example: 1
      * @bodyParam role string required Nome do papel. Example: admin
      */
     public function removeRole(UserRoleRequest $request, $id)
