@@ -2,15 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Position extends Model
 {
-    use HasFactory, SoftDeletes;
-
-    protected $table = 'positions';
     protected $fillable = [
         'position',
         'nivel_hierarquico',
@@ -18,29 +14,21 @@ class Position extends Model
         'descricao'
     ];
 
-    // Relacionamento com rules através da tabela intermediária rule_positions
-    public function rules()
+    /**
+     * Relacionamento many-to-many com Rule
+     */
+    public function rules(): BelongsToMany
     {
-        return $this->belongsToMany(Rule::class, 'rule_positions', 'position_id', 'rule_id')
-            ->withTimestamps();
+        return $this->belongsToMany(Rule::class, 'rule_positions')
+            ->withTimestamps()
+            ->withPivot('created_at', 'updated_at');
     }
 
-    // Relacionamento direto com a tabela intermediária
+    /**
+     * Relacionamento através de rule_positions
+     */
     public function rulePositions()
     {
-        return $this->hasMany(RulePosition::class, 'position_id');
-    }
-
-    // Relacionamento com permissions através de rules (caso seja necessário)
-    public function permissions()
-    {
-        return $this->hasManyThrough(
-            Permission::class,
-            RulePermission::class,
-            'rule_id', // Foreign key on RulePermission table
-            'id',       // Foreign key on Permission table
-            'id',       // Local key on Position table
-            'permission_id' // Local key on RulePermission table
-        );
+        return $this->hasMany(RulePosition::class);
     }
 }

@@ -14,6 +14,63 @@ class PositionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            // ... outros campos ...
+
+            'rules' => $this->whenLoaded('rules', function() {
+                return $this->rules->map(function($rule) {
+                    return [
+                        'id' => $rule->id,
+                        'name' => $rule->name,
+                        'description' => $rule->description ?? null,
+                        'permissions' => $rule->relationLoaded('permissions') ? $rule->permissions->map(function($permission) {
+                            return [
+                                'id' => $permission->id,
+                                'name' => $permission->name,
+                                'description' => $permission->description
+                            ];
+                        }) : []
+                    ];
+                });
+            }),
+
+            'rule_positions' => $this->whenLoaded('rulePositions', function() {
+                return $this->rulePositions->map(function($rulePosition) {
+                    return [
+                        'rule' => $rulePosition->relationLoaded('rule') ? [
+                            'id' => $rulePosition->rule->id,
+                            'name' => $rulePosition->rule->name,
+                            'permissions' => $rulePosition->rule->relationLoaded('permissions') ? $rulePosition->rule->permissions->map(function($permission) {
+                                return [
+                                    'id' => $permission->id,
+                                    'name' => $permission->name,
+                                    'description' => $permission->description
+                                ];
+                            }) : []
+                        ] : null
+                    ];
+                });
+            })
+        ];
+    }
+
+    /**
+     * Get all unique permissions from all rules
+     */
+    protected function getAggregatedPermissions()
+    {
+        return $this->rules->flatMap(function ($rule) {
+            return $rule->permissions ?? collect();
+        })
+            ->unique('id')
+            ->map(function ($permission) {
+                return [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'description' => $permission->description
+                ];
+            })
+            ->values()
+            ->all();
     }
 }

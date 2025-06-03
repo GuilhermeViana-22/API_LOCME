@@ -2,26 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Rule extends Model
 {
-    use HasFactory;
-
     protected $fillable = ['name', 'description'];
 
-    public function positions()
+    /**
+     * Relacionamento com Position através da tabela rule_positions
+     */
+    public function positions(): BelongsToMany
     {
-        return $this->belongsToMany(Position::class, 'rule_positions', 'rule_id', 'position_id')
-            ->using(RulePosition::class)
+        return $this->belongsToMany(Position::class, 'rule_positions')
             ->withTimestamps();
     }
 
-    public function permissions()
+    /**
+     * Relacionamento com Permission através da tabela rule_permissions
+     */
+    public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'rule_permissions', 'rule_id', 'permission_id')
-            ->using(RulePermission::class)
+        return $this->belongsToMany(Permission::class, 'rule_permissions')
             ->withTimestamps();
     }
 }

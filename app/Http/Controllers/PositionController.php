@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Positions\PositionResource;
 use App\Models\Position;
 
 use Illuminate\Http\Response;
 use App\Http\Requests\positions\positionStoreRequest;
 use App\Http\Requests\positions\positionUpdateRequest;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PositionController extends Controller
 {
@@ -61,24 +63,17 @@ class PositionController extends Controller
     {
         try {
             $positions = Position::with([
-                'rules' => function ($query) {
-                    $query->select('rules.id', 'rules.name');
-                },
-                'rulePositions' => function ($query) {
-                    $query->with(['rule' => function ($subQuery) {
-                        $subQuery->select('id', 'name');
+                'rules' => function($query) {
+                    $query->with(['permissions' => function($subQuery) {
+                        $subQuery->select('permissions.id', 'name', 'description');
                     }]);
-                }
+                },
+                'rulePositions.rule.permissions'
             ])->get();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Positions recuperados com sucesso',
-                'data' => $positions
-            ], 200);
+            return PositionResource::collection($positions);
 
         } catch (\Exception $e) {
-        //ajsutes
             return response()->json([
                 'success' => false,
                 'message' => 'Falha ao recuperar positions',

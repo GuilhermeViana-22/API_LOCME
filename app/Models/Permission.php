@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Permission extends Model
 {
-    protected $table = 'permissions';
+    protected $fillable = ['name', 'description'];
 
-    protected $fillable = [
-        'name',
-        'description',
-    ];
-
-
-   public function rules()
-{
-    return $this->belongsToMany(Rule::class, 'rule_permissions');
-}
+    /**
+     * Relacionamento many-to-many com Rule
+     */
+    public function rules(): BelongsToMany
+    {
+        return $this->belongsToMany(Rule::class, 'rule_permissions')
+            ->withTimestamps();
+    }
 }
