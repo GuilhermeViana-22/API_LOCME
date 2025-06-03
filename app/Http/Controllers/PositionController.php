@@ -77,7 +77,7 @@ class PositionController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-
+        //ajsutes
             return response()->json([
                 'success' => false,
                 'message' => 'Falha ao recuperar positions',
