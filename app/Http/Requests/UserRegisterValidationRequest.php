@@ -41,6 +41,7 @@ class UserRegisterValidationRequest extends FormRequest
             'password.min' => 'A senha deve ter no mínimo 8 caracteres',
             'password.confirmed' => 'As senhas não coincidem',
             'password_confirmation.required' => 'Confirme sua senha',
+            'password_confirmation.min' => 'A confirmação da senha deve ter no mínimo 8 caracteres',
 
             // Mensagens genéricas para campos opcionais
             '*.max' => 'Este campo não pode exceder :max caracteres',

@@ -45,7 +45,6 @@ use App\Http\Requests\UserRegisterValidationRequest;
  */
 class AuthController extends Controller
 {
-
     /**
      * @OA\Post(
      *     path="/api/register",
@@ -127,7 +126,7 @@ class AuthController extends Controller
             if (User::where('email', $request->email)->exists()) {
                 return response()->json([
                     'errors' => [
-                        'email' => ['Este email já está cadastrado']
+                        'email' => ['Este email já está sendo utilizado em outra conta.']
                     ],
                     'message' => 'O email informado já está em uso'
                 ], 422);
@@ -187,43 +186,6 @@ class AuthController extends Controller
         }
     }
 
-
-    /**
-     * @OA\Post(
-     *     path="/api/login",
-     *     summary="Login de um usuário",
-     *     tags={"Usuário"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="Senha123@")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Login bem-sucedido",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Login realizado com sucesso!")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Credenciais inválidas",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Credenciais inválidas.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Erro ao realizar o login.")
-     *         )
-     *     )
-     * )
-     */
     /**
      * @OA\Post(
      *     path="/api/login",
@@ -263,7 +225,6 @@ class AuthController extends Controller
      *     )
      * )
      */
-
      public function login(LoginRequest $request)
 {
     try {
@@ -502,7 +463,6 @@ class AuthController extends Controller
      *     )
      * )
      */
-
     public function log($client_id, $ip, $rota, $autenticado = true, $name = null)
     {
         // Verifique se o modelo Log está sendo importado corretamente
@@ -749,27 +709,6 @@ class AuthController extends Controller
      * )
      */
     public function validar(Request $request) {}
-
-    public function teste(Request $request)
-    {
-        $userId = $request->get('user_id');
-        $token = $request->get('token'); // Certifique-se de que o token está correto
-
-        // Buscar o token na tabela personal_access_tokens
-        $tokenRecord = DB::table('personal_access_tokens')
-            ->where('tokenable_id', $userId)
-            ->where('token', $token) // Comparação exata é segura
-            ->first();
-
-        if ($tokenRecord) {
-            return response()->json([
-                'authorized' => true,
-                'message' => 'Token válido.'
-            ], 200);
-        }
-
-        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], 200);
-    }
 
     /***
      * método para envio de email
