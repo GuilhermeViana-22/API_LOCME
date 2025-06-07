@@ -36,7 +36,7 @@ class UserRegisterValidationRequest extends FormRequest
             'name.required' => 'O nome completo é obrigatório',
             'email.required' => 'O email é obrigatório',
             'email.email' => 'Digite um email válido',
-            'required.required' => 'O CPF é obrigatório',
+            'cpf.required' => 'O CPF é obrigatório',
             'password.required' => 'A senha é obrigatória',
             'password.min' => 'A senha deve ter no mínimo 8 caracteres',
             'password.confirmed' => 'As senhas não coincidem',
