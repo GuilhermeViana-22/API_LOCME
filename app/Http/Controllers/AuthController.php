@@ -149,7 +149,6 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'telefone_celular' => $user->telefone_celular,
                     'created_at' => $user->created_at,
                     'updated_at' => $user->updated_at
                 ],
@@ -173,7 +172,8 @@ class AuthController extends Controller
                 'errors' => [
                     'general' => ['Erro no banco de dados']
                 ],
-                'message' => 'Erro durante o registro'
+                'message' => 'Erro durante o registro',
+                'log' => $e->getMessage()
             ], 500);
 
         } catch (\Exception $e) {
