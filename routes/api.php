@@ -83,6 +83,8 @@ Route::post('/rules/{rule}/permissions', [PermissionController::class, 'attachTo
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
+    Route::get('/validar', [AuthController::class, 'validar'])->name('api.validar');
+
     // Rotas de autenticação do usuário
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.updateProfile');
@@ -104,6 +106,3 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/{id}', [UnidadeController::class, 'destroy'])->name('api.unidades.destroy');
     });
 });
-
-//rota teste
-Route::get('/teste', [AuthController::class, 'teste'])->name('teste');
