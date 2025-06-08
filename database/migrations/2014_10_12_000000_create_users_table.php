@@ -29,7 +29,8 @@ class CreateUsersTable extends Migration
             $table->date('data_nascimento')->nullable(); // Alterado para date
             $table->string('telefone_celular', 20)->nullable();
             $table->string('cargo_funcao', 255)->nullable();
-            $table->integer('empresa_atual_id')->nullable(); // Mantido como inteiro sem FK
+            $table->integer('empresa_atual_id')->nullable();
+            $table->string('empresa_outro', 500)->nullable();
             $table->string('foto_perfil', 255)->nullable();
             $table->string('cidade', 255)->nullable();
             $table->string('estado', 255)->nullable();

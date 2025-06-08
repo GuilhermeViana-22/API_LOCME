@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Users\UserResource;
 use Exception;
 use App\Models\Log;
 use App\Models\User;
@@ -19,7 +20,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ResetRequest;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -144,13 +144,7 @@ class AuthController extends Controller
             DB::commit();
 
             return response()->json([
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at
-                ],
+                'user' => UserResource::make($user),
                 'access_token' => $token,
                 'token_type' => 'Bearer'
             ], 201);
@@ -181,7 +175,8 @@ class AuthController extends Controller
                 'errors' => [
                     'general' => ['Erro inesperado']
                 ],
-                'message' => 'Erro ao registrar usuário'
+                'message' => 'Erro ao registrar usuário',
+                'log' => $e->getMessage()
             ], 500);
         }
     }
@@ -226,48 +221,43 @@ class AuthController extends Controller
      * )
      */
      public function login(LoginRequest $request)
-{
-    try {
-        $credentials = $request->only('email', 'password');
+    {
+        try {
+            $credentials = $request->only('email', 'password');
 
-        if (!auth()->attempt($credentials)) {
+            if (!auth()->attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Credenciais inválidas',
+                    'errors' => [
+                        'email' => ['Credenciais fornecidas são inválidas.']
+                    ]
+                ], 401);
+            }
+
+            $user = auth()->user();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->accessToken;
+
+            // Registra o acesso
+            $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
+
+            // Retorna apenas os campos necessários do usuário
             return response()->json([
-                'message' => 'Credenciais inválidas',
-                'errors' => [
-                    'email' => ['Credenciais fornecidas são inválidas.']
+                'data' => [  // Adicionando um nível 'data' para padronização
+                    'user' => UserResource::make($user),
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
                 ]
-            ], 401);
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao realizar login',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
-
-        $user = auth()->user();
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->accessToken;
-
-        // Registra o acesso
-        $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
-        // Retorna apenas os campos necessários do usuário
-        return response()->json([
-            'data' => [  // Adicionando um nível 'data' para padronização
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'telefone_celular' => $user->telefone_celular
-                    // Adicione outros campos necessários
-                ],
-                'token' => $token,
-                'token_type' => 'Bearer',
-                'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
-            ]
-        ], 200);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Erro ao realizar login',
-            'error' => config('app.debug') ? $e->getMessage() : null
-        ], 500);
     }
-}
 
     /**
      * @OA\Get(
@@ -300,12 +290,7 @@ class AuthController extends Controller
      */
     public function me(MeRequest $request)
     {
-
-        $user = User::with([
-            'unidade',
-            'position',
-            'rulesUser.rule.permissions' // Carrega a cadeia completa: User → RulePosition → Rule → Permissions
-        ])->findOrFail($request->get('id'));
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json(

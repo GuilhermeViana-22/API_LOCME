@@ -18,7 +18,6 @@ Route::post('/mailverify', [AuthController::class, 'mailVerify'])->name('api.mai
 Route::post('/reset', [AuthController::class, 'reset'])->name('api.reset');
 
 // Rotas de teste (se realmente necessário)
-Route::get('/me', [AuthController::class, 'me'])->name('me');
 Route::get('/log', [DashboardController::class, 'log'])->name('log');
 
 
@@ -83,16 +82,17 @@ Route::post('/rules/{rule}/permissions', [PermissionController::class, 'attachTo
 
 // Grupo de rotas protegidas por autenticação
 Route::middleware('auth:api')->group(function () {
+    Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/validar', [AuthController::class, 'validar'])->name('api.validar');
 
     // Rotas de autenticação do usuário
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
-    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.updateProfile');
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
 
     // Rotas de gerenciamento de conta
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/completar', [ProfileController::class, 'completar']);
 
     // Rotas de atividades e notificações
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');

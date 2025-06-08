@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth; // Importação necessária
+use App\Http\Requests\Profiles\CompletarRequest;
+use App\Http\Resources\Users\UserResource;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -35,10 +38,37 @@ class ProfileController extends Controller
      *     )
      * )
      */
-
     public function show()
     {
         $user = Auth::user();
-        return response()->json($user);
+
+        return new UserResource($user);
+    }
+
+    /**
+     * Método que realiza a inclusão das informações do perfil do usuário
+     *
+     * @param CompletarRequest $request
+     * @return JsonResponse
+     */
+    public function completar( CompletarRequest  $request)
+    {
+        $user = Auth::user();
+        $user->fill($request->validated());
+
+        try {
+            $user->save();
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'errors' => [
+                    'general' => ['Erro no banco de dados']
+                ],
+                'message' => 'Erro durante o salvamento dos dados',
+                'log' => $e->getMessage()
+            ], 500);
+        }
+
+        return response()->json(['message' => 'Os dados foram salvos com sucesso']);
     }
 }

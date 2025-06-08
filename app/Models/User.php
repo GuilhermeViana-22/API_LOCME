@@ -96,13 +96,24 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'data_nascimento',
         'telefone_celular',
+        'cargo_funcao',
+        'empresa_atual_id',
+        'empresa_outro',
+        'cidade',
+        'estado',
+        'email_contato',
+        'linkedin',
+        'bio',
+        'visibilidade_telefone',
+        'visibilidade_email',
+        'visibilidade_linkedin',
         'genero',
-        'position_id',
-        'unidade_id',
-        'status_id',
-        'foto_perfil',
+//        'position_id',
+//        'unidade_id',
+//        'status_id',
+//        'foto_perfil',
         'ativo',
-        'situacao_id',
+//        'situacao_id',
         'ultimo_acesso'
     ];
 
@@ -121,6 +132,12 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'data_nascimento' => 'date',
+        'visibilidade_telefone' => 'boolean',
+        'visibilidade_email' => 'boolean',
+        'visibilidade_linkedin' => 'boolean',
+        'ativo' => 'boolean',
+        'ultimo_acesso' => 'datetime',
     ];
 
     public function unidade()
@@ -138,4 +155,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Position::class, 'position_id', 'id');
     }
 
+    /**
+     * Relacionamento com a empresa atual
+     */
+    public function empresaAtual()
+    {
+        return $this->belongsTo(Empresa::class, 'empresa_atual_id');
+    }
 }
