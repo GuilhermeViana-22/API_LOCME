@@ -4,7 +4,7 @@ return [
     'paths' => ['api/*'], // Ou ['*'] se quiser para todas as rotas
     'allowed_methods' => ['*'],
     'allowed_origins' => [
-        'https://bobflow-client.vercel.app',
+        'https://client-locme.vercel.app/',
         'http://localhost:5173' // para testes locais, se necessário
     ],
     'allowed_origins_patterns' => [],
