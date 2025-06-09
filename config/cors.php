@@ -1,15 +1,24 @@
 <?php
 
 return [
-    'paths' => ['api/*'], // Ou ['*'] se quiser para todas as rotas
+
+    'paths' => ['api/*'],
+
     'allowed_methods' => ['*'],
+
     'allowed_origins' => [
-        'https://client-locme.vercel.app/',
-        'http://localhost:5173' // para testes locais, se necessário
+        'https://client-locme.vercel.app',
+        'http://localhost:5173',
     ],
+
     'allowed_origins_patterns' => [],
+
     'allowed_headers' => ['*'],
+
     'exposed_headers' => [],
+
     'max_age' => 0,
-    'supports_credentials' => true, // agora pode ser true porque tirou o '*'
+
+    'supports_credentials' => true,
+
 ];
