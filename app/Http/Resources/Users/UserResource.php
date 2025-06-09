@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'email_verified_at' => $this->email_verified_at,
 
             // Dados do perfil
-            'data_nascimento' => $this->data_nascimento?->format('Y-m-d'),
+            'data_nascimento' => $this->data_nascimento?->format('Y-m-d') ?? null,
             'telefone_celular' => $this->telefone_celular,
             'cargo_funcao' => $this->cargo_funcao,
             'empresa_atual' => $this->empresaAtual ? [
@@ -30,7 +30,8 @@ class UserResource extends JsonResource
                 'nome' => $this->empresaAtual->nome_fantasia,
             ] : null,
             'empresa_outro' => $this->empresa_outro,
-            'foto_perfil' => $this->foto_perfil ? asset('storage/' . $this->foto_perfil) : null,
+            'foto_perfil' => $this->foto_perfil ?? null,
+            'foto_perfil_url' => asset("storage/profile/{$this->id}/".$this->foto_perfil) ?? null,
             'cidade' => $this->cidade,
             'estado' => $this->estado,
             'email_contato' => $this->email_contato,
@@ -56,6 +57,8 @@ class UserResource extends JsonResource
             // Timestamps
             'created_at' => $this->created_at->format('d/m/Y H:i'),
             'updated_at' => $this->updated_at->format('d/m/Y H:i'),
+
+            'completado' => false,
         ];
     }
 }

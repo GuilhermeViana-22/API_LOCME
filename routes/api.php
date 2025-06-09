@@ -93,6 +93,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/completar', [ProfileController::class, 'completar']);
+    Route::post('/profile/updateavatar', [ProfileController::class, 'updateAvatar']);
 
     // Rotas de atividades e notificações
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
