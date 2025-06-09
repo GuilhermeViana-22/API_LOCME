@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         $faker = Faker::create();
 
         // Criando 30 usu�rios
-        foreach (range(1, 30) as $index) {
+        foreach (range(1, 3) as $index) {
             User::create([
                 'name' => $faker->name,
                 'password' => Hash::make('password123'), // Senha fixa para todos os usu�rios

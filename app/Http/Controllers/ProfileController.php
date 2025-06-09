@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth; // Importação necessária
+use App\Http\Requests\Profiles\CompletarRequest;
+use App\Http\Resources\Users\UserResource;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -35,10 +40,76 @@ class ProfileController extends Controller
      *     )
      * )
      */
-
     public function show()
     {
         $user = Auth::user();
-        return response()->json($user);
+
+        return new UserResource($user);
+    }
+
+    /**
+     * Método que realiza a inclusão das informações do perfil do usuário
+     *
+     * @param CompletarRequest $request
+     * @return JsonResponse
+     */
+    public function completar( CompletarRequest  $request)
+    {
+        $user = Auth::user();
+        $user->fill($request->validated());
+
+        try {
+            $user->save();
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'errors' => [
+                    'general' => ['Erro no banco de dados']
+                ],
+                'message' => 'Erro durante o salvamento dos dados',
+                'log' => $e->getMessage()
+            ], 500);
+        }
+
+        return response()->json(['message' => 'Os dados foram salvos com sucesso']);
+    }
+
+    /**
+     * Método que realiza o upload da profile picture
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'foto_perfil' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        $user = Auth::user();
+        $userId = $user->id;
+
+        if ($request->hasFile('foto_perfil')) {
+            // Deletar foto anterior se existir
+            if ($user->foto_perfil) {
+                Storage::disk('public')->delete($user->foto_perfil);
+            }
+
+            // Gerar nome único para o arquivo
+            $fileName = uniqid().'.'.$request->file('foto_perfil')->extension();
+
+            // Salvar apenas o caminho relativo no banco
+            $path = $request->file('foto_perfil')
+                ->storeAs("profile/{$userId}", $fileName, 'public');
+
+            // Salvar apenas o nome/caminho relativo no BD
+            $user->foto_perfil = $fileName;
+            $user->save();
+        }
+
+        return response()->json([
+            'foto_perfil_url' => 'storage/'.$path, // Retorna apenas o caminho relativo
+            'message' => 'Foto de perfil atualizada com sucesso!'
+        ]);
     }
 }

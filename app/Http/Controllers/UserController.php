@@ -88,7 +88,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['roles', 'unidade', 'position', 'activityLogs'])
+        $user = User::with(['unidade', 'position'])
             ->findOrFail($id);
 
         return new UserResource($user);

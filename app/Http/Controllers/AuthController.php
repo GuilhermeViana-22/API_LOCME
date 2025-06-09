@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Users\UserResource;
 use Exception;
 use App\Models\Log;
 use App\Models\User;
@@ -19,7 +20,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ResetRequest;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -45,7 +45,6 @@ use App\Http\Requests\UserRegisterValidationRequest;
  */
 class AuthController extends Controller
 {
-
     /**
      * @OA\Post(
      *     path="/api/register",
@@ -127,7 +126,7 @@ class AuthController extends Controller
             if (User::where('email', $request->email)->exists()) {
                 return response()->json([
                     'errors' => [
-                        'email' => ['Este email já está cadastrado']
+                        'email' => ['Este email já está sendo utilizado em outra conta.']
                     ],
                     'message' => 'O email informado já está em uso'
                 ], 422);
@@ -145,14 +144,7 @@ class AuthController extends Controller
             DB::commit();
 
             return response()->json([
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'telefone_celular' => $user->telefone_celular,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at
-                ],
+                'user' => UserResource::make($user),
                 'access_token' => $token,
                 'token_type' => 'Bearer'
             ], 201);
@@ -173,7 +165,8 @@ class AuthController extends Controller
                 'errors' => [
                     'general' => ['Erro no banco de dados']
                 ],
-                'message' => 'Erro durante o registro'
+                'message' => 'Erro durante o registro',
+                'log' => $e->getMessage()
             ], 500);
 
         } catch (\Exception $e) {
@@ -182,48 +175,12 @@ class AuthController extends Controller
                 'errors' => [
                     'general' => ['Erro inesperado']
                 ],
-                'message' => 'Erro ao registrar usuário'
+                'message' => 'Erro ao registrar usuário',
+                'log' => $e->getMessage()
             ], 500);
         }
     }
 
-
-    /**
-     * @OA\Post(
-     *     path="/api/login",
-     *     summary="Login de um usuário",
-     *     tags={"Usuário"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="Senha123@")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Login bem-sucedido",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Login realizado com sucesso!")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Credenciais inválidas",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Credenciais inválidas.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Erro ao realizar o login.")
-     *         )
-     *     )
-     * )
-     */
     /**
      * @OA\Post(
      *     path="/api/login",
@@ -263,50 +220,44 @@ class AuthController extends Controller
      *     )
      * )
      */
-
      public function login(LoginRequest $request)
-{
-    try {
-        $credentials = $request->only('email', 'password');
+    {
+        try {
+            $credentials = $request->only('email', 'password');
 
-        if (!auth()->attempt($credentials)) {
+            if (!auth()->attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Credenciais inválidas',
+                    'errors' => [
+                        'email' => ['Credenciais fornecidas são inválidas.']
+                    ]
+                ], 401);
+            }
+
+            $user = auth()->user();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->accessToken;
+
+            // Registra o acesso
+            $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
+
+            // Retorna apenas os campos necessários do usuário
             return response()->json([
-                'message' => 'Credenciais inválidas',
-                'errors' => [
-                    'email' => ['Credenciais fornecidas são inválidas.']
+                'data' => [  // Adicionando um nível 'data' para padronização
+                    'user' => UserResource::make($user),
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
                 ]
-            ], 401);
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao realizar login',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
-
-        $user = auth()->user();
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->accessToken;
-
-        // Registra o acesso
-        $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
-        // Retorna apenas os campos necessários do usuário
-        return response()->json([
-            'data' => [  // Adicionando um nível 'data' para padronização
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'telefone_celular' => $user->telefone_celular
-                    // Adicione outros campos necessários
-                ],
-                'token' => $token,
-                'token_type' => 'Bearer',
-                'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
-            ]
-        ], 200);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Erro ao realizar login',
-            'error' => config('app.debug') ? $e->getMessage() : null
-        ], 500);
     }
-}
 
     /**
      * @OA\Get(
@@ -339,12 +290,7 @@ class AuthController extends Controller
      */
     public function me(MeRequest $request)
     {
-
-        $user = User::with([
-            'unidade',
-            'position',
-            'rulesUser.rule.permissions' // Carrega a cadeia completa: User → RulePosition → Rule → Permissions
-        ])->findOrFail($request->get('id'));
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json(
@@ -502,7 +448,6 @@ class AuthController extends Controller
      *     )
      * )
      */
-
     public function log($client_id, $ip, $rota, $autenticado = true, $name = null)
     {
         // Verifique se o modelo Log está sendo importado corretamente
@@ -749,27 +694,6 @@ class AuthController extends Controller
      * )
      */
     public function validar(Request $request) {}
-
-    public function teste(Request $request)
-    {
-        $userId = $request->get('user_id');
-        $token = $request->get('token'); // Certifique-se de que o token está correto
-
-        // Buscar o token na tabela personal_access_tokens
-        $tokenRecord = DB::table('personal_access_tokens')
-            ->where('tokenable_id', $userId)
-            ->where('token', $token) // Comparação exata é segura
-            ->first();
-
-        if ($tokenRecord) {
-            return response()->json([
-                'authorized' => true,
-                'message' => 'Token válido.'
-            ], 200);
-        }
-
-        return response()->json(['message' => 'Token inválido ou senha alterada com sucesso.'], 200);
-    }
 
     /***
      * método para envio de email

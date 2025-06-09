@@ -11,12 +11,13 @@ class UserRegisterValidationRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'telefone_celular' => 'required|string|max:20',
+            'cpf' => 'required|string',
+
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
 
             // Campos opcionais
-            'cpf' => 'nullable|string',
+            'telefone_celular' => 'nullable|string|max:20',
             'data_nascimento' => 'nullable|date',
             'genero' => 'nullable|string',
             'position_id' => 'nullable|integer',
@@ -35,11 +36,12 @@ class UserRegisterValidationRequest extends FormRequest
             'name.required' => 'O nome completo é obrigatório',
             'email.required' => 'O email é obrigatório',
             'email.email' => 'Digite um email válido',
-            'telefone_celular.required' => 'O telefone é obrigatório',
+            'cpf.required' => 'O CPF é obrigatório',
             'password.required' => 'A senha é obrigatória',
             'password.min' => 'A senha deve ter no mínimo 8 caracteres',
             'password.confirmed' => 'As senhas não coincidem',
             'password_confirmation.required' => 'Confirme sua senha',
+            'password_confirmation.min' => 'A confirmação da senha deve ter no mínimo 8 caracteres',
 
             // Mensagens genéricas para campos opcionais
             '*.max' => 'Este campo não pode exceder :max caracteres',
