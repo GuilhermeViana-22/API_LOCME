@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIdiomasTable extends Migration
+class CreateRegioesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateIdiomasTable extends Migration
      */
     public function up()
     {
-        Schema::create('idiomas', function (Blueprint $table) {
+        Schema::create('Regioes', function (Blueprint $table) {
             $table->id();
-            $table->string('idioma');
+            $table->string('regiao');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +28,6 @@ class CreateIdiomasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('idiomas');
+        Schema::dropIfExists('Regioes');
     }
 }

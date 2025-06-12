@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Language extends Model
+class Idioma extends Model
 {
     use HasFactory;
 
@@ -28,7 +28,7 @@ class Language extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'language';
+    protected $primaryKey = 'Idiomas';
 
     /**
      * Os atributos que são atribuíveis em massa.
@@ -36,6 +36,6 @@ class Language extends Model
      * @var array
      */
     protected $fillable = [
-        'language',
+        'Idioma',
     ];
 }

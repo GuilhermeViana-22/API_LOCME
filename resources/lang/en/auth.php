@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Language Lines
+    | Authentication Idioma Lines
     |--------------------------------------------------------------------------
     |
     | The following language lines are used during authentication for various
