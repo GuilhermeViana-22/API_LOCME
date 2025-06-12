@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmpresasSituacoes extends Migration
+class CreateGuiasTurismosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class CreateEmpresasSituacoes extends Migration
      */
     public function up()
     {
-        Schema::create('empresas_situacoes', function (Blueprint $table) {
+        Schema::create('Guias_Turismos', function (Blueprint $table) {
             $table->id();
-            $table->string('situacao');
+            $table->text('apelido');
+            $table->text('whatsapp');
+            $table->text('email_contato');
+            $table->date('data_nascimento');
+            $table->text('cadastur')->nullable();
+            $table->bigInteger('abrangencia_id');
             $table->timestamps();
         });
     }
@@ -27,6 +32,6 @@ class CreateEmpresasSituacoes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('empresas_situacoes');
+        Schema::dropIfExists('Guias_Turismos');
     }
 }
