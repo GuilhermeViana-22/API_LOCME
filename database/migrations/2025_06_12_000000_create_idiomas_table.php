@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotificacoes extends Migration
+class CreateIdiomasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateNotificacoes extends Migration
      */
     public function up()
     {
-        Schema::create('notificacoes', function (Blueprint $table) {
+        Schema::create('idiomas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('users');
-            $table->text('notificacao');
-            $table->boolean('lido')->default(false);
+            $table->string('idioma');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +28,6 @@ class CreateNotificacoes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notificacoes');
+        Schema::dropIfExists('idiomas');
     }
 }

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class StatusUsuarioSeeder extends Seeder
+class TipoPerfilSeeder extends Seeder
 {
     /**
      * Run the database seeds.

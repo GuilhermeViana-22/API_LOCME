@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmpresasNaturezas extends Migration
+class CreateRegioesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateEmpresasNaturezas extends Migration
      */
     public function up()
     {
-        Schema::create('empresas_naturezas', function (Blueprint $table) {
+        Schema::create('Regioes', function (Blueprint $table) {
             $table->id();
-            $table->string('natureza');
+            $table->string('regiao');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +28,6 @@ class CreateEmpresasNaturezas extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('empresas_naturezas');
+        Schema::dropIfExists('Regioes');
     }
 }

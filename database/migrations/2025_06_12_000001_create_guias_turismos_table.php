@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStatusTable extends Migration
+class CreateGuiasTurismosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,14 @@ class CreateStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('status', function (Blueprint $table) {
+        Schema::create('Guias_Turismos', function (Blueprint $table) {
             $table->id();
+            $table->text('apelido');
+            $table->text('whatsapp');
+            $table->text('email_contato');
+            $table->date('data_nascimento');
+            $table->text('cadastur')->nullable();
+            $table->bigInteger('abrangencia_id');
             $table->timestamps();
         });
     }
@@ -26,6 +32,6 @@ class CreateStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('status');
+        Schema::dropIfExists('Guias_Turismos');
     }
 }

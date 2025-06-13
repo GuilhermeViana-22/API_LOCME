@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSituacoesCorrecoes extends Migration
+class CreatePerfisIdiomasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateSituacoesCorrecoes extends Migration
      */
     public function up()
     {
-        Schema::create('situacoes_correcoes', function (Blueprint $table) {
+        Schema::create('Perfis_Idiomas', function (Blueprint $table) {
             $table->id();
-            $table->string('situacao');
+            $table->integer('perfil_id');
+            $table->integer('idioma_id');
+            $table->integer('tipo_perfil_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +30,6 @@ class CreateSituacoesCorrecoes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('situacoes_correcoes');
+        Schema::dropIfExists('Perfis_Idiomas');
     }
 }
