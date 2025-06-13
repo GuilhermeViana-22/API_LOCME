@@ -540,36 +540,39 @@ class AuthController extends Controller
      */
     public function reset(ResetRequest $request)
     {
-        // Extrair o USER_ID do cabeçalho de autorização
-        $userIdHeader = $request->header('user_id');
-        if (!$userIdHeader) {
-            return response()->json(['error' => 'header não foi fornecido corretamente.'], 401);
+        try {
+            $userId = $request->header('user_id');
+
+            if (!$userId) {
+                return response()->json(['message' => 'ID do usuário não fornecido.'], 400);
+            }
+
+            $user = User::find($userId);
+
+            if (!$user) {
+                return response()->json(['message' => 'Usuário não encontrado.'], 404);
+            }
+
+            $verification = VerificationCode::where('user_id', $userId)->first();
+
+            if (!$verification) {
+                return response()->json(['message' => 'Código de verificação inválido ou expirado.'], 400);
+            }
+
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+
+            $verification->delete();
+
+            return response()->json(['message' => 'Senha redefinida com sucesso.']);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao redefinir senha.',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
-
-        // Validar os dados da requisição
-        $dados = $request->validated();
-
-        // Verificar se o usuário existe
-        $user = User::find($userIdHeader);
-        if (!$user) {
-            return response()->json(['error' => 'Usuário não encontrado.'], 404);
-        }
-
-        // Verificar o código de verificação
-        $verification = VerificationCode::where('user_id', $userIdHeader)->first();
-
-        if (!$verification) {
-            return response()->json(['error' => 'Código de verificação inválido ou expirado.'], 400);
-        }
-
-        // Atualizar a senha do usuário
-        $user->password = Hash::make($dados['password']);
-        $user->save();
-
-        // Invalida o código de verificação após o uso
-        $verification->delete();
-
-        return response()->json(['message' => 'Senha alterada com sucesso.'], 200);
     }
 
     /**
@@ -620,37 +623,34 @@ class AuthController extends Controller
      */
     public function delete(DeleteAccountRequest $request)
     {
-        $id = $request->get('id');
-
-        // Encontre o usuário pelo ID
-        $user = User::find($id);
-
-        if (!$user) {
-            // Retorna erro 404 se o usuário não for encontrado
-            return response()->json([
-                'message' => 'Usuário não encontrado.',
-            ], 404);
-        }
-
-        // Verifica se o usuário já está inativo
-        if ($user->active == User::USUARIO_INATIVO && $user->situacao == User::USUARIO_INATIVO) {
-            return response()->json([
-                'message' => 'O usuário já está inativo.',
-            ], 400);
-        }
-
-        // Atualize as colunas para marcar o usuário como inativo
-        $user->active = User::USUARIO_INATIVO;
-        $user->situacao = User::USUARIO_INATIVO;
-
         try {
-            $user->save(); // Salva as alterações
-            $user->delete(); // Executa o soft delete
+            $user = User::find($request->id);
 
-            return response()->json(['message' => 'O usuário foi desativado com sucesso. Caso deseje reativar a conta, entre em contato com o suporte.'], 200);
-        } catch (Exception $e) {
-            // Retorna erro 500 para exceções genéricas
-            return response()->json(['message' => 'Não foi possível deletar a conta do usuário.', 'error' => $e->getMessage(),], 500);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Usuário não encontrado.',
+                ], 404);
+            }
+
+            // Verifica se já foi deletado (soft delete)
+            if ($user->trashed()) {
+                return response()->json([
+                    'message' => 'Esta conta já foi desativada anteriormente.',
+                ], 400);
+            }
+
+            // Executa o soft delete
+            $user->delete();
+
+            return response()->json([
+                'message' => 'Conta desativada com sucesso. Entre em contato com o suporte para reativar quando necessário.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao desativar a conta.',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
         }
     }
 
