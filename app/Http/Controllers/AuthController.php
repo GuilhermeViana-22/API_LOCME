@@ -215,7 +215,7 @@ class AuthController extends Controller
      *     )
      * )
      */
-     public function login(LoginRequest $request)
+    public function login(LoginRequest $request)
     {
         try {
             $credentials = $request->only('email', 'password');
@@ -231,19 +231,15 @@ class AuthController extends Controller
 
             $user = auth()->user();
             $tokenResult = $user->createToken('Personal Access Token');
-            $token = $tokenResult->accessToken;
 
-            // Registra o acesso
+            // Registra o acesso (se necessário)
             $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
 
-            // Retorna apenas os campos necessários do usuário
             return response()->json([
-                'data' => [  // Adicionando um nível 'data' para padronização
-                    'user' => UserResource::make($user),
-                    'token' => $token,
-                    'token_type' => 'Bearer',
-                    'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
-                ]
+                'user' => new UserResource($user),
+                'token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => $tokenResult->token->expires_at->toDateTimeString()
             ], 200);
 
         } catch (\Exception $e) {
