@@ -1,114 +1,240 @@
-# TEST4 Sistema de Gerenciamento de Usuários
+# 🏖️ API LOCME - Sistema de Gerenciamento Turístico
 
-Este projeto é uma API de gerenciamento de usuários desenvolvida com Laravel. Ele inclui autenticação com JWT (usando Laravel Passport), gerenciamento de permissões e funções de usuários (administrador e usuário comum).
+O **API LOCME** é uma plataforma robusta e completa desenvolvida para o gerenciamento inteligente de **agentes turísticos**, **empresas do setor** e **representantes comerciais** no ramo do turismo. Este sistema foi projetado para centralizar e otimizar a gestão de relacionamentos comerciais, facilitando a conexão entre diferentes atores do ecossistema turístico.
 
-## Funcionalidades
+## 🎯 Sobre o Projeto
 
-- Registro de usuários
-- Login e logout com JWT
-- Gerenciamento de perfis de usuário
-- Atribuição de funções e permissões aos usuários
+Este é um **projeto proprietário** desenvolvido especificamente para atender às necessidades do mercado turístico brasileiro, oferecendo uma solução completa para:
+
+- **Gestão de Agentes de Viagem**: Cadastro, acompanhamento e gerenciamento de agentes e operadores turísticos
+- **Administração de Empresas**: Controle completo de empresas parceiras, fornecedores e prestadores de serviços turísticos
+- **Gerenciamento de Representantes**: Sistema dedicado para representantes comerciais e seus territórios de atuação
+- **Relacionamento Comercial**: Ferramentas para fortalecer parcerias e otimizar a comunicação entre stakeholders
+
+## ✨ Principais Funcionalidades
+
+### 🔐 Sistema de Autenticação e Autorização
+- Autenticação segura com JWT (Laravel Passport)
+- Gerenciamento de perfis hierárquicos (Admin, Gerente, Agente, Representante)
 - Controle de acesso baseado em funções e permissões
+- Sistema de tokens para integração com aplicações externas
 
-## Tecnologias Utilizadas
+### 👥 Gestão de Agentes Turísticos
+- Cadastro completo de agentes e operadores
+- Histórico de transações e comissões
+- Acompanhamento de performance e vendas
+- Sistema de avaliações e feedback
 
-- [Laravel](https://laravel.com/) - Framework PHP
-- [Laravel Passport](https://laravel.com/docs/8.x/passport) - Autenticação com JWT
-- [MySQL](https://www.mysql.com/) - Banco de dados relacional
+### 🏢 Administração de Empresas
+- Registro detalhado de empresas parceiras
+- Gestão de contratos e acordos comerciais
+- Monitoramento de relacionamentos comerciais
+- Relatórios de performance empresarial
 
-## Requisitos
+### 🤝 Controle de Representantes
+- Gerenciamento de representantes comerciais
+- Definição de territórios e áreas de atuação
+- Acompanhamento de metas e resultados
+- Sistema de comissionamento
 
-- PHP >= 7.3
-- Composer
-- MySQL
+### 📊 Dashboard e Relatórios
+- Painéis analíticos em tempo real
+- Relatórios de vendas e performance
+- Métricas de relacionamento comercial
+- Exportação de dados em múltiplos formatos
 
-## Instalação
+## 🛠️ Tecnologias Utilizadas
 
-1. Clone o repositório:
-    ```sh
-    git clone https://github.com/seu-usuario/seu-repositorio.git
-    ```
+- **Backend**: [Laravel](https://laravel.com/) - Framework PHP robusto e moderno
+- **Autenticação**: [Laravel Passport](https://laravel.com/docs/passport) - Sistema JWT completo
+- **Banco de Dados**: [MySQL](https://www.mysql.com/) - Banco relacional confiável
+- **API**: RESTful API com documentação Swagger/OpenAPI
+- **Cache**: Redis para otimização de performance
+- **Queue**: Sistema de filas para processamento assíncrono
 
-2. Navegue até o diretório do projeto:
-    ```sh
-    cd seu-repositorio
-    ```
+## 📋 Requisitos do Sistema
 
-3. Instale as dependências do Composer:
-    ```sh
-    composer install
-    ```
+- **PHP** >= 8.1
+- **Composer** >= 2.0
+- **MySQL** >= 8.0 ou **PostgreSQL** >= 13
+- **Redis** (recomendado para cache)
+- **Node.js** >= 16 (para build de assets)
 
-4. Crie um arquivo `.env` a partir do exemplo e configure suas credenciais de banco de dados:
-    ```sh
-    cp .env.example .env
-    ```
+## 🚀 Instalação e Configuração
 
-5. Certifique-se de que as permissões estão corretas para os diretórios storage e bootstrap/cache. Eles devem ser graváveis pelo servidor web:
-    ```sh
-   chmod -R 775 storage
-    
-   chmod -R 775 bootstrap/cache
-    ```
-6. Gere a chave da aplicação:
-    ```sh
-    php artisan key:generate
-    ```
-
-7. Configure o banco de dados no arquivo `.env`:
-    ```plaintext
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=nome_do_banco
-    DB_USERNAME=seu_usuario
-    DB_PASSWORD=sua_senha
-    ```
-
-8. Execute as migrações e seeders:
-    ```sh
-    php artisan migrate --seed
-    ```
-
-9. Instale o Laravel Passport:
-    ```sh
-    php artisan passport:install
-    ```
-
-## Uso
-
-### Registro de Usuário
-
-Endpoint: `POST /api/register`
-
-Corpo da Requisição:
-```json
-{
-    "name": "Seu Nome",
-    "email": "seuemail@example.com",
-    "password": "suaSenha",
-    "password_confirmation": "suaSenha"
-}
+### 1. Clonagem do Repositório
+```bash
+git clone https://github.com/GuilhermeViana-22/API_LOCME.git
+cd API_LOCME
 ```
 
-# Documentação de Configuração do Laravel Passport
-
-Antes de seu aplicativo poder emitir tokens de acesso pessoal, você precisará criar um cliente de acesso pessoal. 
-
-## Passo 1: Instalar o Passport
-
-Se você ainda não executou o comando `passport:install`, você deve executá-lo primeiro. Este comando criará as chaves de criptografia e os clientes necessários para o Laravel Passport.
-
+### 2. Instalação de Dependências
 ```bash
+# Instalar dependências PHP
+composer install
+
+# Instalar dependências Node.js
+npm install
+```
+
+### 3. Configuração do Ambiente
+```bash
+# Copiar arquivo de configuração
+cp .env.example .env
+
+# Gerar chave da aplicação
+php artisan key:generate
+```
+
+### 4. Configuração do Banco de Dados
+Edite o arquivo `.env` com suas credenciais:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=api_locme
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+```
+
+### 5. Configuração de Permissões
+```bash
+# Linux/Mac
+chmod -R 775 storage bootstrap/cache
+
+# Windows (PowerShell como Administrador)
+icacls storage /grant Users:(OI)(CI)F /T
+icacls bootstrap\cache /grant Users:(OI)(CI)F /T
+```
+
+### 6. Execução das Migrações
+```bash
+# Executar migrações e seeders
+php artisan migrate --seed
+
+# Instalar e configurar Passport
 php artisan passport:install
 ```
 
-*Passo 2: Criar um Cliente de Acesso Pessoal*
-
-Depois de executar passport:install, você pode criar um cliente de acesso pessoal. Se você já executou o comando passport:install, não é necessário executar este comando novamente.
-
-Para criar um cliente de acesso pessoal, use o comando:
+### 7. Inicialização do Servidor
 ```bash
-php artisan passport:client --personal
+# Servidor de desenvolvimento
+php artisan serve
+
+# Build de assets (em outro terminal)
+npm run dev
 ```
+
+## 📚 Documentação da API
+
+A documentação completa da API está disponível através do Swagger UI:
+
+- **Local**: `http://localhost:8000/api/documentation`
+- **Produção**: `https://seu-dominio.com/api/documentation`
+
+### Principais Endpoints
+
+#### 🔐 Autenticação
+- `POST /api/register` - Registro de usuários
+- `POST /api/login` - Login e obtenção de token
+- `POST /api/logout` - Logout e revogação de token
+
+#### 👥 Agentes
+- `GET /api/agents` - Listar agentes
+- `POST /api/agents` - Criar novo agente
+- `GET /api/agents/{id}` - Detalhes do agente
+- `PUT /api/agents/{id}` - Atualizar agente
+
+#### 🏢 Empresas
+- `GET /api/companies` - Listar empresas
+- `POST /api/companies` - Criar nova empresa
+- `GET /api/companies/{id}` - Detalhes da empresa
+
+#### 🤝 Representantes
+- `GET /api/representatives` - Listar representantes
+- `POST /api/representatives` - Criar representante
+- `GET /api/representatives/{id}/territory` - Território do representante
+
+## 🔧 Configuração Avançada
+
+### Cache Redis
+```env
+CACHE_DRIVER=redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+```
+
+### Filas de Processamento
+```bash
+# Executar worker de filas
+php artisan queue:work
+
+# Configurar supervisor para produção
+sudo supervisorctl start laravel-worker:*
+```
+
+### Email SMTP
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=seu-smtp.com
+MAIL_PORT=587
+MAIL_USERNAME=seu-email
+MAIL_PASSWORD=sua-senha
+```
+
+## 🧪 Testes
+
+```bash
+# Executar todos os testes
+php artisan test
+
+# Testes com coverage
+php artisan test --coverage
+
+# Testes específicos
+php artisan test --filter AgentTest
+```
+
+## 📈 Performance e Otimização
+
+### Cache de Configuração
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### Otimização para Produção
+```bash
+composer install --optimize-autoloader --no-dev
+php artisan optimize
+npm run production
+```
+
+## 🔒 Segurança
+
+- Autenticação JWT com refresh tokens
+- Criptografia de dados sensíveis
+- Validação rigorosa de entrada
+- Rate limiting em endpoints críticos
+- Logs de auditoria completos
+
+## 📞 Suporte e Contato
+
+Para suporte técnico ou dúvidas sobre o sistema:
+
+- **Desenvolvedor**: Guilherme Viana
+- **Email**: guilherme.viana@locme.com.br
+- **GitHub**: [@GuilhermeViana-22](https://github.com/GuilhermeViana-22)
+
+## 📄 Licença
+
+Este é um **projeto proprietário**. Todos os direitos reservados. O uso, distribuição ou modificação deste código requer autorização expressa do proprietário.
+
+---
+
+**© 2024 LOCME - Todos os direitos reservados**
+
+*Desenvolvido com ❤️ para revolucionar o mercado turístico brasileiro*
 

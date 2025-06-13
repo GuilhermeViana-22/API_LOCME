@@ -13,8 +13,8 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     schema="User",
  *     title="User Model",
- *     description="Modelo de usuário do sistema com status de ativação",
- *     required={"name", "email", "password"},
+ *     description="Modelo de usuário do sistema",
+ *     required={"name", "email", "password", "tipo_perfil_id", "perfil_id"},
  *     @OA\Property(
  *         property="id",
  *         type="integer",
@@ -25,6 +25,7 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(
  *         property="name",
  *         type="string",
+ *         maxLength=255,
  *         description="Nome completo do usuário",
  *         example="João Silva"
  *     ),
@@ -32,7 +33,8 @@ use OpenApi\Annotations as OA;
  *         property="email",
  *         type="string",
  *         format="email",
- *         description="E-mail do usuário",
+ *         maxLength=255,
+ *         description="E-mail do usuário (único)",
  *         example="joao@exemplo.com"
  *     ),
  *     @OA\Property(
@@ -44,17 +46,43 @@ use OpenApi\Annotations as OA;
  *         example="2023-01-01 12:00:00"
  *     ),
  *     @OA\Property(
- *         property="active",
+ *         property="password",
+ *         type="string",
+ *         description="Senha do usuário (criptografada)",
+ *         example="hashed_password"
+ *     ),
+ *     @OA\Property(
+ *         property="foto_perfil",
+ *         type="string",
+ *         maxLength=255,
+ *         description="Caminho/URL da foto de perfil",
+ *         nullable=true,
+ *         example="users/profile_photos/abc123.jpg"
+ *     ),
+ *     @OA\Property(
+ *         property="tipo_perfil_id",
  *         type="integer",
- *         description="Status de ativação do usuário (0=Inativo, 1=Ativo)",
- *         enum={0, 1},
+ *         description="ID do tipo de perfil do usuário",
  *         example=1
  *     ),
  *     @OA\Property(
- *         property="situacao_id",
+ *         property="perfil_id",
  *         type="integer",
- *         description="ID da situação do usuário",
+ *         description="ID do perfil do usuário",
  *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="bio",
+ *         type="string",
+ *         description="Biografia do usuário",
+ *         nullable=true,
+ *         example="Desenvolvedor web com 5 anos de experiência"
+ *     ),
+ *     @OA\Property(
+ *         property="remember_token",
+ *         type="string",
+ *         description="Token de lembrete para sessão persistente",
+ *         nullable=true
  *     ),
  *     @OA\Property(
  *         property="created_at",
@@ -69,19 +97,19 @@ use OpenApi\Annotations as OA;
  *         format="date-time",
  *         description="Data de atualização",
  *         example="2023-01-01 12:00:00"
+ *     ),
+ *     @OA\Property(
+ *         property="deleted_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Data de exclusão (soft delete)",
+ *         nullable=true,
+ *         example="2023-01-01 12:00:00"
  *     )
  * )
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    // Situações nas quais o usuário se encontra ativo dentro do sistema
-    const USUARIO_ATIVO = 1;
-    const SITUACAO_ATIVA = 1;
-
-    // Situações nas quais o usuário não se encontra mais ativo dentro do sistema
-    const USUARIO_INATIVO = 0;
-    const SITUACAO_INATIVO = 0;
-
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -90,31 +118,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
-        'password',
-        'situacao_id',
-        'cpf',
         'email',
-        'data_nascimento',
-        'telefone_celular',
-        'cargo_funcao',
-        'empresa_atual_id',
-        'empresa_outro',
-        'cidade',
-        'estado',
-        'email_contato',
-        'linkedin',
+        'password',
+        'foto_perfil',
+        'tipo_perfil_id',
+        // 'perfil_id', ← REMOVA ou comente
         'bio',
-        'visibilidade_telefone',
-        'visibilidade_email',
-        'visibilidade_linkedin',
-        'genero',
-//        'position_id',
-//        'unidade_id',
-//        'status_id',
-//        'foto_perfil',
-        'ativo',
-//        'situacao_id',
-        'ultimo_acesso'
+        'email_verified_at'
     ];
 
     /**
@@ -132,34 +142,21 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'data_nascimento' => 'date',
-        'visibilidade_telefone' => 'boolean',
-        'visibilidade_email' => 'boolean',
-        'visibilidade_linkedin' => 'boolean',
-        'ativo' => 'boolean',
-        'ultimo_acesso' => 'datetime',
     ];
 
-    public function unidade()
-    {
-        return $this->belongsTo(Unidade::class);
-    }
-
-    public function logs()
-    {
-        return $this->hasMany(Log::class, 'client_id'); // Especifica que a FK é client_id
-    }
-
-    public function position()
-    {
-        return $this->belongsTo(Position::class, 'position_id', 'id');
-    }
-
-    /**
-     * Relacionamento com a empresa atual
-     */
-    public function empresaAtual()
-    {
-        return $this->belongsTo(Empresa::class, 'empresa_atual_id');
-    }
+//    /**
+//     * Relacionamento com o tipo de perfil
+//     */
+//    public function tipoPerfil()
+//    {
+//        return $this->belongsTo(TipoPerfil::class, 'tipo_perfil_id');
+//    }
+//
+//    /**
+//     * Relacionamento com o perfil
+//     */
+//    public function perfil()
+//    {
+//        return $this->belongsTo(Perfil::class, 'perfil_id');
+//    }
 }

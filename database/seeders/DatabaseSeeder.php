@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            UserSeeder::class,
             PositionSeeder::class,
             RuleSeeder::class,
             RulePositionSeeder::class,
@@ -22,7 +23,9 @@ class DatabaseSeeder extends Seeder
             LogSeeder::class,
             PermissionSeeder::class,
             PassportSeeder::class,
-            UserSeeder::class,
+            TipoPerfils::class,
+
+
         ]);
     }
 }

@@ -19,14 +19,13 @@ class CreateUsersTable extends Migration
 
             $table->id();
             $table->string('name', 255);
-            $table->string('cpf', 14);
             $table->string('email', 255)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('foto_perfil', 255)->nullable();
-            $table->integer('tipo_perfil_id');
-            $table->integer(' perfil_id');
-            $table->string('bio');
+            $table->integer('tipo_perfil_id')->nullable();
+            $table->integer(' perfil_id')->nullable();
+            $table->string('bio')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

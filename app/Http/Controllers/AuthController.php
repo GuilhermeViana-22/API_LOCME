@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Users\UserResource;
+use App\Models\TipoPerfil;
 use Exception;
 use App\Models\Log;
 use App\Models\User;
@@ -52,34 +53,21 @@ class AuthController extends Controller
      *     tags={"Autenticação"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 required={"name", "cpf", "email", "password", "password_confirmation", "data_nascimento", "telefone_celular", "genero", "position_id", "unidade_id", "status_id"},
-     *                 @OA\Property(property="name", type="string", example="João da Silva"),
-     *                 @OA\Property(property="cpf", type="string", example="123.456.789-09"),
-     *                 @OA\Property(property="email", type="string", format="email", example="joao@empresa.com"),
-     *                 @OA\Property(property="password", type="string", format="password", example="Senha123@"),
-     *                 @OA\Property(property="password_confirmation", type="string", format="password", example="Senha123@"),
-     *                 @OA\Property(property="data_nascimento", type="string", format="date", example="1990-01-01"),
-     *                 @OA\Property(property="telefone_celular", type="string", example="(11) 99999-9999"),
-     *                 @OA\Property(
-     *                     property="genero",
-     *                     type="string",
-     *                     enum={"masculino", "feminino", "outro", "prefiro não informar"},
-     *                     example="masculino"
-     *                 ),
-     *                 @OA\Property(property="position_id", type="integer", example=1),
-     *                 @OA\Property(property="unidade_id", type="integer", example=1),
-     *                 @OA\Property(property="status_id", type="integer", example=1),
-     *                 @OA\Property(property="situacao_id", type="integer", example=1, nullable=true),
-     *                 @OA\Property(
-     *                     property="foto_perfil",
-     *                     type="string",
-     *                     format="binary",
-     *                     description="Imagem de perfil (formatos: jpeg,png,jpg,gif, máximo 2MB)"
-     *                 ),
-     *                 @OA\Property(property="ativo", type="boolean", example=true, nullable=true)
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password", "password_confirmation", "tipo_perfil_id", "perfil_id"},
+     *             @OA\Property(property="name", type="string", maxLength=255, example="João da Silva"),
+     *             @OA\Property(property="email", type="string", format="email", maxLength=255, example="joao@empresa.com"),
+     *             @OA\Property(property="password", type="string", format="password", minLength=8, example="Senha123@"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="Senha123@"),
+     *             @OA\Property(property="tipo_perfil_id", type="integer", example=1),
+     *             @OA\Property(property="perfil_id", type="integer", example=1),
+     *             @OA\Property(property="bio", type="string", nullable=true, example="Desenvolvedor web"),
+     *             @OA\Property(
+     *                 property="foto_perfil",
+     *                 type="string",
+     *                 nullable=true,
+     *                 description="URL ou caminho da foto de perfil",
+     *                 example="users/profile_photos/abc123.jpg"
      *             )
      *         )
      *     ),
@@ -94,15 +82,15 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Erro de validação",
+     *         description="Erro de validação ou dados duplicados",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Os dados fornecidos são inválidos."),
      *             @OA\Property(
      *                 property="errors",
      *                 type="object",
      *                 example={
-     *                     "name": {"O campo nome completo é obrigatório."},
-     *                     "cpf": {"O CPF deve ter 14 caracteres (incluindo pontuações)."}
+     *                     "email": {"Este email já está em uso"},
+     *                     "tipo_perfil_id": {"O tipo de perfil é obrigatório"}
      *                 }
      *             )
      *         )
@@ -111,8 +99,8 @@ class AuthController extends Controller
      *         response=500,
      *         description="Erro interno no servidor",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Erro ao registrar usuário"),
-     *             @OA\Property(property="error", type="string", example="Mensagem detalhada do erro")
+     *             @OA\Property(property="message", type="string", example="Erro ao processar o registro"),
+     *             @OA\Property(property="error", type="string", example="Mensagem técnica do erro (em ambiente de desenvolvimento)")
      *         )
      *     )
      * )
@@ -122,23 +110,28 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
 
-            // Verificação de email duplicado
+            // Verificação adicional de email duplicado
             if (User::where('email', $request->email)->exists()) {
                 return response()->json([
-                    'errors' => [
-                        'email' => ['Este email já está sendo utilizado em outra conta.']
-                    ],
-                    'message' => 'O email informado já está em uso'
+                    'errors' => ['email' => ['Este email já está em uso']],
+                    'message' => 'Email já cadastrado'
                 ], 422);
             }
 
-            $data = $request->validated();
-            $data['password'] = bcrypt($data['password']);
-            unset($data['foto_perfil']);
+            $userData = $request->validated();
+            $userData['password'] = bcrypt($userData['password']);
 
-            $user = User::create($data);
+            $user = User::create($userData);
+
+            // Verifica se as chaves do Passport existem
+            if (!file_exists(storage_path('oauth-private.key')) || !file_exists(storage_path('oauth-public.key'))) {
+                throw new \Exception('Chaves do Passport não encontradas. Execute "php artisan passport:install"');
+            }
+
+            // Tenta criar o token de acesso
             $token = $user->createToken('auth_token')->accessToken;
 
+            // Log opcional
             $this->logAccess($user->id, $request->ip(), $request->path(), true, $user->name);
 
             DB::commit();
@@ -152,34 +145,36 @@ class AuthController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
 
-            if ($e->errorInfo[1] == 1062) {
+            $errorInfo = $e->errorInfo;
+
+            if ($errorInfo[1] == 1054) {
                 return response()->json([
-                    'errors' => [
-                        'email' => ['Este email já está cadastrado']
-                    ],
-                    'message' => 'O email informado já está em uso'
+                    'message' => 'Erro de configuração do banco de dados',
+                    'error' => config('app.debug') ? $errorInfo[2] : 'Coluna não encontrada'
+                ], 500);
+            }
+
+            if ($errorInfo[1] == 1062) {
+                return response()->json([
+                    'errors' => ['email' => ['Este email já está em uso']],
+                    'message' => 'Email já cadastrado'
                 ], 422);
             }
 
             return response()->json([
-                'errors' => [
-                    'general' => ['Erro no banco de dados']
-                ],
-                'message' => 'Erro durante o registro',
-                'log' => $e->getMessage()
+                'message' => 'Erro ao processar o registro',
+                'error' => config('app.debug') ? $errorInfo[2] : null
             ], 500);
 
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'errors' => [
-                    'general' => ['Erro inesperado']
-                ],
-                'message' => 'Erro ao registrar usuário',
-                'log' => $e->getMessage()
+                'message' => 'Erro ao processar o registro',
+                'error' => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }
     }
+
 
     /**
      * @OA\Post(
