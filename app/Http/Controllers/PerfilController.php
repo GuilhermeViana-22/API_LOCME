@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profiles\CompletarRequest;
+use App\Http\Resources\Perfis\TiposPerfisResource;
 use App\Http\Resources\Users\UserResource;
+use App\Models\TipoPerfil;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class ProfileController extends Controller
+class PerfilController extends Controller
 {
     /**
      * @OA\Get(
@@ -53,13 +56,23 @@ class ProfileController extends Controller
      * @param CompletarRequest $request
      * @return JsonResponse
      */
-    public function completar( CompletarRequest  $request)
+    public function completar( CompletarRequest $request)
     {
         $user = Auth::user();
-        $user->fill($request->validated());
 
         try {
-            $user->save();
+
+        //// implementa a o case com cada tipo de perfil
+        switch ( $user->tipo_perfil_id ){
+            case TipoPerfil::TIPO_REPRESENTANTE:
+                $this->salvarPerfilRepresentante($user);
+
+                /// outros perfis
+
+
+
+
+        }
 
         } catch (\Throwable $e) {
             return response()->json([
@@ -71,7 +84,20 @@ class ProfileController extends Controller
             ], 500);
         }
 
+
+
         return response()->json(['message' => 'Os dados foram salvos com sucesso']);
+    }
+
+    /**
+     * Implementa a lógica de criação de perfil do representante e também salva o ID na tabela do USER
+     *
+     * @param $user
+     * @return void
+     */
+    private function salvarPerfilRepresentante($user)
+    {
+
     }
 
     /**
@@ -111,5 +137,18 @@ class ProfileController extends Controller
             'foto_perfil_url' => 'storage/'.$path, // Retorna apenas o caminho relativo
             'message' => 'Foto de perfil atualizada com sucesso!'
         ]);
+    }
+
+    /**
+     * Método para recuperar todas os tipos de perfis do usuário
+     *
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+    public function tiposPerfis(Request $request)
+    {
+        $tipos_perfis = TipoPerfil::all();
+
+        return TiposPerfisResource::collection($tipos_perfis);
     }
 }

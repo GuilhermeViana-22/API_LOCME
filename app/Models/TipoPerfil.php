@@ -9,10 +9,16 @@ class TipoPerfil extends Model
 {
     use HasFactory;
 
+    CONST TIPO_REPRESENTANTE = 1;
+    CONST TIPO_AGENTE_VIAGEM = 2;
+    CONST TIPO_AGENCIA_VIAGEM = 3;
+    CONST TIPO_GUIA_TURISMO = 4;
+    CONST TIPO_EMPRESA_ENTIDADE = 5;
+
     /**
      * A tabela associada ao modelo.
      *
      * @var string
      */
-    protected $table = 'tipos_perfis';
+    protected $table = 'tipo_perfis';
 }

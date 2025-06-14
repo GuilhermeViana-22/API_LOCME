@@ -13,10 +13,7 @@ class UserRegisterValidationRequest extends FormRequest
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
-            'foto_perfil' => 'nullable|string|max:255',
-            'tipo_perfil_id' => 'required|int',
-            'perfil_id' => 'nullable',
-            'bio' => 'nullable|string',
+            'tipo_perfil_id' => 'required|integer|exists:tipo_perfis,id',
 
             // Campos opcionais da migration
             'email_verified_at' => 'nullable|date',
@@ -43,9 +40,9 @@ class UserRegisterValidationRequest extends FormRequest
             'password_confirmation.required' => 'Confirme sua senha',
             'password_confirmation.min' => 'A confirmação da senha deve ter no mínimo 8 caracteres',
 
-            // Mensagens para campos opcionais
-            'foto_perfil.max' => 'O caminho da foto não pode exceder 255 caracteres',
-            'bio.string' => 'A biografia deve ser um texto válido',
+            'tipo_perfil_id.required' => 'O tipo do perfil deve ser informado',
+            'tipo_perfil_id.integer' => 'O tipo do perfil informado está inválido',
+            'tipo_perfil_id.exists' => 'O tipo do perfil informado está inválido',
 
             'email_verified_at.date' => 'A data de verificação de email deve ser válida',
             'rememberToken.string' => 'O token de lembrete deve ser uma string'

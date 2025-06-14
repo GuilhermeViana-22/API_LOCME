@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             LogSeeder::class,
             PermissionSeeder::class,
             PassportSeeder::class,
-            TipoPerfils::class,
+            TipoPerfis::class,
 
 
         ]);

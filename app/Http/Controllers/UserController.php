@@ -34,28 +34,28 @@ class UserController extends Controller
      * @queryParam order string Direção da ordenação (asc, desc). Example: asc
      */
     public function index(UsersIndexRequest $request)
-{
-    try {
-        $query = User::query()->with(['unidade', 'position',  'logs']);
-        $query = $this->applyFilters($query, $request);
+    {
+        try {
+            $query = User::query()->with(['unidade', 'position',  'logs']);
+            $query = $this->applyFilters($query, $request);
 
-        // Ordenação padrão
-        $sortField = $request->input('sort', 'name');
-        $sortOrder = $request->input('order', 'asc');
-        $query->orderBy($sortField, $sortOrder);
+            // Ordenação padrão
+            $sortField = $request->input('sort', 'name');
+            $sortOrder = $request->input('order', 'asc');
+            $query->orderBy($sortField, $sortOrder);
 
-        $perPage = $request->input('per_page', 10);
-        $users = $query->paginate($perPage);
+            $perPage = $request->input('per_page', 10);
+            $users = $query->paginate($perPage);
 
-        return $this->buildPaginatedResponse($users, $request);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Falha ao recuperar usuários',
-            'error' => $e->getMessage()
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->buildPaginatedResponse($users, $request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Falha ao recuperar usuários',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
-}
 
     /**
      * Criar novo usuário
