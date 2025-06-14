@@ -14,7 +14,7 @@ class Regiao extends Model
      *
      * @var string
      */
-    protected $table = 'Regioes';
+    protected $table = 'regioes';
 
     /**
      * Os atributos que são atribuíveis em massa.

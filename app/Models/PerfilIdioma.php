@@ -14,7 +14,7 @@ class PerfilIdioma extends Model
      *
      * @var string
      */
-    protected $table = 'Perfis_Idiomas';
+    protected $table = 'perfis_idiomas';
 
     /**
      * Os atributos que são atribuíveis em massa.

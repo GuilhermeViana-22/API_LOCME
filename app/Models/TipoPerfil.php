@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TipoPerfil extends Model
 {
     use HasFactory;
+
+    /**
+     * A tabela associada ao modelo.
+     *
+     * @var string
+     */
+    protected $table = 'tipos_perfis';
 }

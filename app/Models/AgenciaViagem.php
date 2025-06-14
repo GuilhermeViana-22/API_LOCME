@@ -14,28 +14,7 @@ class AgenciaViagem extends Model
      *
      * @var string
      */
-    protected $table = 'Agencias_Viagens';
-
-    /**
-     * Indica se o modelo deve ser timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * Nome da coluna de timestamp de criação.
-     *
-     * @var string
-     */
-    const CREATED_AT = 'data_cadastro';
-
-    /**
-     * Nome da coluna de timestamp de atualização.
-     *
-     * @var string
-     */
-    const UPDATED_AT = 'data_atualizacao';
+    protected $table = 'agencias_viagens';
 
     /**
      * Os atributos que são atribuíveis em massa.

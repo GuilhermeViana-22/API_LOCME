@@ -14,7 +14,7 @@ class Abrangencia extends Model
      *
      * @var string
      */
-    protected $table = 'Abrangencias';
+    protected $table = 'abrangencias';
 
     /**
      * Os atributos que são atribuíveis em massa.

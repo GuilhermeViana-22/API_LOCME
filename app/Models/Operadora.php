@@ -14,7 +14,7 @@ class Operadora extends Model
      *
      * @var string
      */
-    protected $table = 'Operadoras';
+    protected $table = 'operadoras';
 
     /**
      * Os atributos que são atribuíveis em massa.

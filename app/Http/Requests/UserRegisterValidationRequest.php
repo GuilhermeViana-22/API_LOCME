@@ -14,7 +14,7 @@ class UserRegisterValidationRequest extends FormRequest
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
             'foto_perfil' => 'nullable|string|max:255',
-            'tipo_perfil_id' => 'nullable',
+            'tipo_perfil_id' => 'required|int',
             'perfil_id' => 'nullable',
             'bio' => 'nullable|string',
 

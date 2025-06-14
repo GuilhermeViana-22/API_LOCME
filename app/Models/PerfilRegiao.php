@@ -14,7 +14,7 @@ class PerfilRegiao extends Model
      *
      * @var string
      */
-    protected $table = 'Perfis_Regioes';
+    protected $table = 'perfis_regioes';
 
     /**
      * Os atributos que são atribuíveis em massa.

@@ -147,8 +147,6 @@ class UserController extends Controller
         }
     }
 
-
-
     /**
      * Remover usuário
      * @urlParam id integer required ID do usuário. Example: 1
@@ -226,7 +224,6 @@ class UserController extends Controller
             'data' => new UserResource($user->load('roles'))
         ]);
     }
-
 
     /**
      * Aplica todos os filtros à query

@@ -14,7 +14,7 @@ class GuiaTurismo extends Model
      *
      * @var string
      */
-    protected $table = 'Guias_Turismos';
+    protected $table = 'guias_turismos';
 
     /**
      * Os atributos que são atribuíveis em massa.

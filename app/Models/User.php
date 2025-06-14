@@ -144,13 +144,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-//    /**
-//     * Relacionamento com o tipo de perfil
-//     */
-//    public function tipoPerfil()
-//    {
-//        return $this->belongsTo(TipoPerfil::class, 'tipo_perfil_id');
-//    }
+    /**
+     * Relacionamento com o tipo de perfil
+     */
+    public function tipoPerfil()
+    {
+        return $this->belongsTo(TipoPerfil::class, 'tipo_perfil_id');
+    }
 //
 //    /**
 //     * Relacionamento com o perfil

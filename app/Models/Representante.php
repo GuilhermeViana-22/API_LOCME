@@ -14,7 +14,7 @@ class Representante extends Model
      *
      * @var string
      */
-    protected $table = 'Representantes';
+    protected $table = 'representantes';
 
     /**
      * Os atributos que são atribuíveis em massa.

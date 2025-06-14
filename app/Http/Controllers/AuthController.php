@@ -175,7 +175,6 @@ class AuthController extends Controller
         }
     }
 
-
     /**
      * @OA\Post(
      *     path="/api/login",

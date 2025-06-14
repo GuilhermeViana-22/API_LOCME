@@ -10,25 +10,11 @@ class Idioma extends Model
     use HasFactory;
 
     /**
-     * A chave primária não é um inteiro auto-incremento.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * O tipo da chave primária.
+     * A tabela associada ao modelo.
      *
      * @var string
      */
-    protected $keyType = 'string';
-
-    /**
-     * A chave primária para o modelo.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'Idiomas';
+    protected $table = 'Idiomas';
 
     /**
      * Os atributos que são atribuíveis em massa.

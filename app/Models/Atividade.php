@@ -14,7 +14,7 @@ class Atividade extends Model
      *
      * @var string
      */
-    protected $table = 'Atividades';
+    protected $table = 'atividades';
 
     /**
      * Os atributos que são atribuíveis em massa.
