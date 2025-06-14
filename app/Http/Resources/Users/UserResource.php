@@ -18,6 +18,8 @@ class UserResource extends JsonResource
             'foto_perfil_url' => $this->foto_perfil ? asset('storage/profile/'.$this->id.'/'.$this->foto_perfil) : null,
 
             'tipo_perfil_id' => $this->tipo_perfil_id,
+            'tipo_perfil' => $this->tipoPerfil->tipo,
+
             'perfil_id' => $this->perfil_id ?? null,
             'bio' => $this->bio ?? null,
             'created_at' => $this->created_at,
