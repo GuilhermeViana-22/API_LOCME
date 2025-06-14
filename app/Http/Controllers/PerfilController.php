@@ -134,7 +134,7 @@ class PerfilController extends Controller
         }
 
         return response()->json([
-            'foto_perfil_url' => 'storage/'.$path, // Retorna apenas o caminho relativo
+            'foto_perfil_url' => asset('storage/'.$path), // Retorna apenas o caminho relativo
             'message' => 'Foto de perfil atualizada com sucesso!'
         ]);
     }
