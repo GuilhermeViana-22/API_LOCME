@@ -13,7 +13,7 @@ class CreateAgentesViagensTable extends Migration
      */
     public function up()
     {
-        Schema::create('Agentes_Viagens', function (Blueprint $table) {
+        Schema::create('agentes_viagens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome_completo');
             $table->string('cpf');
@@ -38,6 +38,6 @@ class CreateAgentesViagensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Agentes_Viagens');
+        Schema::dropIfExists('agentes_viagens');
     }
 }

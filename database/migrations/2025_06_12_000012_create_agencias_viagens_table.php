@@ -13,7 +13,7 @@ class CreateAgenciasViagensTable extends Migration
      */
     public function up()
     {
-        Schema::create('Agencias_Viagens', function (Blueprint $table) {
+        Schema::create('agencias_viagens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome_agencia');
             $table->string('cnpj')->unique();
@@ -49,6 +49,6 @@ class CreateAgenciasViagensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Agencias_Viagens');
+        Schema::dropIfExists('agencias_viagens');
     }
 }

@@ -13,7 +13,7 @@ class CreateAtividadesTable extends Migration
      */
     public function up()
     {
-        Schema::create('Atividades', function (Blueprint $table) {
+        Schema::create('atividades', function (Blueprint $table) {
             $table->id();
             $table->string('atividade');
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateAtividadesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Atividades');
+        Schema::dropIfExists('atividades');
     }
 }

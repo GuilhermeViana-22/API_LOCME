@@ -13,7 +13,7 @@ class CreateRepresentantesTable extends Migration
      */
     public function up()
     {
-        Schema::create('Representantes', function (Blueprint $table) {
+        Schema::create('representantes', function (Blueprint $table) {
             $table->id();
             $table->string('apelido');
             $table->string('whatsapp');
@@ -43,6 +43,6 @@ class CreateRepresentantesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Representantes');
+        Schema::dropIfExists('representantes');
     }
 }

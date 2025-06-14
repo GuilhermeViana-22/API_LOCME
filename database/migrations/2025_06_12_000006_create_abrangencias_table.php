@@ -13,7 +13,7 @@ class CreateAbrangenciasTable extends Migration
      */
     public function up()
     {
-        Schema::create('Abrangencias', function (Blueprint $table) {
+        Schema::create('abrangencias', function (Blueprint $table) {
             $table->id();
             $table->string('abrangencia');
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateAbrangenciasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Abrangencias');
+        Schema::dropIfExists('abrangencias');
     }
 }

@@ -13,7 +13,7 @@ class CreatePerfisRegioesTable extends Migration
      */
     public function up()
     {
-        Schema::create('Perfis_Regioes', function (Blueprint $table) {
+        Schema::create('perfis_regioes', function (Blueprint $table) {
             $table->id();
             $table->integer('perfil_id');
             $table->integer('regiao_id');
@@ -30,6 +30,6 @@ class CreatePerfisRegioesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Perfis_Regioes');
+        Schema::dropIfExists('perfis_regioes');
     }
 }

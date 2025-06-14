@@ -13,7 +13,7 @@ class CreateGuiasTurismosTable extends Migration
      */
     public function up()
     {
-        Schema::create('Guias_Turismos', function (Blueprint $table) {
+        Schema::create('guias_turismos', function (Blueprint $table) {
             $table->id();
             $table->text('apelido');
             $table->text('whatsapp');
@@ -32,6 +32,6 @@ class CreateGuiasTurismosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Guias_Turismos');
+        Schema::dropIfExists('guias_turismos');
     }
 }

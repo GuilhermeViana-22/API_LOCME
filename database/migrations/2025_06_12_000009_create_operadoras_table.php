@@ -13,7 +13,7 @@ class CreateOperadorasTable extends Migration
      */
     public function up()
     {
-        Schema::create('Operadoras', function (Blueprint $table) {
+        Schema::create('operadoras', function (Blueprint $table) {
             $table->id();
             $table->string('operadora');
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateOperadorasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Operadoras');
+        Schema::dropIfExists('operadoras');
     }
 }

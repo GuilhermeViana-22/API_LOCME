@@ -13,7 +13,7 @@ class CreatePerfisIdiomasTable extends Migration
      */
     public function up()
     {
-        Schema::create('Perfis_Idiomas', function (Blueprint $table) {
+        Schema::create('perfis_idiomas', function (Blueprint $table) {
             $table->id();
             $table->integer('perfil_id');
             $table->integer('idioma_id');
@@ -30,6 +30,6 @@ class CreatePerfisIdiomasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Perfis_Idiomas');
+        Schema::dropIfExists('perfis_idiomas');
     }
 }
