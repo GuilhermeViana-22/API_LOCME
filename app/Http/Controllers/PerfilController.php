@@ -65,7 +65,7 @@ class PerfilController extends Controller
         //// implementa a o case com cada tipo de perfil
         switch ( $user->tipo_perfil_id ){
             case TipoPerfil::TIPO_REPRESENTANTE:
-                $this->salvarPerfilRepresentante($user);
+                $this->salvarPerfilRepresentante($user, $request);
 
                 /// outros perfis
 
@@ -93,9 +93,10 @@ class PerfilController extends Controller
      * Implementa a lógica de criação de perfil do representante e também salva o ID na tabela do USER
      *
      * @param $user
+     * @param $request
      * @return void
      */
-    private function salvarPerfilRepresentante($user)
+    private function salvarPerfilRepresentante($user, $request)
     {
 
     }

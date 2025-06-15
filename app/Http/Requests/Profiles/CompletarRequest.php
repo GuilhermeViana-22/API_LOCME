@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Profiles;
 
+use App\Models\TipoPerfil;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,15 +25,17 @@ class CompletarRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $user = Auth::user();
 
-        ];
+        /// retorna as regras de acordo com o tipo de perfil
+        return TipoPerfil::RULES[$user->tipo_perfil_id] ?? [];
     }
 
     public function messages()
     {
-        return [
+        $user = Auth::user();
 
-        ];
+        /// retorna as mensagens de acordo com o tipo de perfil
+        return TipoPerfil::MESSAGES[$user->tipo_perfil_id] ?? [];
     }
 }
