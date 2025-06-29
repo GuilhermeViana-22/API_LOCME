@@ -6,8 +6,8 @@ use App\Http\Resources\Positions\PositionResource;
 use App\Models\Position;
 
 use Illuminate\Http\Response;
-use App\Http\Requests\positions\positionStoreRequest;
-use App\Http\Requests\positions\positionUpdateRequest;
+use App\Http\Requests\Position\positionStoreRequest;
+use App\Http\Requests\Position\positionUpdateRequest;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PositionController extends Controller

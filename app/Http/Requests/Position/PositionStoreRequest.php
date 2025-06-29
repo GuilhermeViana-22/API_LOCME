@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\positions;
+namespace App\Http\Requests\Position;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class positionStoreRequest extends FormRequest
+class PositionStoreRequest extends FormRequest
 {
 
     /**
