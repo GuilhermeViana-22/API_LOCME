@@ -37,7 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/validar', [AuthController::class, 'validar'])->name('api.validar');
 
-    // Rotas de autenticação do usuário
+    // Rotas de autenticação do utilizador
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
 
