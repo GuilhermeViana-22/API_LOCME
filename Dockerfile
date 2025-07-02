@@ -64,5 +64,5 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expor porta
 EXPOSE 8000
 
-# Comando de inicialização
+# Comando de inicializaçãoa
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
