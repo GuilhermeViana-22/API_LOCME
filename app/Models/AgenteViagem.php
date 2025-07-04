@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Modelo para representar Agentes de Viagem no sistema
+ * 
+ * @package App\Models
+ */
 class AgenteViagem extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * A tabela associada ao modelo.
@@ -44,7 +50,18 @@ class AgenteViagem extends Model
         'vinculado_agencia' => 'boolean',
         'tem_cnpj_proprio' => 'boolean',
         'aceita_contato_representantes' => 'boolean',
-        'data_cadastro' => 'datetime',
-        'data_atualizacao' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
+
+    /**
+     * Relacionamento com o usuário que possui este perfil de agente de viagem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function usuario()
+    {
+        return $this->hasOne(User::class, 'agente_viagem_id', 'id');
+    }
 }

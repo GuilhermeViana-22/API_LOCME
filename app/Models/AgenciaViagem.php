@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AgenciaViagem extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * A tabela associada ao modelo.
@@ -38,7 +39,7 @@ class AgenciaViagem extends Model
         'atende_freelance',
         'cadastur',
         'instagram',
-        'segmento_principal',
+        'segmento_principal_id',
         'excursoes_proprias',
         'aceita_excursoes_outras',
         'descricao_livre',

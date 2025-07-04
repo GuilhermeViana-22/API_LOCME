@@ -37,6 +37,13 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/validar', [AuthController::class, 'validar'])->name('api.validar');
 
+    // Rotas para agentes de viagem
+    Route::prefix('agentes-viagem')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Api\AgenteViagemController::class, 'index']);
+        Route::get('/buscar', [\App\Http\Controllers\Api\AgenteViagemController::class, 'buscar']);
+        Route::get('/{id}', [\App\Http\Controllers\Api\AgenteViagemController::class, 'show']);
+    });
+
     // Rotas de autenticação do utilizador
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::delete('/delete', [AuthController::class, 'delete'])->name('api.delete');
