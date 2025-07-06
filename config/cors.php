@@ -7,8 +7,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost:5173',
-        'https://client-locme.vercel.app',
+        '*',
+
     ],
 
     'allowed_origins_patterns' => [],

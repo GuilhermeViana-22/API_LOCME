@@ -15,7 +15,7 @@ class CreateRepresentantesTable extends Migration
     {
         Schema::create('representantes', function (Blueprint $table) {
             $table->id();
-            $table->string('apelido');
+            $table->string('nome');
             $table->string('whatsapp');
             $table->string('email_contato');
             $table->date('data_nascimento');

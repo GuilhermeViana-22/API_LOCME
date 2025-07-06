@@ -9,6 +9,7 @@ use App\Http\Resources\Users\UserResource;
 use App\Models\AgenciaViagem;
 use App\Models\AgenteViagem;
 use App\Models\Log;
+use App\Models\Representante;
 use App\Models\TipoPerfil;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -138,13 +139,6 @@ class PerfilController extends Controller
                     throw new \Exception('Tipo de perfil não implementado ou inválido.');
             }
 
-            // Registra ‘log’ de atividade
-            Log::info("Perfil de {$tipoPerfil} completado com sucesso", [
-                'user_id' => $user->id,
-                'tipo_perfil' => $user->tipo_perfil_id,
-                'perfil_id' => $perfil->id ?? null
-            ]);
-
             // Commit da transação
             DB::commit();
 
@@ -165,14 +159,6 @@ class PerfilController extends Controller
         } catch (\Throwable $e) {
             // Rollback em caso de qualquer outro erro
             DB::rollBack();
-
-            // Log do erro para debugging
-            Log::error('Erro ao completar perfil', [
-                'user_id' => $user->id,
-                'tipo_perfil' => $user->tipo_perfil_id,
-                'erro' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
 
             return response()->json([
                 'errors' => [
@@ -198,16 +184,13 @@ class PerfilController extends Controller
             // Os dados já foram validados pelo FormRequest
             $validatedData = $request->validated();
 
-            // Aqui viria a lógica específica para salvar os dados do representante
-            // Por exemplo, criação do registro no banco e ‘upload’ de arquivos
-
-            // Exemplo: $representante = Representante::create($validatedData);
+            $representante = Representante::create($validatedData);
 
             // Atualização do utilizador com o ‘ID’ do representante
-            // $user->representante_id = $representante->id;
-            // $user->save();
+            $user->perfil_id = $representante->id;
+            $user->save();
 
-            // return $representante;
+            return $representante;
         } catch (\Illuminate\Database\QueryException $e) {
             // Tratar erros específicos de banco de dados
             throw new \Exception('Erro ao salvar no banco de dados: ' . $e->getMessage(), 500);

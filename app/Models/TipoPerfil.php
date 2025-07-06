@@ -24,8 +24,14 @@ class TipoPerfil extends Model
             'whatsapp' => 'required|string|max:20',
             'email_contato' => 'required|email|max:255',
             'data_nascimento' => 'required|date',
-            'operadora_id' => 'required|integer|exists:operadoras,id',
-            'empresa_id' => 'nullable|integer|exists:empresas,id',
+
+
+//            'operadora_id' => 'required|integer|exists:operadoras,id',
+//            'empresa_id' => 'nullable|integer|exists:empresas,id',
+
+            'operadora_id' => 'required|integer',
+            'empresa_id' => 'nullable|integer',
+
             'empresa_outra' => 'nullable|string|max:255|required_if:empresa_id,null',
             'telefone_vendas' => 'required|string|max:20',
             'url' => 'nullable|url|max:255',

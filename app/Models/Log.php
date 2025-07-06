@@ -111,7 +111,7 @@ class Log extends Model
                 'rota' => $rota
             ]);
         } catch (\Exception $e) {
-            \Log::error('Falha ao registrar log', [
+            Log::error('Falha ao registrar log', [
                 'error' => $e->getMessage(),
                 'context' => [
                     'client_id' => $client_id,
