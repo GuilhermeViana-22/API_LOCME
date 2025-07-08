@@ -151,12 +151,36 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(TipoPerfil::class, 'tipo_perfil_id');
     }
-//
-//    /**
-//     * Relacionamento com o perfil
-//     */
-//    public function perfil()
-//    {
-//        return $this->belongsTo(Perfil::class, 'perfil_id');
-//    }
+
+    /**
+     * Relacionamento polimórfico com o perfil baseado no tipo_perfil_id
+     */
+    public function perfil()
+    {
+        switch ($this->tipo_perfil_id) {
+            case TipoPerfil::TIPO_REPRESENTANTE:
+                return $this->belongsTo(Representante::class, 'perfil_id');
+
+            case TipoPerfil::TIPO_AGENTE_VIAGEM:
+                return $this->belongsTo(AgenteViagem::class, 'perfil_id');
+
+            case TipoPerfil::TIPO_AGENCIA_VIAGEM:
+                return $this->belongsTo(AgenciaViagem::class, 'perfil_id');
+
+            case TipoPerfil::TIPO_GUIA_TURISMO:
+                return $this->belongsTo(GuiaTurismo::class, 'perfil_id');
+
+            case TipoPerfil::TIPO_EMPRESA_ENTIDADE:
+                return $this->belongsTo(Empresa::class, 'perfil_id');
+
+            default:
+                return null;
+        }
+    }
+
+    // Método auxiliar para acessar o perfil diretamente
+    public function getPerfilAttribute()
+    {
+        return $this->perfil()->first();
+    }
 }

@@ -21,6 +21,8 @@ class UserResource extends JsonResource
             'tipo_perfil' => $this->tipoPerfil->tipo,
 
             'perfil_id' => $this->perfil_id ?? null,
+            'perfil' => $this->perfil ?? null,
+
             'bio' => $this->bio ?? null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
