@@ -120,17 +120,14 @@ class PerfilController extends Controller
             switch ($user->tipo_perfil_id) {
                 case TipoPerfil::TIPO_REPRESENTANTE:
                     $perfil = $this->salvarPerfilRepresentante($user, $request);
-                    $tipoPerfil = 'representante';
                     break;
 
                 case TipoPerfil::TIPO_AGENTE_VIAGEM:
                     $perfil = $this->salvarPerfilAgenteViagem($user, $request);
-                    $tipoPerfil = 'agente de viagem';
                     break;
 
                 case TipoPerfil::TIPO_AGENCIA_VIAGEM:
                     $perfil = $this->salvarPerfilAgenciaViagem($user, $request);
-                    $tipoPerfil = 'agência de viagem';
                     break;
 
                 // Outros tipos de perfil podem ser adicionados aqui
@@ -217,15 +214,11 @@ class PerfilController extends Controller
             $agenteViagem = AgenteViagem::create($validatedData);
 
             // Atualizar o perfil do utilizador com o ‘ID’ do agente de viagem
-            $user->agente_viagem_id = $agenteViagem->id;
+            $user->perfil_id = $agenteViagem->id;
             $user->save();
 
             return $agenteViagem;
         } catch (\Illuminate\Database\QueryException $e) {
-            // Verificar se é um erro de duplicidade
-            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                throw new \Exception('CPF já cadastrado no sistema.', 422);
-            }
             throw new \Exception('Erro ao salvar no banco de dados: ' . $e->getMessage(), 500);
         } catch (\Exception $e) {
             throw new \Exception('Erro ao processar o perfil do agente de viagem: ' . $e->getMessage(), 500);
