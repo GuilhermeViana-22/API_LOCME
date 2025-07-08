@@ -59,7 +59,7 @@ class TipoPerfil extends Model
             'agencia_id' => 'required_if:vinculado_agencia,true|integer',
 
             'tem_cnpj_proprio' => 'required|boolean',
-            'cnpj_proprio' => 'required|string',
+            'cnpj_proprio' => 'required_if:tem_cnpj_proprio,true',
 
             'portfolio_redes_sociais' => 'nullable|string|max:255',
             'aceita_contato_representantes' => 'required|boolean',
@@ -193,7 +193,6 @@ class TipoPerfil extends Model
             'tem_cnpj_proprio.boolean' => 'O campo tem CNPJ próprio deve ser verdadeiro ou falso.',
 
             'cnpj_proprio.required_if' => 'Informe o seu CNPJ próprio.',
-            'cnpj_proprio.string' => 'O CNPJ próprio deve ser um texto.',
 
             'portfolio_redes_sociais.string' => 'O portfólio/redes sociais deve ser um texto.',
             'portfolio_redes_sociais.max' => 'O portfólio/redes sociais não pode ter mais de 255 caracteres.',
