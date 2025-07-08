@@ -53,8 +53,14 @@ class TipoPerfil extends Model
             'cidade' => 'required|string|max:255',
             'uf' => 'required|string|size:2',
             'vinculado_agencia' => 'required|boolean',
-            'cnpj_agencia_vinculada' => 'required_if:vinculado_agencia,true|string|max:255',
+            'data_nascimento' => 'required|date',
+
+            //'agencia_id' => 'required_if:vinculado_agencia,true|integer|exists:agencias_viagens,id',
+            'agencia_id' => 'required_if:vinculado_agencia,true|integer',
+
             'tem_cnpj_proprio' => 'required|boolean',
+            'cnpj_proprio' => 'required|string',
+
             'portfolio_redes_sociais' => 'nullable|string|max:255',
             'aceita_contato_representantes' => 'required|boolean',
         ],
@@ -157,6 +163,9 @@ class TipoPerfil extends Model
             'cpf.string' => 'O CPF deve ser um texto.',
             'cpf.unique' => 'Este CPF já está cadastrado no sistema.',
 
+            'data_nascimento.required' => 'A data de nascimento é obrigatória.',
+            'data_nascimento.date' => 'Informe uma data válida.',
+
             'email.required' => 'O e-mail é obrigatório.',
             'email.email' => 'Informe um e-mail válido.',
             'email.max' => 'O e-mail não pode ter mais de 255 caracteres.',
@@ -176,12 +185,15 @@ class TipoPerfil extends Model
             'vinculado_agencia.required' => 'Informe se está vinculado a uma agência.',
             'vinculado_agencia.boolean' => 'O campo vinculado a agência deve ser verdadeiro ou falso.',
 
-            'cnpj_agencia_vinculada.required_if' => 'O CNPJ da agência vinculada é obrigatório quando vinculado a uma agência.',
-            'cnpj_agencia_vinculada.string' => 'O CNPJ da agência vinculada deve ser um texto.',
-            'cnpj_agencia_vinculada.max' => 'O CNPJ da agência vinculada não pode ter mais de 255 caracteres.',
+            'agencia_id.required_if' => 'O informe da agência vinculada é obrigatório quando vinculado a uma agência.',
+            'agencia_id.integer' => 'A agência informada está inválida.',
+            'agencia_id.exists' => 'Selecione um agência válida.',
 
             'tem_cnpj_proprio.required' => 'Informe se possui CNPJ próprio.',
             'tem_cnpj_proprio.boolean' => 'O campo tem CNPJ próprio deve ser verdadeiro ou falso.',
+
+            'cnpj_proprio.required_if' => 'Informe o seu CNPJ próprio.',
+            'cnpj_proprio.string' => 'O CNPJ próprio deve ser um texto.',
 
             'portfolio_redes_sociais.string' => 'O portfólio/redes sociais deve ser um texto.',
             'portfolio_redes_sociais.max' => 'O portfólio/redes sociais não pode ter mais de 255 caracteres.',

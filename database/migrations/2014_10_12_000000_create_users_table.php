@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('foto_perfil', 255)->nullable();
             $table->integer('tipo_perfil_id')->nullable();
             $table->integer('perfil_id')->nullable();
-            $table->string('bio')->nullable();
+            $table->string('bio', 500)->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

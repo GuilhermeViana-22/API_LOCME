@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Modelo para representar Agentes de Viagem no sistema
- * 
+ *
  * @package App\Models
  */
 class AgenteViagem extends Model
@@ -23,20 +23,22 @@ class AgenteViagem extends Model
     protected $table = 'agentes_viagens';
 
     /**
-     * Os atributos que são atribuíveis em massa.
+     * Os atributos atribuíveis em massa.
      *
      * @var array
      */
     protected $fillable = [
         'nome_completo',
         'cpf',
+        'data_nascimento',
         'email',
         'whatsapp',
         'cidade',
         'uf',
         'vinculado_agencia',
-        'cnpj_agencia_vinculada',
+        'agencia_id',
         'tem_cnpj_proprio',
+        'cnpj_proprio',
         'portfolio_redes_sociais',
         'aceita_contato_representantes',
     ];
@@ -50,18 +52,9 @@ class AgenteViagem extends Model
         'vinculado_agencia' => 'boolean',
         'tem_cnpj_proprio' => 'boolean',
         'aceita_contato_representantes' => 'boolean',
+        'data_nascimento' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-
-    /**
-     * Relacionamento com o usuário que possui este perfil de agente de viagem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function usuario()
-    {
-        return $this->hasOne(User::class, 'agente_viagem_id', 'id');
-    }
 }
