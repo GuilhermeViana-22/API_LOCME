@@ -185,6 +185,8 @@ class PerfilController extends Controller
 
             // Atualização do utilizador com o ‘ID’ do representante
             $user->perfil_id = $representante->id;
+            $user->bio = $validatedData['bio'];
+
             $user->save();
 
             return $representante;

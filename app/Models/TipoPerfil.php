@@ -21,6 +21,8 @@ class TipoPerfil extends Model
         /// TIPO REPRESENTANTE
         self::TIPO_REPRESENTANTE => [
             'nome' => 'required|string|max:255',
+            'bio' => 'required|string|max:500',
+
             'whatsapp' => 'required|string|max:20',
             'email_contato' => 'required|email|max:255',
             'data_nascimento' => 'required|date',
@@ -97,9 +99,13 @@ class TipoPerfil extends Model
 
         /// TIPO REPRESENTANTE
         self::TIPO_REPRESENTANTE => [
-            'nome.required' => 'O campo apelido é obrigatório.',
-            'nome.string' => 'O apelido deve ser um texto.',
-            'nome.max' => 'O apelido não pode ter mais de 255 caracteres.',
+            'nome.required' => 'O campo nome é obrigatório.',
+            'nome.string' => 'O nome deve ser um texto.',
+            'nome.max' => 'O nome não pode ter mais de 255 caracteres.',
+
+            'bio.required' => 'O campo biografia é obrigatório.',
+            'bio.string' => 'O biografia deve ser um texto.',
+            'bio.max' => 'O biografia não pode ter mais de 500 caracteres.',
 
             'whatsapp.required' => 'O número do WhatsApp é obrigatório.',
             'whatsapp.string' => 'O WhatsApp deve ser um texto.',
