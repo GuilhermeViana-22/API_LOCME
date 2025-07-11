@@ -70,28 +70,31 @@ class TipoPerfil extends Model
 
         /// TIPO AGÊNCIA DE VIAGEM
         self::TIPO_AGENCIA_VIAGEM => [
-            'bio' => 'required|string|max:500',
             'nome_agencia' => 'required|string|max:255',
             'cnpj' => 'required|string|unique:agencias_viagens,cnpj',
             'razao_social' => 'required|string|max:255',
             'nome_fantasia' => 'required|string|max:255',
             'email_institucional' => 'required|email|max:255',
             'telefone_whatsapp' => 'required|string|max:255',
+
+            'endereco' => 'required|string|max:255',
             'cidade' => 'required|string|max:255',
-            'uf' => 'required|string|size:2',
-            'endereco_completo' => 'required|string|max:255',
+            'estado' => 'required|string|max:2',
             'cep' => 'required|string|max:10',
-            'tipo_operacao' => 'required|numeric',
+            'pais' => 'required|string|max:255',
+
+            'tipo_operacao_id' => 'required|numeric',
+
             'recebe_representantes' => 'required|boolean',
             'necessita_agendamento' => 'required|boolean',
             'atende_freelance' => 'required|boolean',
             'cadastur' => 'required|string|max:255',
             'instagram' => 'nullable|string|max:255',
             'segmento_principal_id' => 'required|integer',
-            'excursoes_proprias' => 'required|string|size:1',
-            'aceita_excursoes_outras' => 'required|string|size:1',
+            'excursoes_proprias' => 'required|boolean',
+            'aceita_excursoes_outras' => 'required|boolean',
             'descricao_livre' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            //'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'divulgar' => 'required|boolean',
         ],
     ];
@@ -219,13 +222,9 @@ class TipoPerfil extends Model
             'nome_agencia.string' => 'O nome da agência deve ser um texto.',
             'nome_agencia.max' => 'O nome da agência não pode ter mais de 255 caracteres.',
 
-            'bio.required' => 'O campo biografia é obrigatório.',
-            'bio.string' => 'O biografia deve ser um texto.',
-            'bio.max' => 'O biografia não pode ter mais de 500 caracteres.',
-
             'cnpj.required' => 'O CNPJ é obrigatório.',
             'cnpj.string' => 'O CNPJ deve ser um texto.',
-            'cnpj.unique' => 'Este CNPJ já está cadastrado no sistema.',
+            'cnpj.unique' => 'Este CNPJ já está cadastrado no sistema como uma agência.',
 
             'razao_social.required' => 'A razão social é obrigatória.',
             'razao_social.string' => 'A razão social deve ser um texto.',
@@ -243,24 +242,28 @@ class TipoPerfil extends Model
             'telefone_whatsapp.string' => 'O telefone/WhatsApp deve ser um texto.',
             'telefone_whatsapp.max' => 'O telefone/WhatsApp não pode ter mais de 255 caracteres.',
 
+            'endereco.required' => 'O endereço é obrigatório.',
+            'endereco.string' => 'O endereço deve ser um texto.',
+            'endereco.max' => 'O endereço não pode ter mais de 255 caracteres.',
+
             'cidade.required' => 'A cidade é obrigatória.',
             'cidade.string' => 'A cidade deve ser um texto.',
             'cidade.max' => 'A cidade não pode ter mais de 255 caracteres.',
 
-            'uf.required' => 'O estado (UF) é obrigatório.',
-            'uf.string' => 'O estado (UF) deve ser um texto.',
-            'uf.size' => 'O estado (UF) deve ter exatamente 2 caracteres.',
-
-            'endereco_completo.required' => 'O endereço completo é obrigatório.',
-            'endereco_completo.string' => 'O endereço completo deve ser um texto.',
-            'endereco_completo.max' => 'O endereço completo não pode ter mais de 255 caracteres.',
+            'estado.required' => 'O estado é obrigatório.',
+            'estado.string' => 'O estado deve ser um texto.',
+            'estado.max' => 'O estado não pode ter mais de 2 caracteres.',
 
             'cep.required' => 'O CEP é obrigatório.',
             'cep.string' => 'O CEP deve ser um texto.',
             'cep.max' => 'O CEP não pode ter mais de 10 caracteres.',
 
-            'tipo_operacao.required' => 'O tipo de operação é obrigatório.',
-            'tipo_operacao.numeric' => 'O tipo de operação deve ser um número.',
+            'pais.required' => 'O país é obrigatório.',
+            'pais.string' => 'O país deve ser um texto.',
+            'pais.max' => 'O país não pode ter mais de 255 caracteres.',
+
+            'tipo_operacao_id.required' => 'O tipo de operação é obrigatório.',
+            'tipo_operacao_id.numeric' => 'O tipo de operação deve ser um número.',
 
             'recebe_representantes.required' => 'Informe se recebe representantes.',
             'recebe_representantes.boolean' => 'O campo recebe representantes deve ser verdadeiro ou falso.',
@@ -281,12 +284,10 @@ class TipoPerfil extends Model
             'segmento_principal_id.integer' => 'O segmento principal deve ser um número inteiro.',
 
             'excursoes_proprias.required' => 'Informe se realiza excursões próprias.',
-            'excursoes_proprias.string' => 'O campo excursões próprias deve ser um texto.',
-            'excursoes_proprias.size' => 'O campo excursões próprias deve ter exatamente 1 caractere.',
+            'excursoes_proprias.boolean' => 'O campo de excursões próprias deve ser verdadeiro ou falso.',
 
             'aceita_excursoes_outras.required' => 'Informe se aceita excursões de outras empresas.',
-            'aceita_excursoes_outras.string' => 'O campo aceita excursões de outras empresas deve ser um texto.',
-            'aceita_excursoes_outras.size' => 'O campo aceita excursões de outras empresas deve ter exatamente 1 caractere.',
+            'aceita_excursoes_outras.boolean' => 'O campo de excursões de outras empresas deve ser verdadeiro ou falso.',
 
             'logo.image' => 'O arquivo deve ser uma imagem.',
             'logo.mimes' => 'A imagem deve ser dos tipos: jpeg, png, jpg, gif ou webp.',

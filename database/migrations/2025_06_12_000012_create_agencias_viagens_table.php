@@ -21,22 +21,29 @@ class CreateAgenciasViagensTable extends Migration
             $table->string('nome_fantasia');
             $table->string('email_institucional');
             $table->string('telefone_whatsapp');
+
+            $table->string('endereco');
             $table->string('cidade');
-            $table->char('uf', 2);
-            $table->string('endereco_completo');
-            $table->string('cep', 10);
-            $table->unsignedBigInteger('tipo_operacao');
-            $table->boolean('recebe_representantes');
-            $table->boolean('necessita_agendamento');
-            $table->boolean('atende_freelance');
-            $table->string('cadastur');
-            $table->string('instagram');
+            $table->string('estado');
+            $table->string('cep');
+            $table->string('pais');
+
+            $table->integer('tipo_operacao_id');
             $table->integer('segmento_principal_id');
-            $table->char('excursoes_proprias');
-            $table->char('aceita_excursoes_outras');
-            $table->text('descricao_livre');
-            $table->string('logo_path');
-            $table->boolean('divulgar');
+
+            $table->boolean('recebe_representantes')->default(false)->nullable();
+            $table->boolean('necessita_agendamento')->default(false)->nullable();
+            $table->boolean('atende_freelance')->default(false)->nullable();
+            $table->boolean('excursoes_proprias')->default(false)->nullable();
+            $table->boolean('aceita_excursoes_outras')->default(false)->nullable();
+            $table->boolean('divulgar')->default(false)->nullable();
+
+            $table->string('cadastur');
+            $table->string('instagram')->default('')->nullable();
+
+            $table->text('descricao_livre')->nullable();
+            $table->string('logo_path')->default('')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

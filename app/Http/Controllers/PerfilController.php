@@ -255,15 +255,10 @@ class PerfilController extends Controller
 
             // Atualizar o perfil do utilizador com o ‘ID’ da agência de viagem
             $user->perfil_id = $agenciaViagem->id;
-            $user->bio = $validatedData['bio'];
             $user->save();
 
             return $agenciaViagem;
         } catch (\Illuminate\Database\QueryException $e) {
-            // Verificar se é um erro de duplicidade
-            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                throw new \Exception('CNPJ já cadastrado no sistema.', 422);
-            }
             throw new \Exception('Erro ao salvar no banco de dados: ' . $e->getMessage(), 500);
         } catch (\Exception $e) {
             throw new \Exception('Erro ao processar o perfil da agência: ' . $e->getMessage(), 500);

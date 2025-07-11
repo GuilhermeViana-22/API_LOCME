@@ -29,21 +29,27 @@ class AgenciaViagem extends Model
         'nome_fantasia',
         'email_institucional',
         'telefone_whatsapp',
+
+        'endereco',
         'cidade',
-        'uf',
-        'endereco_completo',
+        'estado',
         'cep',
-        'tipo_operacao',
+        'pais',
+
+        'tipo_operacao_id', // trazer para BD e validar
+
         'recebe_representantes',
         'necessita_agendamento',
         'atende_freelance',
         'cadastur',
         'instagram',
-        'segmento_principal_id',
+
+        'segmento_principal_id', // trazer para BD e validar
+
         'excursoes_proprias',
         'aceita_excursoes_outras',
         'descricao_livre',
-        'logo_path',
+
         'divulgar',
     ];
 
@@ -57,6 +63,9 @@ class AgenciaViagem extends Model
         'necessita_agendamento' => 'boolean',
         'atende_freelance' => 'boolean',
         'divulgar' => 'boolean',
+        'excursoes_proprias' => 'boolean',
+        'aceita_excursoes_outras' => 'boolean',
+
         'data_cadastro' => 'datetime',
         'data_atualizacao' => 'datetime',
     ];
