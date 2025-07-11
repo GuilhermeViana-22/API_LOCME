@@ -20,6 +20,7 @@ class TipoPerfil extends Model
 
         /// TIPO REPRESENTANTE
         self::TIPO_REPRESENTANTE => [
+            'cpf' => 'required|string|unique:representantes,cpf',
             'nome' => 'required|string|max:255',
             'bio' => 'required|string|max:500',
 
@@ -97,6 +98,21 @@ class TipoPerfil extends Model
             //'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'divulgar' => 'required|boolean',
         ],
+
+        /// TIPO GUIA DE TURISMO
+        self::TIPO_GUIA_TURISMO => [
+            'cpf' => 'required|string|unique:guias_turismos,cpf',
+            'apelido' => 'required|string|max:255',
+            'bio' => 'required|string|max:500',
+            'whatsapp' => 'required|string|max:20',
+            'email_contato' => 'required|email|max:255',
+            'data_nascimento' => 'required|date',
+            'cadastur' => 'nullable|string|max:255',
+            'abrangencia_id' => 'required|integer',
+        ],
+
+        /// TIPO EMPRESA/ENTIDADE
+        self::TIPO_EMPRESA_ENTIDADE => []
     ];
 
     /// AQUI VAI AS MESSAGES DE CADA TIPO
@@ -104,6 +120,10 @@ class TipoPerfil extends Model
 
         /// TIPO REPRESENTANTE
         self::TIPO_REPRESENTANTE => [
+            'cpf.required' => 'O CPF é obrigatório.',
+            'cpf.string' => 'O CPF deve ser um texto.',
+            'cpf.unique' => 'Este CPF já está cadastrado no sistema para os representantes.',
+
             'nome.required' => 'O campo nome é obrigatório.',
             'nome.string' => 'O nome deve ser um texto.',
             'nome.max' => 'O nome não pode ter mais de 255 caracteres.',
@@ -176,7 +196,7 @@ class TipoPerfil extends Model
 
             'cpf.required' => 'O CPF é obrigatório.',
             'cpf.string' => 'O CPF deve ser um texto.',
-            'cpf.unique' => 'Este CPF já está cadastrado no sistema.',
+            'cpf.unique' => 'Este CPF já está cadastrado no sistema para outro agente.',
 
             'data_nascimento.required' => 'A data de nascimento é obrigatória.',
             'data_nascimento.date' => 'Informe uma data válida.',
@@ -296,6 +316,41 @@ class TipoPerfil extends Model
             'divulgar.required' => 'Informe se deseja divulgar a agência.',
             'divulgar.boolean' => 'O campo divulgar deve ser verdadeiro ou falso.',
         ],
+
+        /// TIPO GUIA DE TURISMO
+        self::TIPO_GUIA_TURISMO => [
+            'cpf.required' => 'O CPF é obrigatório.',
+            'cpf.string' => 'O CPF deve ser um texto.',
+            'cpf.unique' => 'Este CPF já está cadastrado no sistema para os guias de turismo.',
+
+            'apelido.required' => 'O campo apelido é obrigatório.',
+            'apelido.string' => 'O apelido deve ser um texto.',
+            'apelido.max' => 'O apelido não pode ter mais de 255 caracteres.',
+
+            'bio.required' => 'O campo biografia é obrigatório.',
+            'bio.string' => 'O biografia deve ser um texto.',
+            'bio.max' => 'O biografia não pode ter mais de 500 caracteres.',
+
+            'whatsapp.required' => 'O número do WhatsApp é obrigatório.',
+            'whatsapp.string' => 'O WhatsApp deve ser um texto.',
+            'whatsapp.max' => 'O WhatsApp não pode ter mais de 20 caracteres.',
+
+            'email_contato.required' => 'O e-mail de contato é obrigatório.',
+            'email_contato.email' => 'Informe um e-mail válido.',
+            'email_contato.max' => 'O e-mail não pode ter mais de 255 caracteres.',
+
+            'data_nascimento.required' => 'A data de nascimento é obrigatória.',
+            'data_nascimento.date' => 'Informe uma data válida.',
+
+            'cadastur.string' => 'O CADASTUR deve ser um texto.',
+            'cadastur.max' => 'O CADASTUR não pode ter mais de 255 caracteres.',
+
+            'abrangencia_id.required' => 'A abrangência é obrigatória.',
+            'abrangencia_id.integer' => 'Selecione uma abrangência válida.',
+        ],
+
+        /// TIPO EMPRESA/ENTIDADE
+        self::TIPO_EMPRESA_ENTIDADE => []
     ];
 
     /**

@@ -22,6 +22,7 @@ class GuiaTurismo extends Model
      * @var array
      */
     protected $fillable = [
+        'cpf',
         'apelido',
         'whatsapp',
         'email_contato',

@@ -22,6 +22,7 @@ class Representante extends Model
      * @var array
      */
     protected $fillable = [
+        'cpf',
         'nome',
         'whatsapp',
         'email_contato',

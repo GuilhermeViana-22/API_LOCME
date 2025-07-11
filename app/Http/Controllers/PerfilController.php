@@ -8,6 +8,8 @@ use App\Http\Resources\Perfis\TiposPerfisResource;
 use App\Http\Resources\Users\UserResource;
 use App\Models\AgenciaViagem;
 use App\Models\AgenteViagem;
+use App\Models\Empresa;
+use App\Models\GuiaTurismo;
 use App\Models\Log;
 use App\Models\Representante;
 use App\Models\TipoPerfil;
@@ -129,8 +131,12 @@ class PerfilController extends Controller
                 case TipoPerfil::TIPO_AGENCIA_VIAGEM:
                     $perfil = $this->salvarPerfilAgenciaViagem($user, $request);
                     break;
-
-                // Outros tipos de perfil podem ser adicionados aqui
+                case TipoPerfil::TIPO_GUIA_TURISMO:
+                    $perfil = $this->salvarPerfilGuiaTurismo($user, $request);
+                    break;
+                case TipoPerfil::TIPO_EMPRESA_ENTIDADE:
+                    $perfil = $this->salvarPerfilEmpresaEntidade($user, $request);
+                    break;
 
                 default:
                     throw new \Exception('Tipo de perfil não implementado ou inválido.');
@@ -262,6 +268,67 @@ class PerfilController extends Controller
             throw new \Exception('Erro ao salvar no banco de dados: ' . $e->getMessage(), 500);
         } catch (\Exception $e) {
             throw new \Exception('Erro ao processar o perfil da agência: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Implementa a lógica de criação de perfil de guia de turismo e também salva o ID na tabela do USER
+     *
+     * @param $user
+     * @param $request
+     * @return mixed
+     * @throws \Exception
+     */
+    private function salvarPerfilGuiaTurismo($user, $request)
+    {
+        try {
+            // Os dados já foram validados pelo FormRequest
+            $validatedData = $request->validated();
+
+            // Criar o guia usando o modelo
+            $guiaTurismo = GuiaTurismo::create($validatedData);
+
+            // Atualizar o perfil do utilizador com o ‘ID’ da agência de viagem
+            $user->perfil_id = $guiaTurismo->id;
+            $user->bio = $validatedData['bio'];
+            $user->save();
+
+            return $guiaTurismo;
+        } catch (\Illuminate\Database\QueryException $e) {
+            throw new \Exception('Erro ao salvar no banco de dados: ' . $e->getMessage(), 500);
+        } catch (\Exception $e) {
+            throw new \Exception('Erro ao processar o perfil da agência: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Implementa a lógica de criação de perfil da empresa/entidade e também salva o ID na tabela do USER
+     *
+     * @param $user
+     * @param $request
+     * @return mixed
+     * @throws \Exception
+     */
+    private function salvarPerfilEmpresaEntidade($user, $request)
+    {
+        try {
+            // Os dados já foram validados pelo FormRequest
+            $validatedData = $request->validated();
+
+            $empresaEntidade = Empresa::create($validatedData);
+
+            // Atualização do utilizador com o ‘ID’ da empresa/entidade
+            $user->perfil_id = $empresaEntidade->id;
+            $user->bio = $validatedData['bio'];
+
+            $user->save();
+
+            return $empresaEntidade;
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Tratar erros específicos de banco de dados
+            throw new \Exception('Erro ao salvar no banco de dados: ' . $e->getMessage(), 500);
+        } catch (\Exception $e) {
+            throw new \Exception('Erro ao processar o perfil do empresa/entidade: ' . $e->getMessage(), 500);
         }
     }
 

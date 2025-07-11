@@ -15,6 +15,7 @@ class CreateGuiasTurismosTable extends Migration
     {
         Schema::create('guias_turismos', function (Blueprint $table) {
             $table->id();
+            $table->string('cpf');
             $table->text('apelido');
             $table->text('whatsapp');
             $table->text('email_contato');
