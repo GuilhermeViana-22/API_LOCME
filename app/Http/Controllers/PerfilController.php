@@ -217,6 +217,7 @@ class PerfilController extends Controller
 
             // Atualizar o perfil do utilizador com o ‘ID’ do agente de viagem
             $user->perfil_id = $agenteViagem->id;
+            $user->bio = $validatedData['bio'];
             $user->save();
 
             return $agenteViagem;
@@ -253,7 +254,8 @@ class PerfilController extends Controller
             $agenciaViagem = AgenciaViagem::create($validatedData);
 
             // Atualizar o perfil do utilizador com o ‘ID’ da agência de viagem
-            $user->agencia_viagem_id = $agenciaViagem->id;
+            $user->perfil_id = $agenciaViagem->id;
+            $user->bio = $validatedData['bio'];
             $user->save();
 
             return $agenciaViagem;

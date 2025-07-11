@@ -49,6 +49,7 @@ class TipoPerfil extends Model
         /// TIPO AGENTE DE VIAGEM
         self::TIPO_AGENTE_VIAGEM => [
             'nome_completo' => 'required|string|max:255',
+            'bio' => 'required|string|max:500',
             'cpf' => 'required|string|unique:agentes_viagens,cpf',
             'email' => 'required|email|max:255',
             'whatsapp' => 'required|string|max:255',
@@ -69,6 +70,7 @@ class TipoPerfil extends Model
 
         /// TIPO AGÊNCIA DE VIAGEM
         self::TIPO_AGENCIA_VIAGEM => [
+            'bio' => 'required|string|max:500',
             'nome_agencia' => 'required|string|max:255',
             'cnpj' => 'required|string|unique:agencias_viagens,cnpj',
             'razao_social' => 'required|string|max:255',
@@ -165,6 +167,10 @@ class TipoPerfil extends Model
             'nome_completo.string' => 'O nome completo deve ser um texto.',
             'nome_completo.max' => 'O nome completo não pode ter mais de 255 caracteres.',
 
+            'bio.required' => 'O campo biografia é obrigatório.',
+            'bio.string' => 'O biografia deve ser um texto.',
+            'bio.max' => 'O biografia não pode ter mais de 500 caracteres.',
+
             'cpf.required' => 'O CPF é obrigatório.',
             'cpf.string' => 'O CPF deve ser um texto.',
             'cpf.unique' => 'Este CPF já está cadastrado no sistema.',
@@ -212,6 +218,10 @@ class TipoPerfil extends Model
             'nome_agencia.required' => 'O nome da agência é obrigatório.',
             'nome_agencia.string' => 'O nome da agência deve ser um texto.',
             'nome_agencia.max' => 'O nome da agência não pode ter mais de 255 caracteres.',
+
+            'bio.required' => 'O campo biografia é obrigatório.',
+            'bio.string' => 'O biografia deve ser um texto.',
+            'bio.max' => 'O biografia não pode ter mais de 500 caracteres.',
 
             'cnpj.required' => 'O CNPJ é obrigatório.',
             'cnpj.string' => 'O CNPJ deve ser um texto.',
