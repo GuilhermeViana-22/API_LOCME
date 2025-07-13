@@ -24,7 +24,7 @@ class PerfilProdutoServico extends Model
     protected $fillable = [
         'perfil_id',
         'tipo_perfil_id',
-        'produto_servico_id',
+        'produto_id',
     ];
 
     /**
@@ -32,7 +32,7 @@ class PerfilProdutoServico extends Model
      */
     public function produtoServico()
     {
-        return $this->belongsTo(ProdutoServico::class, 'produto_servico_id');
+        return $this->belongsTo(ProdutoServico::class, 'produto_id');
     }
 
     /**

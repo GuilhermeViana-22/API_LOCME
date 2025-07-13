@@ -22,6 +22,7 @@ class Empresa extends Model
      * @var array
      */
     protected $fillable = [
+        'cnpj',
         'nome_empresa',
         'telefone',
         'email_contato',
@@ -77,7 +78,7 @@ class Empresa extends Model
             'perfil_id',
             'id',
             'id',
-            'produto_servico_id'
+            'produto_id'
         )->where('tipo_perfil_id', self::TIPO_PERFIL_ID);
     }
 

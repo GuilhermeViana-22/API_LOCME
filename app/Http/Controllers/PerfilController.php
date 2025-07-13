@@ -11,6 +11,9 @@ use App\Models\AgenteViagem;
 use App\Models\Empresa;
 use App\Models\GuiaTurismo;
 use App\Models\Log;
+use App\Models\PerfilAtividade;
+use App\Models\PerfilProdutoServico;
+use App\Models\PerfilUnidadeLocalidade;
 use App\Models\Representante;
 use App\Models\TipoPerfil;
 use Illuminate\Http\JsonResponse;
@@ -319,7 +322,43 @@ class PerfilController extends Controller
 
             // Atualização do utilizador com o ‘ID’ da empresa/entidade
             $user->perfil_id = $empresaEntidade->id;
-            $user->bio = $validatedData['bio'];
+            ///$user->bio = $validatedData['bio'];
+
+            /// salva as atividades
+            if(!empty($validatedData['atividades'])){
+                foreach ( $validatedData['atividades'] as $atividade_id )
+                {
+                    PerfilAtividade::create([
+                        'perfil_id' => $empresaEntidade->id,
+                        'atividade_id' => $atividade_id,
+                        'tipo_perfil_id' => TipoPerfil::TIPO_EMPRESA_ENTIDADE,
+                    ]);
+                }
+            }
+
+            /// salva os produtos serviços
+            if(!empty($validatedData['produtos_servicos'])){
+                foreach ( $validatedData['produtos_servicos'] as $produto_id )
+                {
+                    PerfilProdutoServico::create([
+                        'perfil_id' => $empresaEntidade->id,
+                        'produto_id' => $produto_id,
+                        'tipo_perfil_id' => TipoPerfil::TIPO_EMPRESA_ENTIDADE,
+                    ]);
+                }
+            }
+
+            /// salva as unidades localidades
+            if(!empty($validatedData['unidades_localidades'])){
+                foreach ( $validatedData['unidades_localidades'] as $unidade_localidade_id )
+                {
+                    PerfilUnidadeLocalidade::create([
+                        'perfil_id' => $empresaEntidade->id,
+                        'unidade_localidade_id' => $unidade_localidade_id,
+                        'tipo_perfil_id' => TipoPerfil::TIPO_EMPRESA_ENTIDADE,
+                    ]);
+                }
+            }
 
             $user->save();
 

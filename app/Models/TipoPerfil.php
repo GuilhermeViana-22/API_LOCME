@@ -112,7 +112,29 @@ class TipoPerfil extends Model
         ],
 
         /// TIPO EMPRESA/ENTIDADE
-        self::TIPO_EMPRESA_ENTIDADE => []
+        self::TIPO_EMPRESA_ENTIDADE => [
+            'atividades' => 'required|array',
+            'produtos_servicos' => 'required|array',
+            'unidades_localidades' => 'required|array',
+
+            'nome_empresa' => 'required|string|max:255',
+            'cnpj' => 'required|string|unique:empresas,cnpj',
+            'telefone' => 'required|string|max:20',
+            'email_contato' => 'required|email|max:255',
+            'url' => 'nullable|url|max:255',
+            'cadastur' => 'nullable|string|max:255',
+            'condicoes_especiais' => 'required|boolean',
+            'condicoes' => 'nullable|string|required_if:condicoes_especiais,true',
+
+            'nome_cadastro' => 'required|string|max:255',
+            'cargo_cadastro' => 'required|string|max:255',
+
+            'endereco' => 'required|string|max:255',
+            'cidade' => 'required|string|max:255',
+            'estado' => 'required|string|max:2',
+            'cep' => 'required|string|max:10',
+            'pais' => 'required|string|max:255',
+        ]
     ];
 
     /// AQUI VAI AS MESSAGES DE CADA TIPO
@@ -350,7 +372,67 @@ class TipoPerfil extends Model
         ],
 
         /// TIPO EMPRESA/ENTIDADE
-        self::TIPO_EMPRESA_ENTIDADE => []
+        self::TIPO_EMPRESA_ENTIDADE => [
+            'atividades.required' => 'Alguma atividade deve ser selecionada.',
+            'produtos_servicos.required' => 'Algum produto/serviço deve ser selecionado.',
+            'unidades_localidades.required' => 'Alguma localidade deve ser selecionada.',
+
+            'nome_empresa.required' => 'O nome da empresa é obrigatório.',
+            'nome_empresa.string' => 'O nome da empresa deve ser um texto.',
+            'nome_empresa.max' => 'O nome da empresa não pode ter mais de 255 caracteres.',
+
+            'cnpj.required' => 'O CNPJ é obrigatório.',
+            'cnpj.string' => 'O CNPJ deve ser um texto.',
+            'cnpj.unique' => 'Este CNPJ já está cadastrado no sistema.',
+
+            'telefone.required' => 'O telefone é obrigatório.',
+            'telefone.string' => 'O telefone deve ser um texto.',
+            'telefone.max' => 'O telefone não pode ter mais de 20 caracteres.',
+
+            'email_contato.required' => 'O e-mail de contato é obrigatório.',
+            'email_contato.email' => 'Informe um e-mail válido.',
+            'email_contato.max' => 'O e-mail não pode ter mais de 255 caracteres.',
+
+            'url.url' => 'Informe uma URL válida.',
+            'url.max' => 'A URL não pode ter mais de 255 caracteres.',
+
+            'cadastur.string' => 'O CADASTUR deve ser um texto.',
+            'cadastur.max' => 'O CADASTUR não pode ter mais de 255 caracteres.',
+
+            'condicoes_especiais.required' => 'Informe se possui condições especiais.',
+            'condicoes_especiais.boolean' => 'O campo condições especiais deve ser verdadeiro ou falso.',
+
+            'condicoes.string' => 'As condições especiais devem ser um texto.',
+            'condicoes.required_if' => 'Descreva as condições especiais quando marcado.',
+
+            'nome_cadastro.required' => 'O nome do responsável pelo cadastro é obrigatório.',
+            'nome_cadastro.string' => 'O nome do responsável deve ser um texto.',
+            'nome_cadastro.max' => 'O nome do responsável não pode ter mais de 255 caracteres.',
+
+            'cargo_cadastro.required' => 'O cargo do responsável é obrigatório.',
+            'cargo_cadastro.string' => 'O cargo deve ser um texto.',
+            'cargo_cadastro.max' => 'O cargo não pode ter mais de 255 caracteres.',
+
+            'endereco.required' => 'O endereço é obrigatório.',
+            'endereco.string' => 'O endereço deve ser um texto.',
+            'endereco.max' => 'O endereço não pode ter mais de 255 caracteres.',
+
+            'cidade.required' => 'A cidade é obrigatória.',
+            'cidade.string' => 'A cidade deve ser um texto.',
+            'cidade.max' => 'A cidade não pode ter mais de 255 caracteres.',
+
+            'estado.required' => 'O estado é obrigatório.',
+            'estado.string' => 'O estado deve ser um texto.',
+            'estado.max' => 'O estado não pode ter mais de 2 caracteres.',
+
+            'cep.required' => 'O CEP é obrigatório.',
+            'cep.string' => 'O CEP deve ser um texto.',
+            'cep.max' => 'O CEP não pode ter mais de 10 caracteres.',
+
+            'pais.required' => 'O país é obrigatório.',
+            'pais.string' => 'O país deve ser um texto.',
+            'pais.max' => 'O país não pode ter mais de 255 caracteres.',
+        ]
     ];
 
     /**
