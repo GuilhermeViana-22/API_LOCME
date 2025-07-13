@@ -23,9 +23,11 @@ class DatabaseSeeder extends Seeder
             LogSeeder::class,
             PermissionSeeder::class,
             PassportSeeder::class,
+
             TipoPerfis::class,
-
-
+            AtividadesSeeder::class,
+            UnidadesLocalidadesSeeder::class,
+            ProdutosServicoesSeeder::class
         ]);
     }
 }

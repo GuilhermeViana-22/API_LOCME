@@ -16,17 +16,17 @@ class CreateEmpresasTable extends Migration
         Schema::create('empresas', function (Blueprint $table) {
             $table->id();
             $table->string('nome_empresa');
+            $table->string('cnpj')->unique();
             $table->string('telefone');
             $table->string('email_contato');
             $table->string('url');
             $table->string('cadastur')->nullable();
             $table->boolean('condicoes_especiais');
             $table->string('condicoes')->nullable();
-            $table->integer('atividade_id');
-            $table->text('unidades_localidades')->nullable();
-            $table->text('produtos_servicos');
+
             $table->string('nome_cadastro');
             $table->string('cargo_cadastro');
+
             $table->string('endereco');
             $table->string('cidade');
             $table->string('estado');
